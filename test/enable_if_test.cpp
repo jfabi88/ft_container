@@ -15,8 +15,8 @@ bool is_odd(T n)
 
 int main()
 {
-    int i = 1;
-    //std::string i = "sale";
+    //int i = 1;
+    std::string i = "sale";
     //float i = 43.2;
 
     std::cout << std::boolalpha;

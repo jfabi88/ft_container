@@ -1,0 +1,18 @@
+FILE="exec.o"
+
+if [ $# == 1 ]
+then
+	if [ $1 == "enable" ]; then
+		echo "[TEST ENABLE]"
+		clang++ enable_if_test.cpp -o $FILE
+	elif [ $1 == "vector" ]; then
+		echo "[TEST VECTOR]"
+		clang++ vector_test1.cpp -o $FILE
+	fi
+	if [ -e $FILE ]
+	then
+		./exec.o
+		rm exec.o
+		echo "[END TEST]"
+	fi
+fi
