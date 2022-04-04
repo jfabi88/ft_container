@@ -35,15 +35,12 @@ namespace ft
                 int dist;
 
                 if ( (dist = second - first) < 0)
-                {
-                    //throw exception
-                    return;   
-                }
+                    throw (std::length_error("vector"));
                 _allocator = alloc;
                 _container = _allocator.allocate(dist);
                 _size = dist;
-                for (size_t i = 0; i < _size; i++)
-                    _allocator.construct(_container + i, (first + i));
+                //for (size_t i = 0; i < _size; i++)
+                //    _allocator.construct(_container + i, (first + i));
 /*                 for(InputIterator i = first; i != second; i++){
                     _allocator.construct(_container + i, *i);
                 } */

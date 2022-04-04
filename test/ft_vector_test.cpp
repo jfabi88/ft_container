@@ -16,7 +16,7 @@ int main()
     test.push_back(3);
     test.push_back(4);
 
-    //ft::vector<int> fourth(test.begin(), test.end());
+    ft::vector<int> fourth(test.end(), test.begin());
 
 
     // std::vector<std::string> stringa;

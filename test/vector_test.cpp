@@ -6,7 +6,7 @@ int main ()
   // constructors used in the same order as described above:
   std::vector<int> first;                                // empty vector of ints
   std::vector<int> second (4,100);                       // four ints with value 100
-  std::vector<int> third (second.begin(),second.end());  // iterating through second
+  std::vector<int> third (second.end(),second.begin());  // iterating through second
   std::vector<int> fourth (third);                       // a copy of third
 
   // the iterator constructor can also be used to construct from arrays:
