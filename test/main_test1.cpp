@@ -1,11 +1,10 @@
-#include "vector.hpp"
+#include "../sources/vector.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
 
 int main()
 {
-    typedef typename std::vector<int>::_Tp ciao;
     ft::vector<int> first;
     ft::vector<int> second(10, 100);
     //ft::vector<int> third(10);

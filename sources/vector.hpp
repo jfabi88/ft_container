@@ -9,8 +9,6 @@ namespace ft
             typedef T value_type;
             typedef std::allocator<value_type> allocator_type;
             typedef size_t size_type;
-            template <bool, class _Tp = void> struct _LIBCPP_TEMPLATE_VIS enable_if {};
-template <class _Tp> struct _LIBCPP_TEMPLATE_VIS enable_if<true, _Tp> {typedef _Tp type;};
         private:
             allocator_type  _allocator;
             value_type*     _container;
