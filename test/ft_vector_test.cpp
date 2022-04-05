@@ -9,14 +9,14 @@ int main()
     ft::vector<int> second(10, 100);
     //ft::vector<int> third(10);
 
-    std::vector<int> test;
+    //std::vector<int> test;
 
-    test.push_back(1);
-    test.push_back(2);
-    test.push_back(3);
-    test.push_back(4);
+    //test.push_back(1);
+    //test.push_back(2);
+    //test.push_back(3);
+    //test.push_back(4);
 
-    ft::vector<int> fourth(test.end(), test.begin());
+    //ft::vector<int> fourth(test.end(), test.begin());
 
 
     // std::vector<std::string> stringa;
