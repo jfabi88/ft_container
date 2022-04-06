@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include "../sources/iterator_traits.hpp"
+#include "../sources/structs.hpp"
 
 class my_class
 {
@@ -27,7 +27,7 @@ int main()
     std::cout << "vector<std::string>::iterator: " <<ft::is_iterator<std::vector<std::string>::iterator>::value << std::endl;
     std::cout << "vector<int*>::iterator:        " <<ft::is_iterator<std::vector<int*>::iterator>::value << std::endl;
     std::cout << "vector<float>::iterator:       " <<ft::is_iterator<std::vector<float>::iterator>::value << std::endl;
-    std::cout << "vector<float>:                 " <<ft::is_iterator<std::vector<float>>::value << std::endl;
+    std::cout << "vector<float>:                 " <<ft::is_iterator<std::vector<float> >::value << std::endl;
     std::cout << "my_class:                      " <<ft::is_iterator<my_class>::value << std::endl;
     return (0);
 }

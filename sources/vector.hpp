@@ -1,4 +1,5 @@
 #include <iostream>
+#include "structs.hpp"
 
 namespace ft
 {
@@ -30,7 +31,7 @@ namespace ft
                 std::cout << "Fill constructor called" << std::endl;
             }
             template <class InputIterator>
-            vector(InputIterator first, InputIterator second, const allocator_type& alloc = allocator_type())
+            vector(InputIterator first, InputIterator second, const allocator_type& alloc = allocator_type(),  typename enable_if<!is_integral<InputIterator>::value && is_iterator<InputIterator>::value, InputIterator>::type* = 0)
             {
                 int dist;
 
@@ -39,11 +40,10 @@ namespace ft
                 _allocator = alloc;
                 _container = _allocator.allocate(dist);
                 _size = dist;
-                //for (size_t i = 0; i < _size; i++)
-                //    _allocator.construct(_container + i, (first + i));
-/*                 for(InputIterator i = first; i != second; i++){
+                //_allocator.construct(_container + i, (first + i));
+                for (InputIterator i = first; i != second; i++){
                     _allocator.construct(_container + i, *i);
-                } */
+                } 
                 std::cout << "Range constructor called" << std::endl;
             }
             ~vector()
