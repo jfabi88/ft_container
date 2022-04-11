@@ -10,9 +10,12 @@ if [ $# == 1 ]; then
 	elif [ $1 == "vector" ]; then
 		echo "[TEST VECTOR]"
 		clang++ vector_test.cpp -o $FILE
-	elif [ $1 == "iterator" ]; then
+	elif [ $1 == "is_iterator" ]; then
 		echo "[TEST IS_ITERATOR]"
 		clang++ is_iterator_test.cpp -o $FILE
+	elif [ $1 == "iterator" ]; then
+		echo "[TEST ITERATOR]"
+		clang++ iterator_test.cpp -o $FILE
 	fi
 	if [ -e $FILE ]
 	then
