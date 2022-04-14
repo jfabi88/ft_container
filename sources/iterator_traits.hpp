@@ -1,3 +1,6 @@
+#ifndef ITERATOR_TRAITS_HPP
+#define ITERATOR_TRAITS_HPP
+
 #include <iostream>
 
 namespace ft
@@ -87,3 +90,5 @@ namespace ft
         const static bool value = true;
     };
 }
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef STRUCTS_HPP
+#define STRUCTS_HPP
+
 namespace ft
 {
     template <bool Cond, class T = void>
@@ -81,7 +84,7 @@ namespace ft
     template<typename T>
     struct is_iterator<T, typename ft::enable_if<has_iterator_traits<typename ft::iterator_traits<T> >::value, void>::type>
     {
-        const static bool value = true;
+        const static bool value = false;
     };
 
 
@@ -138,3 +141,5 @@ namespace ft
     template <>
     struct is_integral<unsigned long long> : public true_type{};
 }
+
+#endif
