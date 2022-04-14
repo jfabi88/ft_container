@@ -14,11 +14,12 @@ namespace ft
             typedef size_t                      size_type;
             typedef std::ptrdiff_t              difference_type;
             typedef std::allocator<value_type>  allocator_type;
-            typedef typename allocator_type::reference reference;
-            typedef typename allocator_type::const_reference    const_reference;
+            typedef T*  pointer;
+            typedef T&  reference;
+            typedef const T&    const_reference;
 
-            typedef b_iterator<T>               iterator;
-            typedef b_iterator<const T>         const_iterator;
+            typedef b_iterator<T>   iterator;
+            typedef b_iterator<T>   const_iterator;
 
         private:
             allocator_type  _allocator;  
@@ -176,7 +177,10 @@ namespace ft
                     for (size_type i = 0; i < _size; i++)
                     {
                         _allocator.construct(ptr, this->at(i));
+<<<<<<< HEAD
                         std::cout << "ptr :"<< ptr << std::endl;
+=======
+>>>>>>> jfabi
                         ptr++;
                     }
                     std::cout << "val: " << val << std::endl;

@@ -1,4 +1,5 @@
 #include <iostream>
+#include "structs.hpp"
 
 template <class T>
 class b_iterator {
@@ -39,7 +40,9 @@ class b_iterator {
         b_iterator    operator-=(difference_type n)   { _ptr -= n; return (*this); }
 
         value_type  operator[](difference_type n)  { return (_ptr + n); }
-        b_iterator    &operator=(const b_iterator &s) { _ptr = s._ptr;  return (*this);}
+
+        b_iterator<T>    &operator=(const b_iterator<T> &s) { _ptr = s._ptr;  return (*this);}
+
     private:
         pointer _ptr;
 };
