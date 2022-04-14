@@ -1,6 +1,8 @@
 #include <iostream>
 #include "structs.hpp"
 #include "iterator.hpp"
+#include <filesystem>
+#include <cstdint>
 
 namespace ft
 {   
@@ -12,8 +14,8 @@ namespace ft
             typedef size_t                      size_type;
             typedef std::ptrdiff_t              difference_type;
             typedef std::allocator<value_type>  allocator_type;
-            typedef std::allocator<value_type&> reference;
-            typedef std::allocator<const value_type&> const_reference;
+            typedef typename allocator_type::reference reference;
+            typedef typename allocator_type::const_reference    const_reference;
 
             typedef b_iterator<T>               iterator;
             typedef b_iterator<const T>         const_iterator;
@@ -76,8 +78,8 @@ namespace ft
             }
             ~vector()
             {
-                for (int i = 0; i < _size; i++)
-                    std::cout << _container[i] << std::endl;
+               /*  for (int i = 0; i < _size; i++)
+                    std::cout << _container[i] << std::endl;  */
                 std::cout << "Default destructor called" << std::endl;
             }
 
@@ -86,29 +88,64 @@ namespace ft
             const_iterator begin() const    { return (const_iterator(&_container[0])); }
             const_iterator end() const      { return (const_iterator(&_container[_size])); }
 
-            /* Capacity */
+            /* CAPACITY */
 
-            size_type size() const
+            size_type size() const //ritorna il numero di elementi
             {
                 return (this->_size);
             }
 
-            size_type max_size() const
+            size_type max_size() const //ritorna il numero massimo di elementi che puoi allocare
             {
-
+                if (sizeof(value_type) == 1)
+                    return (_allocator.max_size() / 2);
+                return (_allocator.max_size());
+                //return std::numeric_limits<size_type>::max() / sizeof(value_type);
             }
 
-            size_type capacity() const
+            void resize(size_type n, value_type val = value_type()) //ridimensiona la size in base ad n ed incide sulla capacity
+            {
+                if (n <= this->_size) //se n è < di size, la size, e di conseguenza la capacity, devono diminuire prendendo il valore di n
+                {
+                    size_type tmp = _size;
+                    for (; _size != n; _size--)
+                        _allocator.destroy(_container + _size);
+                    _allocator.deallocate(_container, n - tmp);
+                    _capacity = _size;
+                }
+                else //se n > size dall'ultimo size fino a n riempio con lo stesso val passato
+                {
+                    if (n > _capacity) //questo caso è da sistemare, ma se n > capacity bisogna riallocare capacity in base ad n e ricostruire
+                    {
+                        this->_capacity = n;
+                        value_type* ptr = _allocator.allocate(_capacity + 1);
+                        for (size_type i = 0; i < _size; i++)
+                        {
+                            _allocator.construct(ptr, this->at(i));
+                            ptr++;
+                        }
+                        for (; _size <= n; _size++)
+                            _allocator.construct(ptr++, val); //NON FUNZIONA QUESTA RIGA DI CODICE
+                    }
+                    else // se n > size ma c'è capacity, aggiungo size e val e basta
+                    {
+                        for (; _size < n; _size++)
+                            this->at(_size) = val;
+                    }
+                }
+            }
+
+            size_type capacity() const //ritorna la capacity
             {
                 return (this->_capacity);
             }
 
-            bool empty() const 
+            bool empty() const
             {
                 return (this->_size == 0);  //_size == 0 ? true : false
             }
 
-            void reserve (size_type n)
+            void reserve (size_type n) //rialloca capacity = n
             {
                 this->_capacity = n;
                 value_type* ptr = _allocator.allocate(_capacity + 1);
@@ -122,6 +159,11 @@ namespace ft
                 return (ref);
             }
             
+            const_reference at (size_type n) const
+            {
+                const_reference const_ref = *(_container + n);
+                return (const_ref);
+            }
 
             /* Modifiers */
 
@@ -133,9 +175,12 @@ namespace ft
                     value_type* ptr = _allocator.allocate(_capacity + 1);
                     for (size_type i = 0; i < _size; i++)
                     {
-                        _allocator.construct(ptr, this.at(i));
+                        _allocator.construct(ptr, this->at(i));
+                        std::cout << "ptr :"<< ptr << std::endl;
                         ptr++;
                     }
+                    std::cout << "val: " << val << std::endl;
+                    std::cout << "ptr :"<< ptr << std::endl;
                     _allocator.construct(ptr, val);
                     this->_size++;
                 }
