@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include "../sources/structs.hpp"
+#include "../sources/vector.hpp"
 
 class my_class
 {
@@ -29,5 +29,11 @@ int main()
     std::cout << "vector<float>::iterator:       " <<ft::is_iterator<std::vector<float>::iterator>::value << std::endl;
     std::cout << "vector<float>:                 " <<ft::is_iterator<std::vector<float> >::value << std::endl;
     std::cout << "my_class:                      " <<ft::is_iterator<my_class>::value << std::endl;
+
+
+    std::vector<int> v(10,1);
+    ft::vector<int>  cv(10,1);
+
+
     return (0);
 }

@@ -260,5 +260,12 @@ namespace ft
 				_allocator.construct(_container + _size, val);
 				_size++;
 			}
+
+			void pop_back() 
+			{ 
+				if (_size)
+					_allocator.destroy(_containter + _size - 1);
+			}
+
 	};
 }
