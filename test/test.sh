@@ -16,6 +16,9 @@ if [ $# == 1 ]; then
 	elif [ $1 == "is_iterator" ]; then
 		echo "[TEST IS_ITERATOR]"
 		clang++ is_iterator_test.cpp -o $FILE
+	elif [ $1 == "access" ]; then
+		echo "[TEST ACCESS]"
+		clang++ element_access_test.cpp -o $FILE
 	elif [ $1 == "iterator" ]; then
 		echo "[TEST ITERATOR]"
 		clang++ iterator_test.cpp -o $FILE
