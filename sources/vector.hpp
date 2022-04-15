@@ -33,7 +33,7 @@ namespace ft
 				_allocator = alloc;
 				_size = 0;
 				_capacity = 0;
-				std::cout << "Default constructor called" << std::endl;
+				//std::cout << "Default constructor called" << std::endl;
 			}
 			vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 			{
@@ -43,7 +43,7 @@ namespace ft
 				_capacity = _size;
 				for (size_t i = 0; i < _size; i++)
 					_allocator.construct(_container + i, val);
-				std::cout << "Fill constructor called" << std::endl;
+				//std::cout << "Fill constructor called" << std::endl;
 			}
 			template <class InputIterator>
 			vector(InputIterator first, InputIterator second, const allocator_type& alloc = allocator_type(),  typename enable_if<!is_integral<InputIterator>::value && is_iterator<InputIterator>::value, InputIterator>::type* = 0)
@@ -61,7 +61,7 @@ namespace ft
 					_allocator.construct(_container + next, *i);
 					next++;
 				} 
-				std::cout << "Range constructor called" << std::endl;
+				//std::cout << "Range constructor called" << std::endl;
 			}
 			vector (const vector &x)
 			{
@@ -76,13 +76,13 @@ namespace ft
 					_allocator.construct(_container + next, *it);
 					next++;
 				}
-				std::cout << "Copy constructor called" << std::endl;
+				//std::cout << "Copy constructor called" << std::endl;
 			}
 			~vector()
 			{
 			   /*  for (int i = 0; i < _size; i++)
 					std::cout << _container[i] << std::endl;  */
-				std::cout << "Default destructor called" << std::endl;
+				//std::cout << "Default destructor called" << std::endl;
 			}
 
 			iterator begin()    { return (iterator(&_container[0])); }
@@ -96,7 +96,8 @@ namespace ft
 			{
 				for (size_type i = 0; i < sz; i++)
 					alloc.destroy(addr + i);
-				alloc.deallocate(addr, capacity + 1);
+				if (capacity)
+					alloc.deallocate(addr, capacity + 1);
 			}
 
 			struct allocator_ref
@@ -195,6 +196,8 @@ namespace ft
 
 			void reserve (size_type n) //rialloca capacity = n
 			{
+				if (n > this->max_size())
+					throw (std::length_error("vector max_size"));
 				if (n > _capacity)
 				{
 					allocator_ref   tmp = copy_allocator(_size, n, *this, value_type());
@@ -264,21 +267,14 @@ namespace ft
 
 			void push_back(const value_type& val)
 			{
-				if (_size == _capacity && _size)
+				if (_size == _capacity)
 				{
-					allocator_ref   tmp = copy_allocator(_size, _size * 2, this, value_type());
-					this->destroy_allocator(_allocator, _size, _capacity, _container);
-					_container = tmp.ptr;
-					_allocator = tmp.all;
-					_allocator.construct(_container + _size, val);
-					_size = _size + 1;
-					_capacity = _size * 2;
+					size_type newCapacity = _capacity ? _capacity * 2 : 1;
+					reserve(newCapacity);
+					_capacity = newCapacity;
 				}
-				else
-				{
-					_allocator.construct(_container + _size, val);
-					_size += 1;
-				}
+				_allocator.construct(_container + _size, val);
+				_size++;
 			}
 	};
 }

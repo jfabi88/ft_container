@@ -110,7 +110,7 @@ int main()
 
 
 /*MAX SIZE */
-    std::vector<std::string> vect2(4, "ciao");
+/*     std::vector<std::string> vect2(4, "ciao");
     ft::vector<std::string> vect(4, "ciao");
 
     std::vector<int> vect3(4, 11);
@@ -139,12 +139,12 @@ int main()
     std::cout << "sd::vector: " << vect7.max_size() << std::endl;
     std::cout << "CHAR" << std::endl;
     std::cout << "ft::vector: " << vect10.max_size() << std::endl;
-    std::cout << "sd::vector: " << vect9.max_size() << std::endl;
+    std::cout << "sd::vector: " << vect9.max_size() << std::endl; */
 
 
 /* RESIZE & RESERVE*/
 
-    std::vector<int> rvect_st(5, 11);
+/*     std::vector<int> rvect_st(5, 11);
     ft::vector<int> rvect(5, 11);
     rvect.reserve(8);
     rvect_st.reserve(8);
@@ -179,11 +179,11 @@ int main()
     std::cout << "Size e capacity di ft::vector : " << rvect.size() << " " << rvect.capacity() << std::endl;
     std::cout << "Size e capacity di sd::vector: " << rvect_st.size() << " " << rvect_st.capacity() << std::endl;
     print_vector("FT::VECTOR", rvect);
-    print_vector("SD::VECTOR", rvect_st);
+    print_vector("SD::VECTOR", rvect_st); */
 
 /* RESIZE & RESERVE*/
 
-    std::cout << "CIAO" << std::endl;
+/*     std::cout << "CIAO" << std::endl;
     std::vector<std::string> rsvect_st(5, "Sole");
     ft::vector<std::string> rsvect(5, "Sole");
     std::cout << "Come state" << std::endl;
@@ -222,5 +222,63 @@ int main()
     std::cout << "Size e capacity di ft::vector : " << rsvect.size() << " " << rsvect.capacity() << std::endl;
     std::cout << "Size e capacity di sd::vector: " << rsvect_st.size() << " " << rsvect_st.capacity() << std::endl;
     print_vector("FT::VECTOR", rsvect);
-    print_vector("SD::VECTOR", rsvect_st);
+    print_vector("SD::VECTOR", rsvect_st); */
+
+
+
+    std::vector<int>::size_type sz;
+    ft::vector<int>::size_type cz;
+    std::vector<int> foo;
+    ft::vector<int> cfoo;
+
+/*     sz = foo.capacity();
+    std::cout << "making foo grow from: " << sz << "\n";
+    for (int i=0; i<100; ++i) {
+        foo.push_back(i);
+        if (sz!=foo.capacity()) {
+        sz = foo.capacity();
+        std::cout << "capacity changed: " << sz << '\n';
+        }
+    } */
+
+    std::cout << "\n****************************************************\n";
+    cz = cfoo.capacity();
+    std::cout << "making foo grow from: " << cz << "\n";
+    std::cout << "MAX SIZE: " << cfoo.max_size() << "\n";
+    for (int i=0; i<100; ++i) {
+       cfoo.push_back(i);
+        if (cz!=cfoo.capacity()) {
+            cz = cfoo.capacity();
+            std::cout << i << ")capacity changed: " << cz;
+            print_vector(" vECTOR", cfoo);
+            std::cout << '\n';
+            //std::cout << " value: " << cfoo.at(i) << '\n';
+        }
+    }
+
+    std::cout << "\n****************************************************\n";
+
+/*     std::vector<int> bar;
+    sz = bar.capacity();
+    bar.reserve(100);   // this is the only difference with foo above
+    std::cout << "making bar grow:\n";
+    for (int i=0; i<100; ++i) {
+        bar.push_back(i);
+        if (sz!=bar.capacity()) {
+        sz = bar.capacity();
+        std::cout << "capacity changed: " << sz << '\n';
+        }
+    } */
+
+/*     ft::vector<int> cbar;
+    cz = cbar.capacity();
+    cbar.reserve(100);   // this is the only difference with foo above
+    std::cout << "making bar grow:\n";
+    for (int i=0; i<100; ++i) {
+        cbar.push_back(i);
+        if (cz!=cbar.capacity()) {
+        cz = cbar.capacity();
+        std::cout << "capacity changed: " << cz << '\n';
+        }
+    } */
 }
