@@ -264,7 +264,7 @@ namespace ft
 			void pop_back() 
 			{ 
 				if (_size)
-					_allocator.destroy(_containter + _size - 1);
+					_allocator.destroy(_container + _size - 1);
 			}
 
 	};
