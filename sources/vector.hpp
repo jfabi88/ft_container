@@ -219,25 +219,25 @@ namespace ft
 
 			reference front()
 			{
-				reference ref = _array[0];
+				reference ref = _container[0];
 				return ref;
 			}
 			
 			const_reference front() const
 			{
-				const reference ref = _array[0];
+				const reference ref = _container[0];
 				return ref;
 			}
 
 			reference back()
 			{
-				reference ref = _array[_size - 1];
+				reference ref = _container[_size - 1];
 				return ref;
 			}
 			
 			const_reference back() const
 			{
-				const reference ref = _array[_size - 1];
+				const reference ref = _container[_size - 1];
 				return ref;
 			}
 
