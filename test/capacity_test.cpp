@@ -3,6 +3,26 @@
 #include <memory>
 #include "../sources/vector.hpp"
 
+template <class T>
+void print_vector(std::string title, std::vector<T> vector)
+{
+    std::cout << title << std::endl;
+    std::cout << "[";
+    for (size_t i = 0; i < vector.size() - 1; i++)
+        std::cout << vector.at(i) << ", ";
+    std::cout << vector.at(vector.size() - 1) << "]" << std::endl;
+}
+
+template <class T>
+void print_vector(std::string title, ft::vector<T> vector)
+{
+    std::cout << title << std::endl;
+    std::cout << "[";
+    for (size_t i = 0; i < vector.size() - 1; i++)
+        std::cout << vector.at(i) << ", ";
+    std::cout << vector.at(vector.size() - 1) << "]" << std::endl;
+}
+
 int main()
 {
 
@@ -89,8 +109,8 @@ int main()
 
 
 
-/* MAX SIZE */
-/*     std::vector<std::string> vect2(4, "ciao");
+/*MAX SIZE */
+    std::vector<std::string> vect2(4, "ciao");
     ft::vector<std::string> vect(4, "ciao");
 
     std::vector<int> vect3(4, 11);
@@ -106,39 +126,57 @@ int main()
     ft::vector<char> vect10(4, 'n');
 
     std::cout << "STRING" << std::endl;
-    std::cout << "nostro: " << vect.max_size() << std::endl;
-    std::cout << "sistema: " << vect2.max_size() << std::endl;
+    std::cout << "ft::vector: " << vect.max_size() << std::endl;
+    std::cout << "sd::vector: " << vect2.max_size() << std::endl;
     std::cout << "INT" << std::endl;
-    std::cout << "nostro: " << vect4.max_size() << std::endl;
-    std::cout << "sistema: " << vect3.max_size() << std::endl;
+    std::cout << "ft::vector: " << vect4.max_size() << std::endl;
+    std::cout << "sd::vector: " << vect3.max_size() << std::endl;
     std::cout << "BOOL" << std::endl;
-    std::cout << "nostro: " << vect6.max_size() << std::endl;
-    std::cout << "sistema: " << vect5.max_size() << std::endl;
+    std::cout << "ft::vector: " << vect6.max_size() << std::endl;
+    std::cout << "sd::vector: " << vect5.max_size() << std::endl;
     std::cout << "FLOAT" << std::endl;
-    std::cout << "nostro: " << vect8.max_size() << std::endl;
-    std::cout << "sistema: " << vect7.max_size() << std::endl;
+    std::cout << "ft::vector: " << vect8.max_size() << std::endl;
+    std::cout << "sd::vector: " << vect7.max_size() << std::endl;
     std::cout << "CHAR" << std::endl;
-    std::cout << "nostro: " << vect10.max_size() << std::endl;
-    std::cout << "sistema: " << vect9.max_size() << std::endl; */
+    std::cout << "ft::vector: " << vect10.max_size() << std::endl;
+    std::cout << "sd::vector: " << vect9.max_size() << std::endl;
 
 
 /* RESIZE & RESERVE*/
 
-/*     std::vector<int> vect_st(5, 11);
-    ft::vector<int> vect(5, 11);
-    vect.reserve(8);
-    vect_st.reserve(8);
-    vect.resize(3, 8);
-    vect_st.resize(3, 8);
+    std::vector<int> rvect_st(5, 11);
+    ft::vector<int> rvect(5, 11);
+    rvect.reserve(8);
+    rvect_st.reserve(8);
+    rvect.resize(3, 8);
+    rvect_st.resize(3, 8);
     
-    std::cout << "NOSTRO" << std::endl;
-    for (size_t i = 0; i < vect.size(); i++)
-    {
-        std::cout << vect.at(i) << std::endl;
-    }
-    std::cout << "LORO" << std::endl;
-    for (size_t i = 0; i < vect_st.size(); i++)
-    {
-        std::cout << vect_st.at(i) << std::endl;
-    } */
+    std::cout << "Size e capacity di ft::vector : " << rvect.size() << " " << rvect.capacity() << std::endl;
+    std::cout << "Size e capacity di sd::vector: " << rvect_st.size() << " " << rvect_st.capacity() << std::endl;
+    print_vector("FT::VECTOR", rvect);
+    print_vector("SD::VECTOR", rvect_st);
+    rvect.resize(5, 8);
+    rvect_st.resize(5, 8);
+    std::cout << "Size e capacity di ft::vector : " << rvect.size() << " " << rvect.capacity() << std::endl;
+    std::cout << "Size e capacity di sd::vector: " << rvect_st.size() << " " << rvect_st.capacity() << std::endl;
+    print_vector("FT::VECTOR", rvect);
+    print_vector("SD::VECTOR", rvect_st);
+    rvect.resize(7);
+    rvect_st.resize(7);
+    std::cout << "Size e capacity di ft::vector : " << rvect.size() << " " << rvect.capacity() << std::endl;
+    std::cout << "Size e capacity di sd::vector: " << rvect_st.size() << " " << rvect_st.capacity() << std::endl;
+    print_vector("FT::VECTOR", rvect);
+    print_vector("SD::VECTOR", rvect_st);
+    rvect.resize(10);
+    rvect_st.resize(10);
+    std::cout << "Size e capacity di ft::vector : " << rvect.size() << " " << rvect.capacity() << std::endl;
+    std::cout << "Size e capacity di sd::vector: " << rvect_st.size() << " " << rvect_st.capacity() << std::endl;
+    print_vector("FT::VECTOR", rvect);
+    print_vector("SD::VECTOR", rvect_st);
+    rvect.resize(14, 9);
+    rvect_st.resize(14, 9);
+    std::cout << "Size e capacity di ft::vector : " << rvect.size() << " " << rvect.capacity() << std::endl;
+    std::cout << "Size e capacity di sd::vector: " << rvect_st.size() << " " << rvect_st.capacity() << std::endl;
+    print_vector("FT::VECTOR", rvect);
+    print_vector("SD::VECTOR", rvect_st);
 }

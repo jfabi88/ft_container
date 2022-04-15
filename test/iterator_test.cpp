@@ -11,7 +11,6 @@ int main()
     ft::vector<int>::const_iterator ccit;
     std::vector<int>::const_iterator sit;
     std::vector<int>::iterator sit2;
-    std::vector<const int>::iterator sitc2;
 
     int diff;
 

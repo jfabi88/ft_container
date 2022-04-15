@@ -1,7 +1,10 @@
 FILE="exec.o"
 
 if [ $# == 1 ]; then
-	if [ $1 == "enable" ]; then
+	if [ $1 == "capacity" ]; then
+		echo "[TEST CAPACITY]"
+		clang++ capacity_test.cpp -o $FILE
+	elif [ $1 == "enable" ]; then
 		echo "[TEST ENABLE]"
 		clang++ enable_if_test.cpp -o $FILE
 	elif [ $1 == "ft_vector" ]; then

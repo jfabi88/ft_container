@@ -91,10 +91,7 @@ namespace ft
 
             /* CAPACITY */
 
-            size_type size() const //ritorna il numero di elementi
-            {
-                return (this->_size);
-            }
+            size_type size() const { return (this->_size); }
 
             size_type max_size() const //ritorna il numero massimo di elementi che puoi allocare
             {
@@ -106,50 +103,46 @@ namespace ft
 
             void resize(size_type n, value_type val = value_type()) //ridimensiona la size in base ad n ed incide sulla capacity
             {
-                if (n <= this->_size) //se n è < di size, la size, e di conseguenza la capacity, devono diminuire prendendo il valore di n
+                if (n < _size) //se n è < di size, la size deve diminuire prendendo il valore di n mentre la capacity rimane uguale
                 {
-                    size_type tmp = _size;
-                    for (; _size != n; _size--)
-                        _allocator.destroy(_container + _size);
-                    _allocator.deallocate(_container, n - tmp);
-                    _capacity = _size;
+                    for (size_type i = 0; i + n < _size; i++)
+                        _allocator.destroy(_container + (i + n));
+                    _size = n;
                 }
                 else //se n > size dall'ultimo size fino a n riempio con lo stesso val passato
                 {
-                    if (n > _capacity) //questo caso è da sistemare, ma se n > capacity bisogna riallocare capacity in base ad n e ricostruire
+                    if (n > _capacity) //se n > capacity bisogna riallocare capacity in base ad n e ricostruire
                     {
-                        this->_capacity = n;
-                        value_type* ptr = _allocator.allocate(_capacity + 1);
-                        for (size_type i = 0; i < _size; i++)
-                        {
-                            _allocator.construct(ptr, this->at(i));
-                            ptr++;
-                        }
-                        for (; _size <= n; _size++)
-                            _allocator.construct(ptr++, val); //NON FUNZIONA QUESTA RIGA DI CODICE
+                        allocator_ref   tmp = copy_allocator(_size, n, *this, val);
+                        this->destroy_allocator(_allocator, _size, _capacity, _container);
+                        _container = tmp.ptr;
+                        _allocator = tmp.all;
+                        _size = n;
+                        _capacity = n;
                     }
                     else // se n > size ma c'è capacity, aggiungo size e val e basta
                     {
-                        for (; _size < n; _size++)
-                            this->at(_size) = val;
+                        for (size_type i = _size; i < n; i++)
+                            this->at(i) = val;
+                        _size = n;
                     }
                 }
             }
 
-            size_type capacity() const //ritorna la capacity
-            {
-                return (this->_capacity);
-            }
+            size_type capacity() const { return (this->_capacity); }
 
-            bool empty() const
-            {
-                return (this->_size == 0);  //_size == 0 ? true : false
-            }
+            bool empty() const { return (this->_size == 0); }
 
             void reserve (size_type n) //rialloca capacity = n
             {
-                this->_capacity = n;
-                value_type* ptr = _allocator.allocate(_capacity + 1);
+                if (n > _capacity)
+                {
+                    allocator_ref   tmp = copy_allocator(_size, n, *this, 0);
+                    //this->destroy_allocator(_allocator, _size, _capacity, _container);
+                    //_container = tmp.ptr;
+                    //_allocator = tmp.all;
+                    _capacity = n;
+                }
             }
 
             /* Element access */
@@ -170,28 +163,51 @@ namespace ft
 
             void push_back(const value_type& val)
             {
-                if (this->_size == this->_capacity && _size)
+                if (_size == _capacity && _size)
                 {
-                    this->_capacity = this->_size * 2;
-                    value_type* ptr = _allocator.allocate(_capacity + 1);
-                    for (size_type i = 0; i < _size; i++)
-                    {
-                        _allocator.construct(ptr, this->at(i));
-<<<<<<< HEAD
-                        std::cout << "ptr :"<< ptr << std::endl;
-=======
->>>>>>> jfabi
-                        ptr++;
-                    }
-                    std::cout << "val: " << val << std::endl;
-                    std::cout << "ptr :"<< ptr << std::endl;
-                    _allocator.construct(ptr, val);
-                    this->_size++;
+                    allocator_ref   tmp = copy_allocator(_size, _size * 2, this, NULL);
+                    this->destroy_allocator(_allocator, _size, _capacity, _container);
+                    _container = tmp.ptr;
+                    _allocator = tmp.all;
+                    _allocator.construct(_container + _size, val);
+                    _size = _size + 1;
+                    _capacity = _size * 2;
                 }
-                /* else
+                else
                 {
-                    _allocator.construct(this.at()
-                } */
+                    _allocator.construct(_container + _size, val);
+                    _size += 1;
+                }
+            }
+        private:
+            void destroy_allocator(allocator_type alloc, size_type sz, size_type capacity, value_type * addr)
+            {
+                for (size_type i = 0; i < sz; i++)
+                    alloc.destroy(addr + i);
+                alloc.deallocate(addr, capacity + 1);
+            }
+            struct allocator_ref
+            {
+                allocator_type  all;
+                value_type*     ptr;
+            };
+
+            allocator_ref   copy_allocator(size_type sz, size_type capacity, vector vec, value_type val)
+            {
+                allocator_ref   ret;
+                allocator_type  newalloc = allocator_type();
+                value_type*     newptr = newalloc.allocate(capacity + 1);
+
+                for (size_type i = 0; i < sz; i++)
+                    newalloc.construct(newptr + i, vec.at(i));
+                if (val != 0)
+                {
+                    for (size_type i = _size; i < capacity; i++)
+                        newalloc.construct(newptr + i, val);
+                }
+                ret.all = newalloc;
+                ret.ptr = newptr;
+                return (ret);
             }
     };
 }
