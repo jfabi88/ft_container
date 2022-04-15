@@ -89,8 +89,49 @@ namespace ft
             const_iterator begin() const    { return (const_iterator(&_container[0])); }
             const_iterator end() const      { return (const_iterator(&_container[_size])); }
 
-            /* CAPACITY */
+/* ------------------------------- PRIVATE UTILS FUNCTIONS ------------------------------- */
+		private:
+			void	destroy_allocator(allocator_type alloc, size_type sz, size_type capacity, value_type * addr)
+			{
+				for (size_type i = 0; i < sz; i++)
+					alloc.destroy(addr + i);
+				alloc.deallocate(addr, capacity + 1);
+			}
 
+			struct allocator_ref
+			{
+				allocator_type  all;
+				value_type*     ptr;
+			};
+
+			allocator_ref	copy_allocator(size_type sz, size_type capacity, vector vec, value_type val)
+			{
+				allocator_ref   ret;
+				allocator_type  newalloc = allocator_type();
+				value_type*     newptr = newalloc.allocate(capacity + 1);
+
+				for (size_type i = 0; i < sz; i++)
+					newalloc.construct(newptr + i, vec.at(i));
+				if (val != 0)
+				{
+					for (size_type i = _size; i < capacity; i++)
+						newalloc.construct(newptr + i, val);
+				}
+				ret.all = newalloc;
+				ret.ptr = newptr;
+				return (ret);
+			}
+
+			std::string myOutOfRange(size_type n) const
+			{
+				std::stringstream sstm;
+				sstm << "vector::_M_range_check: __n (which is " << n << ") this->size() (which is " << _size << ")" << std::endl;
+				return sstm.str();
+			}
+
+
+/* ------------------------------- CAPACITY ------------------------------- */
+	public:
             size_type size() const { return (this->_size); }
 
             size_type max_size() const //ritorna il numero massimo di elementi che puoi allocare
@@ -145,19 +186,60 @@ namespace ft
                 }
             }
 
-            /* Element access */
+			/* ------------------------------- ELEMENT ACCESS ------------------------------- */
 
-            reference at(size_type n)
-            {
-                reference ref = *(_container + n);
-                return (ref);
-            }
-            
-            const_reference at (size_type n) const
-            {
-                const_reference const_ref = *(_container + n);
-                return (const_ref);
-            }
+
+			reference operator[] (size_type n)  // Returns a reference to the element at position n in the vector container.
+			{
+				reference ref = *(_container + n);
+				return (ref);
+			}
+
+			const_reference operator[] (size_type n) const
+			{
+				const_reference const_ref = *(_container + n);
+				return (const_ref);
+			}
+
+			reference at(size_type n)
+			{
+				if (n >= _size)
+					throw std::out_of_range(myOutOfRange(n));
+				reference ref = *(_container + n);
+				return (ref);
+			}
+			
+			const_reference at (size_type n) const
+			{
+				if (n >= _size)
+					throw std::out_of_range(myOutOfRange(n));
+				const_reference const_ref = *(_container + n);
+				return (const_ref);
+			}
+
+			reference front()
+			{
+				reference ref = _array[0];
+				return ref;
+			}
+			
+			const_reference front() const
+			{
+				const reference ref = _array[0];
+				return ref;
+			}
+
+			reference back()
+			{
+				reference ref = _array[_size - 1];
+				return ref;
+			}
+			
+			const_reference back() const
+			{
+				const reference ref = _array[_size - 1];
+				return ref;
+			}
 
             /* Modifiers */
 
@@ -178,33 +260,6 @@ namespace ft
                     _allocator.construct(_container + _size, val);
                     _size += 1;
                 }
-            }
-        private:
-            void destroy_allocator(allocator_type alloc, size_type sz, size_type capacity, value_type * addr)
-            {
-                for (size_type i = 0; i < sz; i++)
-                    alloc.destroy(addr + i);
-                alloc.deallocate(addr, capacity + 1);
-            }
-            struct allocator_ref
-            {
-                allocator_type  all;
-                value_type*     ptr;
-            };
-
-            allocator_ref   copy_allocator(size_type sz, size_type capacity, vector vec, value_type val)
-            {
-                allocator_ref   ret;
-                allocator_type  newalloc = allocator_type();
-                value_type*     newptr = newalloc.allocate(capacity + 1);
-
-                for (size_type i = 0; i < sz; i++)
-                    newalloc.construct(newptr + i, vec.at(i));
-                for (size_type i = _size; i < capacity; i++)
-                    newalloc.construct(newptr + i, val);
-                ret.all = newalloc;
-                ret.ptr = newptr;
-                return (ret);
             }
     };
 }
