@@ -137,10 +137,10 @@ namespace ft
             {
                 if (n > _capacity)
                 {
-                    allocator_ref   tmp = copy_allocator(_size, n, *this, 0);
-                    //this->destroy_allocator(_allocator, _size, _capacity, _container);
-                    //_container = tmp.ptr;
-                    //_allocator = tmp.all;
+                    allocator_ref   tmp = copy_allocator(_size, n, *this, value_type());
+                    this->destroy_allocator(_allocator, _size, _capacity, _container);
+                    _container = tmp.ptr;
+                    _allocator = tmp.all;
                     _capacity = n;
                 }
             }
@@ -165,7 +165,7 @@ namespace ft
             {
                 if (_size == _capacity && _size)
                 {
-                    allocator_ref   tmp = copy_allocator(_size, _size * 2, this, NULL);
+                    allocator_ref   tmp = copy_allocator(_size, _size * 2, this, value_type());
                     this->destroy_allocator(_allocator, _size, _capacity, _container);
                     _container = tmp.ptr;
                     _allocator = tmp.all;
@@ -200,11 +200,8 @@ namespace ft
 
                 for (size_type i = 0; i < sz; i++)
                     newalloc.construct(newptr + i, vec.at(i));
-                if (val != 0)
-                {
-                    for (size_type i = _size; i < capacity; i++)
-                        newalloc.construct(newptr + i, val);
-                }
+                for (size_type i = _size; i < capacity; i++)
+                    newalloc.construct(newptr + i, val);
                 ret.all = newalloc;
                 ret.ptr = newptr;
                 return (ret);

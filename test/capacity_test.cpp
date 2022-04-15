@@ -151,6 +151,7 @@ int main()
     rvect.resize(3, 8);
     rvect_st.resize(3, 8);
     
+    std::cout << "TEST RESIZE RESERVE (int)" << std::endl;
     std::cout << "Size e capacity di ft::vector : " << rvect.size() << " " << rvect.capacity() << std::endl;
     std::cout << "Size e capacity di sd::vector: " << rvect_st.size() << " " << rvect_st.capacity() << std::endl;
     print_vector("FT::VECTOR", rvect);
@@ -179,4 +180,47 @@ int main()
     std::cout << "Size e capacity di sd::vector: " << rvect_st.size() << " " << rvect_st.capacity() << std::endl;
     print_vector("FT::VECTOR", rvect);
     print_vector("SD::VECTOR", rvect_st);
+
+/* RESIZE & RESERVE*/
+
+    std::cout << "CIAO" << std::endl;
+    std::vector<std::string> rsvect_st(5, "Sole");
+    ft::vector<std::string> rsvect(5, "Sole");
+    std::cout << "Come state" << std::endl;
+    rsvect.reserve(8);
+    std::cout << "Come state" << std::endl;
+    rsvect_st.reserve(8);
+    std::cout << "Come state" << std::endl;
+    rsvect.resize(3, "Luna");
+    rsvect_st.resize(3, "Luna");
+
+    std::cout << "TEST RESIZE RESERVE (std::string)" << std::endl;
+    std::cout << "Size e capacity di ft::vector : " << rsvect.size() << " " << rsvect.capacity() << std::endl;
+    std::cout << "Size e capacity di sd::vector: " << rsvect_st.size() << " " << rsvect_st.capacity() << std::endl;
+    print_vector("FT::VECTOR", rsvect);
+    print_vector("SD::VECTOR", rsvect_st);
+    rsvect.resize(5, "Marte");
+    rsvect_st.resize(5, "Marte");
+    std::cout << "Size e capacity di ft::vector : " << rsvect.size() << " " << rsvect.capacity() << std::endl;
+    std::cout << "Size e capacity di sd::vector: " << rsvect_st.size() << " " << rsvect_st.capacity() << std::endl;
+    print_vector("FT::VECTOR", rsvect);
+    print_vector("SD::VECTOR", rsvect_st);
+    rsvect.resize(7);
+    rsvect_st.resize(7);
+    std::cout << "Size e capacity di ft::vector : " << rsvect.size() << " " << rsvect.capacity() << std::endl;
+    std::cout << "Size e capacity di sd::vector: " << rsvect_st.size() << " " << rsvect_st.capacity() << std::endl;
+    print_vector("FT::VECTOR", rsvect);
+    print_vector("SD::VECTOR", rsvect_st);
+    rsvect.resize(10);
+    rsvect_st.resize(10);
+    std::cout << "Size e capacity di ft::vector : " << rsvect.size() << " " << rsvect.capacity() << std::endl;
+    std::cout << "Size e capacity di sd::vector: " << rsvect_st.size() << " " << rsvect_st.capacity() << std::endl;
+    print_vector("FT::VECTOR", rsvect);
+    print_vector("SD::VECTOR", rsvect_st);
+    rsvect.resize(14, "Venere");
+    rsvect_st.resize(14, "Venere");
+    std::cout << "Size e capacity di ft::vector : " << rsvect.size() << " " << rsvect.capacity() << std::endl;
+    std::cout << "Size e capacity di sd::vector: " << rsvect_st.size() << " " << rsvect_st.capacity() << std::endl;
+    print_vector("FT::VECTOR", rsvect);
+    print_vector("SD::VECTOR", rsvect_st);
 }
