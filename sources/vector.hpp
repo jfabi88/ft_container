@@ -106,7 +106,7 @@ namespace ft
 				value_type*     ptr;
 			};
 
-			allocator_ref	copy_allocator(size_type sz, size_type capacity, vector vec, value_type val)
+			allocator_ref	copy_allocator(size_type sz, size_type capacity, vector vec)
 			{
 				allocator_ref   ret;
 				allocator_type  newalloc = allocator_type();
@@ -114,11 +114,6 @@ namespace ft
 
 				for (size_type i = 0; i < sz; i++)
 					newalloc.construct(newptr + i, vec.at(i));
-				if (val != 0)
-				{
-					for (size_type i = _size; i < capacity; i++)
-						newalloc.construct(newptr + i, val);
-				}
 				ret.all = newalloc;
 				ret.ptr = newptr;
 				return (ret);
@@ -132,7 +127,8 @@ namespace ft
 			}
 
 			size_type _Calculate_growth(const size_type _Newsize) const
-			{	// given _Oldcapacity and _Newsize, calculate geometric growth
+			{	
+				// given _Oldcapacity and _Newsize, calculate geometric growth
 				const size_type _Oldcapacity = capacity();
 
 				if (_Oldcapacity > max_size() - _Oldcapacity / 2)
@@ -164,29 +160,16 @@ namespace ft
 
 			void resize(size_type n, value_type val = value_type()) //ridimensiona la size in base ad n ed incide sulla capacity
 			{
-				if (n < _size) //se n è < di size, la size deve diminuire prendendo il valore di n mentre la capacity rimane uguale
+				if (n < _size) //se n < size, la size deve diminuire prendendo il valore di n mentre la capacity rimane uguale
 				{
-					for (size_type i = 0; i + n < _size; i++)
-						_allocator.destroy(_container + (i + n));
+					for (size_type i = n; i < _size; i++)
+						_allocator.destroy(_container + i);
 					_size = n;
 				}
 				else //se n > size dall'ultimo size fino a n riempio con lo stesso val passato
 				{
-					if (n > _capacity) //se n > capacity bisogna riallocare capacity in base ad n e ricostruire
-					{
-						allocator_ref   tmp = copy_allocator(_size, n, *this, val);
-						this->destroy_allocator(_allocator, _size, _capacity, _container);
-						_container = tmp.ptr;
-						_allocator = tmp.all;
-						_size = n;
-						_capacity = n;
-					}
-					else // se n > size ma c'è capacity, aggiungo size e val e basta
-					{
-						for (size_type i = _size; i < n; i++)
-							this->at(i) = val;
-						_size = n;
-					}
+					for (size_type i = _size; i < n; i++)
+						this->push_back(val);
 				}
 			}
 
@@ -194,13 +177,13 @@ namespace ft
 
 			bool empty() const { return (this->_size == 0); }
 
-			void reserve (size_type n) //rialloca capacity = n
+			void reserve (size_type n) //rialloca capacity contenere n elementi
 			{
 				if (n > this->max_size())
 					throw (std::length_error("vector max_size"));
 				if (n > _capacity)
 				{
-					allocator_ref   tmp = copy_allocator(_size, n, *this, value_type());
+					allocator_ref   tmp = copy_allocator(_size, n, *this);
 					this->destroy_allocator(_allocator, _size, _capacity, _container);
 					_container = tmp.ptr;
 					_allocator = tmp.all;
@@ -269,7 +252,8 @@ namespace ft
 			{
 				if (_size == _capacity)
 				{
-					size_type newCapacity = _capacity ? _capacity * 2 : 1;
+					//size_type newCapacity = _capacity ? _capacity * 2 : 1;
+					size_type newCapacity = _Calculate_growth(_size+1);
 					reserve(newCapacity);
 					_capacity = newCapacity;
 				}

@@ -26,89 +26,6 @@ void print_vector(std::string title, ft::vector<T> vector)
 int main()
 {
 
-    /* std::vector<int> vect2(5, 6);
-    vect2.push_back(8);
-    std::vector<int>::iterator  it1;
-    std::vector<int>::iterator  it2;
-    it1 = vect2.begin();
-    it2 = vect2.end();
-    
-    std::vector<int> vect3(it1, it2);
-    std::cout << "size: " << vect3.size() << std::endl;
-    std::cout << "capacity: " << vect3.capacity() << std::endl;
-    for (size_t i = 0; i < vect3.size(); i++)
-    {
-        std::cout << vect3.at(i) << std::endl;
-    }
-    std::cout << std::endl;
-    vect3.push_back(9);
-    std::cout << "size: " << vect3.size() << std::endl;
-    std::cout << "capacity: " << vect3.capacity() << std::endl;
-    for (size_t i = 0; i < vect3.size(); i++)
-    {
-        std::cout << vect3.at(i) << std::endl;
-    }
-    std::cout << std::endl;
-    vect3.pop_back();
-    std::cout << "size: " << vect3.size() << std::endl;
-    std::cout << "capacity: " << vect3.capacity() << std::endl;
-    for (size_t i = 0; i < vect3.size(); i++)
-    {
-        std::cout << vect3.at(i) << std::endl;
-    }
-    vect3.push_back(9);
-       vect3.push_back(9);
-          vect3.push_back(9);
-             vect3.push_back(9);
-                vect3.push_back(9);
-                   vect3.push_back(9);
-                      vect3.push_back(11);
-    std::cout << "size: " << vect3.size() << std::endl;
-    std::cout << "capacity: " << vect3.capacity() << std::endl;
-    std::cout << "maxsize: " << vect3.max_size() << std::endl; */
-/*     std::cout << vect3.at(3) << std::endl;
-    std::cout << "fine" << std::endl; */
-
-   
-
-/*     std::allocator<int> all;
-    int* arr = all.allocate(vect2.size() * 2);
-    arr[0] = 2;
-    arr[1] = 3;
-    arr[9] = 9;
-    std::cout << arr[1] << std::endl;
-    std::cout << arr[9] << std::endl;
-    std::cout << arr[10] << std::endl; */
-   /*  std::cout << "size: "<< vect2.size() << std::endl;
-    std::cout << "capacity: "<< vect2.capacity() << std::endl;
-    vect2.reserve(8);
-    std::cout << vect2.capacity() << std::endl;
-
-       vect2.push_back(213);
-              vect2.push_back(23);
-    std::cout << vect2.at(5) << std::endl;
-        std::cout << vect2.at(6) << std::endl;
-                      vect2.push_back(23);
-        std::cout << vect2.at(7) << std::endl;
-    std::cout << "capacity: " <<vect2.capacity() << std::endl;
-    std::cout << vect2.size() << std::endl;
-    vect2.push_back(23);
-       std::cout << "capacity: " <<vect2.capacity() << std::endl;
-    std::cout << vect2.size() << std::endl;
-    std::cout << vect2.at(10) << std::endl; */
-   
-   /*  vect.push_back(7);
-    for (size_t i = 0; i < vect.size(); i++)
-    {
-        std::cout << vect.at(i) << std::endl;
-    }
-    //vect.reserve(7);
-    std::cout << "capacity" << vect.capacity() << std::endl;
-    std::cout << "size" << vect.size() << std::endl;
-    //std::cout << "at: 3" << vect2.at(5) << std::endl;  */
-
-
-
 /*MAX SIZE */
 /*     std::vector<std::string> vect2(4, "ciao");
     ft::vector<std::string> vect(4, "ciao");
@@ -225,13 +142,14 @@ int main()
     print_vector("SD::VECTOR", rsvect_st); */
 
 
+/* PUSH_BACK & RESERVE*/
 
-    std::vector<int>::size_type sz;
+/*     std::vector<int>::size_type sz;
     ft::vector<int>::size_type cz;
     std::vector<int> foo;
     ft::vector<int> cfoo;
 
-/*     sz = foo.capacity();
+    sz = foo.capacity();
     std::cout << "making foo grow from: " << sz << "\n";
     for (int i=0; i<100; ++i) {
         foo.push_back(i);
@@ -239,7 +157,7 @@ int main()
         sz = foo.capacity();
         std::cout << "capacity changed: " << sz << '\n';
         }
-    } */
+    }
 
     std::cout << "\n****************************************************\n";
     cz = cfoo.capacity();
@@ -258,7 +176,7 @@ int main()
 
     std::cout << "\n****************************************************\n";
 
-/*     std::vector<int> bar;
+    std::vector<int> bar;
     sz = bar.capacity();
     bar.reserve(100);   // this is the only difference with foo above
     std::cout << "making bar grow:\n";
@@ -268,9 +186,9 @@ int main()
         sz = bar.capacity();
         std::cout << "capacity changed: " << sz << '\n';
         }
-    } */
+    }
 
-/*     ft::vector<int> cbar;
+     ft::vector<int> cbar;
     cz = cbar.capacity();
     cbar.reserve(100);   // this is the only difference with foo above
     std::cout << "making bar grow:\n";
@@ -281,4 +199,39 @@ int main()
         std::cout << "capacity changed: " << cz << '\n';
         }
     } */
+
+
+
+    /* RESIZE*/
+    std::vector<int> myvector;
+    std::vector<int> cmyvector;
+
+    // set some initial content:
+    for (int i=1;i<10;i++) {
+        myvector.push_back(i);
+        cmyvector.push_back(i);
+    }
+    // 1 2 3 4 5 6 7 8 9
+
+    myvector.resize(5);
+    // 1 2 3 4 5 0 0 0 0
+    myvector.resize(8,100);
+    // 1 2 3 4 5 100 100 100 0
+    myvector.resize(12);
+    // 1 2 3 4 5 100 100 100 0 0 0 0 0
+
+
+    cmyvector.resize(5);
+    cmyvector.resize(8,100);
+    cmyvector.resize(12);
+
+    std::cout << "myvector contains:";
+    for (int i=0;i<myvector.size();i++)
+        std::cout << ' ' << myvector[i];
+    std::cout << '\n';
+
+    std::cout << "Cmyvector contains:";
+    for (int i=0;i<cmyvector.size();i++)
+        std::cout << ' ' << cmyvector[i];
+    std::cout << '\n';
 }
