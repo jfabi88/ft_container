@@ -1,7 +1,10 @@
 FILE="exec.o"
 
 if [ $# == 1 ]; then
-	if [ $1 == "capacity" ]; then
+	if [ $1 == "assign" ]; then
+		echo "[TEST ASSIGN]"
+		clang++ assign_test.cpp -o $FILE
+	elif [ $1 == "capacity" ]; then
 		echo "[TEST CAPACITY]"
 		clang++ capacity_test.cpp -o $FILE
 	elif [ $1 == "enable" ]; then
@@ -10,6 +13,9 @@ if [ $# == 1 ]; then
 	elif [ $1 == "ft_vector" ]; then
 		echo "[TEST FT_VECTOR]"
 		clang++ -std=c++98 ft_vector_test.cpp -o $FILE
+	elif [ $1 == "pop" ]; then
+		echo "[TEST POP_BACK]"
+		clang++ -std=c++98 pop_back_test.cpp -o $FILE	
 	elif [ $1 == "vector" ]; then
 		echo "[TEST VECTOR]"
 		clang++ vector_test.cpp -o $FILE

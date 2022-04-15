@@ -262,7 +262,71 @@ namespace ft
 
 			/* Modifiers */
 
-			void push_back(const value_type& val)
+            template <class InputIterator>
+            void assign (InputIterator first, InputIterator last, typename is_iterator<InputIterator>::value, InputIterator>::type)
+            {
+                size_type dist = last - first;
+                syze_type cont = 0;
+
+                if (dist > this->max_size())
+                    throw std::length_error("cannot create ft::vector larger than max_size()")
+                else if (dist < 0)
+                    throw std::length_error("vector")
+                if (dist > _capacity)
+                {
+                    for (size_type i = 0; i < _size; i++)
+                        _allocator.destroy(_container + i);
+                    _allocator.deallocate(_container, _capacity + 1);
+                    _container = _allocator.allocate(dist + 1);
+                    for (first; first < last; first++)
+                    {
+                        _allocator.construct(_container + cont, first);
+                        cont++;
+                    }
+					_size = dist;
+					_capacity = dist;
+                }
+                else
+                {
+                    for (size_type i = 0; i < _size; i++)
+                        _allocator.destroy(_container + i);
+                    for (first; first < last; first++)
+                    {
+                        _allocator.construct(_container + cont, first);
+                        cont++;
+                    }
+					_size = dist;
+                }
+            }
+
+            void assign (size_type n, const value_type& val)
+            {
+                if (n > this->max_size())
+                    throw std::length_error("cannot create ft::vector larger than max_size()")
+                else if (n < 0)
+                    throw std::length_error("vector")
+                if (n > _capacity)
+                {
+                    for (size_type i = 0; i < _size; i++)
+                        _allocator.destroy(_container + i);
+                    _allocator.deallocate(_container, _capacity + 1);
+                    _container = _allocator.allocate(n + 1);
+                    for (size_type cont = 0; cont < n; cont++)
+                        _allocator.construct(_container + cont, val);
+					_size = n;
+					_capacity = n;                    
+                }
+                else
+                {
+                    for (size_type i = 0; i < _size; i++)
+                        _allocator.destroy(_container + i);
+                    for (size_type cont = 0; cont < n; cont++)
+                        _allocator.construct(_container + cont, val);
+					_size = n;                    
+                }
+            }
+
+            void push_back(const value_type& val)
 			{
 				if (_size == _capacity && _size)
 				{
@@ -280,5 +344,19 @@ namespace ft
 					_size += 1;
 				}
 			}
+
+            void pop_back()
+            {
+                if (_size == 0)
+                    return ;
+                _allocator.destroy(_container + (_size - 1));
+                _size = _size -1;
+            }
+
+            void clear()
+            {
+                for (size_type i = 0; i < _size; i++)
+                    _allocator.destroy(_container + i);
+            }
 	};
 }
