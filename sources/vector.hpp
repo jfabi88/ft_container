@@ -11,16 +11,19 @@ namespace ft
 	class vector
 	{
 		public:
-			typedef T                           value_type;
-			typedef size_t                      size_type;
-			typedef std::ptrdiff_t              difference_type;
-			typedef std::allocator<value_type>  allocator_type;
-			typedef T*  pointer;
-			typedef T&  reference;
-			typedef const T&    const_reference;
+			typedef T                           				value_type;
+			typedef std::allocator<value_type>  				allocator_type;
+			typedef typename allocator_type::reference  		reference;			// equivalente a T& (Jacopo non cambiare)
+			typedef typename allocator_type::const_reference	const_reference;	// equivalente a const T& (Jacopo non cambiare)
+			typedef typename allocator_type::pointer  			pointer;			//T*
+			typedef typename allocator_type::const_pointer  	const_pointer;		//const T*
+			typedef b_iterator<T>   							iterator;
+			typedef b_iterator<T>   							const_iterator;
+			typedef b_reverse_iterator<T>   					reverse_iterator;
+			typedef b_reverse_iterator<T>   					const_reverse_iterator;
+			typedef size_t                      				size_type;
+			typedef std::ptrdiff_t              				difference_type;
 
-			typedef b_iterator<T>   iterator;
-			typedef b_iterator<T>   const_iterator;
 
 		private:
 			allocator_type  _allocator;  
@@ -119,6 +122,27 @@ namespace ft
 				return (ret);
 			}
 
+			void copy_allocator(iterator position, size_type NewCapacity, vector vec)
+			{
+				allocator_ref   ret;
+				allocator_type  newalloc = allocator_type();
+				value_type*     newptr;
+
+				if (NewCapacity > capacity())
+				{
+					newptr = newalloc.allocate(NewCapacity + 1);
+					size_type i = 0;
+					for (iterator pt = begin(); pt!= position; pt++){
+						newalloc.construct(newptr + i, *pt);
+						i++;
+					}
+					this->destroy_allocator(_allocator, _size, _capacity, _container);
+					_container = newptr;
+					_allocator = newalloc;
+					_capacity = NewCapacity;
+				}
+			}
+
 			std::string myOutOfRange(size_type n) const
 			{
 				std::stringstream sstm;
@@ -127,23 +151,31 @@ namespace ft
 			}
 
 			size_type _Calculate_growth(const size_type _Newsize) const
-			{	
+			{
 				// given _Oldcapacity and _Newsize, calculate geometric growth
 				const size_type _Oldcapacity = capacity();
+				
 
-				if (_Oldcapacity > max_size() - _Oldcapacity / 2)
-					{
+				//if (_Oldcapacity > max_size() - _Oldcapacity / 2)
+				if (_Oldcapacity + (_Oldcapacity / 2) > max_size() )
+				{
 					return (_Newsize);	// geometric growth would overflow
-					}
+				}
 
 				const size_type _Geometric = _Oldcapacity + _Oldcapacity / 2;
 
 				if (_Geometric < _Newsize)
-					{
+				{
 					return (_Newsize);	// geometric growth would be insufficient
-					}
+				}
 
 				return (_Geometric);	// geometric growth is sufficient
+/* 				if (_Oldcapacity * 2 > max_size() )
+				{
+					return (_Newsize);	// geometric growth would overflow
+				}
+
+				return _Oldcapacity * 2; */
 			}
 
 /* ------------------------------- CAPACITY ------------------------------- */
@@ -261,10 +293,44 @@ namespace ft
 				_size++;
 			}
 
-			void pop_back() 
-			{ 
-				if (_size)
-					_allocator.destroy(_container + _size - 1);
+			void pop_back()
+			{
+				//if (_size){
+					_allocator.destroy(_container + _size-- - 1);
+				//}
+			}
+
+/* 			iterator insert (iterator position, const value_type& val)
+			{
+				for (size_type i = _size; i < n; i++)
+					this->push_back(val);				
+			} */
+
+			void insert(iterator position, size_type n, const value_type& val)
+			{
+				size_type newSize = _size + n;
+				size_type rightN = end() - position;
+				size_type pIndex = position - begin();
+
+				//alloco capacity e ricopio i valori a sinistra di position
+				if (newSize > _capacity)
+				{
+					//size_type newCapacity = _capacity ? _capacity * 2 : 1;
+					size_type newCapacity = _Calculate_growth(newSize);
+					copy_allocator(position, newCapacity, *this);
+				}
+
+				//copio position e i valori alla sua destra traslandoli di n posizioni 
+				for( size_type i = 0 ; i <= rightN; i++){
+					_allocator.construct(_container + newSize -i, *(position +rightN -i));
+				}
+
+				//inerisco i nuovo valori
+				for(size_type i = 0 ; i < n; i++){
+					_allocator.construct(_container + pIndex + i, val);
+				}
+
+				_size = newSize;
 			}
 
 	};

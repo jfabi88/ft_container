@@ -29,7 +29,8 @@ int main()
     std::cout << "Il valore di ut(jt): " << *ut << std::endl;
     sit = stmp.begin();
     cit = ctmp.begin();
-    cit = ccit;
+    ccit = cit;
+    sit = sit2;
     jt = ctmp.begin();
     ccit = ctmp.begin();
     jt = ccit;

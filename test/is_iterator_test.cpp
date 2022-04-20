@@ -33,7 +33,8 @@ int main()
 
     std::vector<int> v;
     ft::vector<int>  cv;
-  for (int i=1; i<11; i++) {
+
+    for (int i=1; i<11; i++) {
         v.push_back(i);
         cv.push_back(i);
     }
@@ -69,5 +70,58 @@ int main()
     std::cout << *(cit + 4) << " " << *(cv.end() - 2) << " " << ((cv.end() - 2) == (cv.begin() + 8)) << " ";
     std::cout << ((cv.end() - 1) > (cv.begin() + 7)) << "\n";
 
+    ft::vector<int>::const_iterator ccit;
+    std::vector<int>::const_iterator sit;
+
+    std::cout << "const_iterator/++operator>:\n";
+    for( std::vector<int>::const_iterator vl = v.begin(); vl != v.end(); vl++){
+        std::cout << *(vl) << " ";
+    }
+    std::cout<< std::endl;
+    for( ft::vector<int>::const_iterator ccit = cv.begin(); ccit != cv.end(); ccit++){
+        std::cout << *(ccit) << " ";
+    }
+
+    size_t size = v.size();
+    for (size_t i = 0; i < size; i++) {
+            v.pop_back();
+            cv.pop_back();
+    }
+
+    std::cout << "\nAfter pop_back()\n";
+    for( std::vector<int>::const_iterator p = v.begin(); p != v.end(); p++){
+        std::cout << *(p) << " ";
+    }
+    std::cout<< std::endl;
+    for( ft::vector<int>::const_iterator ccit = cv.begin(); ccit != cv.end(); ccit++){
+        std::cout << *(ccit) << " ";
+    }
+
+
+    std::vector<int> ins;
+    ft::vector<int>  ftins;
+
+    ins.push_back(1); ins.push_back(2); ins.push_back(3); ins.push_back(4);
+    ins.push_back(8); ins.push_back(9); ins.push_back(10);
+
+    ftins.push_back(1); ftins.push_back(2); ftins.push_back(3); ftins.push_back(4);
+    ftins.push_back(8); ftins.push_back(9); ftins.push_back(10);
+
+    ins.insert(ins.begin()+4, 3, -1);
+    //ins.insert(ins.begin(), 3, -1);
+    //ins.insert(ins.begin() - 2, 3, -1);
+    ftins.insert(ftins.begin()+4, 3, -1);
+    //ftins.insert(ftins.begin(), 3, -1);
+    //ftins.insert(ftins.begin() - 2, 3, -1);
+
+
+    std::cout << "After Insert:\n";
+    for( std::vector<int>::iterator vl = ins.begin(); vl != ins.end(); vl++){
+        std::cout << *(vl) << " ";
+    }
+    std::cout<< std::endl;
+    for( ft::vector<int>::iterator mi = ftins.begin(); mi != ftins.end(); mi++){
+        std::cout << *(mi) << " ";
+    }
     return (0);
 }
