@@ -132,7 +132,7 @@ namespace ft
 				{
 					newptr = newalloc.allocate(NewCapacity + 1);
 					size_type i = 0;
-					for (iterator pt = begin(); pt!= position; pt++){
+					for (iterator pt = begin(); pt < position; pt++){
 						newalloc.construct(newptr + i, *pt);
 						i++;
 					}
@@ -300,17 +300,11 @@ namespace ft
 				//}
 			}
 
-/* 			iterator insert (iterator position, const value_type& val)
-			{
-				for (size_type i = _size; i < n; i++)
-					this->push_back(val);				
-			} */
-
 			void insert(iterator position, size_type n, const value_type& val)
 			{
 				size_type newSize = _size + n;
 				size_type rightN = end() - position;
-				size_type pIndex = position - begin();
+				int pIndex = position - begin();
 
 				//alloco capacity e ricopio i valori a sinistra di position
 				if (newSize > _capacity)
@@ -321,17 +315,22 @@ namespace ft
 				}
 
 				//copio position e i valori alla sua destra traslandoli di n posizioni 
-				for( size_type i = 0 ; i <= rightN; i++){
+				for ( size_type i = 0 ; i <= rightN; i++){
 					_allocator.construct(_container + newSize -i, *(position +rightN -i));
 				}
 
 				//inerisco i nuovo valori
-				for(size_type i = 0 ; i < n; i++){
+				for (size_type i = 0 ; i < n; i++){
 					_allocator.construct(_container + pIndex + i, val);
 				}
 
 				_size = newSize;
 			}
 
+			iterator insert(iterator position, const value_type& val)
+			{
+				insert(position, 1, val);
+				return position;
+			}
 	};
 }
