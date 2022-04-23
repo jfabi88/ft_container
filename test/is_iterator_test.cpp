@@ -98,7 +98,9 @@ int main()
 	} */
 
 
-	std::vector<int> ins;
+/***********************************INSERT***************************************************/
+
+	/* std::vector<int> ins;
 	ft::vector<int>  ftins;
 
 	ins.push_back(1); ins.push_back(2); ins.push_back(3); ins.push_back(4);
@@ -144,7 +146,7 @@ int main()
 	ftins.insert(ftins.end(), 2, 555);
 	print_vector("8)insert(ins.end(), 2, 555)", ins);
 	print_vector("", ftins);
-
+ */
 /* 	ins.insert(ins.end()+1, 3, 69);
 	ftins.insert(ftins.end() + 1, 3, 69);
 	print_vector("9)insert(ins.end() + 1, 3, 69)", ins);
@@ -152,7 +154,7 @@ int main()
 	print_vector("", ftins); */
 
 /**************************************************************************************/
-	std::vector<int> vf;
+	/* std::vector<int> vf;
 	ft::vector<int>  gc;
 	std::vector<int>::iterator ivf;
 	ft::vector<int>::iterator igc;
@@ -161,25 +163,46 @@ int main()
 
 	gc.push_back(1); gc.push_back(2); gc.push_back(3); gc.push_back(4);gc.push_back(8); gc.push_back(9); gc.push_back(10);
 
-	print_vector("\nbeginning INSERT single element", ins);
-	ivf = vf.insert(vf.begin()+4, 5);
-	igc = gc.insert(gc.begin()+4, 5);
+	print_vector("\nbeginning INSERT single element", vf, 1);
+	ivf = vf.insert(vf.begin()+4, 55);
+	igc = gc.insert(gc.begin()+4, 55);
 	print_vector("10)insert(vf.begin()+4, 5)", vf);
 	print_vector("", gc);
 	std::cout << *ivf << "," << *igc << "\n";
 
-	ivf = vf.insert(vf.begin()+1, 55);
-	igc = gc.insert(gc.begin()+1, 55);
-	print_vector("11)insert(vf.begin()+1, 55)", vf);
-	print_vector("", gc);
+	ivf = vf.insert(vf.begin()+1, 66);
+	igc = gc.insert(gc.begin()+1, 66);
+	print_vector("11)insert(vf.begin()+1, 66)", vf, 3);
+	print_vector("", gc, 3);
 	std::cout << *ivf << "," << *igc << "\n";
 
-	ivf = vf.insert(vf.begin()-1, 2222);
-	igc = gc.insert(gc.begin()-1, 2222);
-	print_vector("11)insert(vf.begin()-1, 2222)", vf);
-	print_vector("", gc);
-	std::cout << "->" << *(ivf - 1) << "," << *(igc - 1) << "\n";
+	ivf = vf.insert(vf.begin()-3, 433);
+	igc = gc.insert(gc.begin()-3, 433);
+	print_vector("12)insert(vf.begin()-3, 433)", vf, 5);
+	print_vector("", gc, 5);
 	std::cout << *ivf << "," << *igc << "\n";
 
-	return (0);
+	vf.insert(vf.begin()-2, 2, 45);
+	gc.insert(gc.begin()-2, 2, 45);
+	print_vector("13)insert(vf.begin()-2, 2, 45)", vf, 4);
+	print_vector("", gc, 4);
+	return (0); */
+
+
+/***********************************CLEAR***************************************************/
+
+/* 	std::vector<int> cl;
+	ft::vector<int>  ftcl;
+
+	cl.push_back(1); cl.push_back(2); cl.push_back(3); cl.push_back(4); cl.push_back(8); cl.push_back(9); cl.push_back(10);
+	print_vector("std= ", cl);
+	ftcl.push_back(1); ftcl.push_back(2); ftcl.push_back(3); ftcl.push_back(4); ftcl.push_back(8); ftcl.push_back(9); ftcl.push_back(10);
+	print_vector("ft= ", ftcl);
+	cl.clear();
+	ftcl.clear();
+	std::cout << cl.size() << std::endl;
+	std::cout << ftcl.size() << std::endl;
+	print_vector("after clear\n std= ", cl);
+	print_vector("ft= ", ftcl); */
+
 }

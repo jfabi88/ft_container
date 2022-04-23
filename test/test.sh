@@ -26,7 +26,7 @@ if [ $# == 1 ]; then
 	if [ -e $FILE ]
 	then
 		./exec.o
-		rm exec.o
+		#rm exec.o
 		echo "[END TEST]"
 	fi
 fi

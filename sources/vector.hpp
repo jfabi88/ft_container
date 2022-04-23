@@ -332,5 +332,12 @@ namespace ft
 				insert(position, 1, val);
 				return position;
 			}
+
+			void clear()
+			{
+				for (size_type i = 0; i < _size; i++)
+					_allocator.destroy(_container + i);
+				_size = 0;
+			}
 	};
 }
