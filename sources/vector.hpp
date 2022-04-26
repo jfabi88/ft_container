@@ -18,7 +18,7 @@ namespace ft
 			typedef typename allocator_type::pointer  			pointer;			//T*
 			typedef typename allocator_type::const_pointer  	const_pointer;		//const T*
 			typedef b_iterator<T>   							iterator;
-			typedef b_iterator<T>   							const_iterator;
+			typedef b_iterator<const T>   						const_iterator;
 			typedef b_reverse_iterator<T>   					reverse_iterator;
 			typedef b_reverse_iterator<T>   					const_reverse_iterator;
 			typedef size_t                      				size_type;
@@ -331,6 +331,14 @@ namespace ft
 			{
 				insert(position, 1, val);
 				return position;
+			}
+
+			template <class InputIterator>
+			void insert (iterator position, InputIterator first, InputIterator last,  typename enable_if<!is_integral<InputIterator>::value && is_iterator<InputIterator>::value, InputIterator>::type* = 0){
+				while (first != last){
+					insert(position++, 1, *first);
+					first++;
+				}
 			}
 
 			void clear()

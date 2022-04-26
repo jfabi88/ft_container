@@ -1,5 +1,4 @@
-#include <iostream>
-#include <vector>
+
 #include "utils.hpp"
 
 class my_class
@@ -12,197 +11,40 @@ class my_class
 		typedef int reference;
 };
 
+class my_class2
+{
+	public:
+		typedef int value_type;
+		typedef int difference_type;
+		typedef int iterator_category;
+		typedef int pointer;
+};
+
 int main()
 {
-/*     std::cout << std::boolalpha;
+	try {
+    std::cout << std::boolalpha;
 	std::cout << "   Is an iterator?" << std::endl;
-	std::cout << "char:                          " <<ft::is_iterator<char>::value << std::endl;
-	std::cout << "std::string:                   " <<ft::is_iterator<std::string>::value << std::endl;
-	std::cout << "int:                           " <<ft::is_iterator<int>::value << std::endl;
-	std::cout << "float:                         " <<ft::is_iterator<float>::value << std::endl;
-	std::cout << "int *:                         " <<ft::is_iterator<int*>::value << std::endl;
-	std::cout << "char*:                         " <<ft::is_iterator<char*>::value << std::endl;
-	std::cout << "vector<int>::iterator:         " <<ft::is_iterator<std::vector<int>::iterator>::value << std::endl;
-	std::cout << "vector<char>::iterator:        " <<ft::is_iterator<std::vector<char>::iterator>::value << std::endl;
-	std::cout << "vector<std::string>::iterator: " <<ft::is_iterator<std::vector<std::string>::iterator>::value << std::endl;
-	std::cout << "vector<int*>::iterator:        " <<ft::is_iterator<std::vector<int*>::iterator>::value << std::endl;
-	std::cout << "vector<float>::iterator:       " <<ft::is_iterator<std::vector<float>::iterator>::value << std::endl;
-	std::cout << "vector<float>:                 " <<ft::is_iterator<std::vector<float> >::value << std::endl;
-	std::cout << "my_class:                      " <<ft::is_iterator<my_class>::value << std::endl; */
-
-
-/* 	std::vector<int> v;
-	ft::vector<int>  cv;
-
-	for (int i=1; i<11; i++) {
-		v.push_back(i);
-		cv.push_back(i);
+	std::cout << "char:                          " <<ft::is_iterator<char>::value << "/" << std::_Is_iterator_v<char> << std::endl;
+	std::cout << "std::string:                   " <<ft::is_iterator<std::string>::value << "/" << std::_Is_iterator_v<std::string> << std::endl;
+	std::cout << "int:                           " <<ft::is_iterator<int>::value << "/" << std::_Is_iterator_v<int> << std::endl;
+	std::cout << "float:                         " <<ft::is_iterator<float>::value << "/" << std::_Is_iterator_v<float> << std::endl;
+	std::cout << "int *:                         " <<ft::is_iterator<int*>::value << "/" << std::_Is_iterator_v<int*> << std::endl;
+	std::cout << "char*:                         " <<ft::is_iterator<char*>::value << "/" << std::_Is_iterator_v<char*> << std::endl;
+	std::cout << "vector<int>::iterator:         " <<ft::is_iterator<std::vector<int>::iterator>::value << "/" << std::_Is_iterator_v<std::vector<int>::iterator> << std::endl;
+	std::cout << "vector<char>::iterator:        " <<ft::is_iterator<std::vector<char>::iterator>::value << "/" << std::_Is_iterator_v<std::vector<char>::iterator> << std::endl;
+	std::cout << "vector<std::string>::iterator: " <<ft::is_iterator<std::vector<std::string>::iterator>::value << "/" << std::_Is_iterator_v<std::vector<std::string>::iterator> << std::endl;
+	std::cout << "vector<int*>::iterator:        " <<ft::is_iterator<std::vector<int*>::iterator>::value << "/" << std::_Is_iterator_v<std::vector<int*>::iterator> << std::endl;
+	std::cout << "vector<float>::iterator:       " <<ft::is_iterator<std::vector<float>::iterator>::value << "/" << std::_Is_iterator_v<std::vector<float>::iterator> << std::endl;
+	std::cout << "vector<float>:                 " <<ft::is_iterator<std::vector<float>>::value << "/" << std::_Is_iterator_v<std::vector<float>> << std::endl;
+	std::cout << "my_class:                      " <<ft::is_iterator<my_class>::value << "/" << std::_Is_iterator_v<my_class> << std::endl;
+	std::cout << "my_class2:                      " <<ft::is_iterator<my_class2>::value << "/" << std::_Is_iterator_v<my_class2> << std::endl;
 	}
-
-	std::cout << "begin/end/it++:\n";
-	for( std::vector<int>::iterator it = v.begin(); it != v.end(); it++){
-		std::cout << *it << " ";
+	catch (const std::exception& e) {
+		// Code that executes when an exception of type
+		// networkIOException is thrown in the try block
+		// ...
+		// Log error message in the exception object
+		std::cout << "ERROR: " << e.what();
 	}
-	std::cout<< std::endl;
-
-	for( ft::vector<int>::iterator fit = cv.begin(); fit != cv.end(); fit++){
-		std::cout << *fit << " ";
-	}
-	std::cout<< std::endl;
-
-	std::cout << "begin/end/++it:\n";
-	for( std::vector<int>::iterator it = v.begin(); it != v.end(); ){
-		std::cout << *(++it) << " ";
-	}
-	std::cout<< std::endl;
-
-	for( ft::vector<int>::iterator fit = cv.begin(); fit != cv.end(); ){
-		std::cout << *(++fit) << " ";
-	}
-	std::cout<< std::endl;
-
-	std::cout << "operator+/operator-/operator==/operator>:\n";
-	std::vector<int>::iterator it = v.begin();
-	ft::vector<int>::iterator cit= cv.begin();
-
-	std::cout << *(it + 4) << " " << *(v.end() - 2) << " " << ((v.end() - 2) == (v.begin() + 8)) << " ";
-	std::cout << ((v.end() - 1) > (v.begin() + 7)) << "\n";
-	std::cout << *(cit + 4) << " " << *(cv.end() - 2) << " " << ((cv.end() - 2) == (cv.begin() + 8)) << " ";
-	std::cout << ((cv.end() - 1) > (cv.begin() + 7)) << "\n";
-
-	ft::vector<int>::const_iterator ccit;
-	std::vector<int>::const_iterator sit;
-
-	std::cout << "const_iterator/++operator>:\n";
-	for( std::vector<int>::const_iterator vl = v.begin(); vl != v.end(); vl++){
-		std::cout << *(vl) << " ";
-	}
-	std::cout<< std::endl;
-	for( ft::vector<int>::const_iterator ccit = cv.begin(); ccit != cv.end(); ccit++){
-		std::cout << *(ccit) << " ";
-	}
-
-	size_t size = v.size();
-	for (size_t i = 0; i < size; i++) {
-			v.pop_back();
-			cv.pop_back();
-	}
-
-	std::cout << "\nAfter pop_back()\n";
-	for( std::vector<int>::const_iterator p = v.begin(); p != v.end(); p++){
-		std::cout << *(p) << " ";
-	}
-	std::cout<< std::endl;
-	for( ft::vector<int>::const_iterator ccit = cv.begin(); ccit != cv.end(); ccit++){
-		std::cout << *(ccit) << " ";
-	} */
-
-
-/***********************************INSERT***************************************************/
-
-	/* std::vector<int> ins;
-	ft::vector<int>  ftins;
-
-	ins.push_back(1); ins.push_back(2); ins.push_back(3); ins.push_back(4);
-	ins.push_back(8); ins.push_back(9); ins.push_back(10);
-
-	ftins.push_back(1); ftins.push_back(2); ftins.push_back(3); ftins.push_back(4);
-	ftins.push_back(8); ftins.push_back(9); ftins.push_back(10);
-
-	print_vector("1)beginning", ins);
-
-	ins.insert(ins.begin()+4, 3, -1);
-	ftins.insert(ftins.begin()+4, 3, -1);
-	print_vector("2)insert(ins.begin()+4, 3, -1)", ins);
-	print_vector("", ftins);
-
-	ins.insert(ins.begin(), 1, 0);
-	ftins.insert(ftins.begin(), 1, 0);
-	print_vector("3)insert(ins.begin(), 1, 0)", ins);
-	print_vector("", ftins);
-
-	ins.insert(ins.begin() + 5, 1, 5);
-	ftins.insert(ftins.begin() + 5, 1, 5);
-	print_vector("4)insert(ins.begin()+5, 1, 5)", ins);
-	print_vector("", ftins);
-
-	ins.insert(ins.begin() + 6, 0, 6);
-	ftins.insert(ftins.begin() + 6, 0,6);
-	print_vector("5)insert(ins.begin() + 6, 0, 6)", ins);
-	print_vector("", ftins);
-
-
-	ins.insert(ins.begin() -1, 3, -3);
-	ftins.insert(ftins.begin() -1, 3, -3);
-	print_vector("6)insert(ins.begin() -1, 3, -3)", ins);
-	print_vector("", ftins);
-
-	ins.insert(ins.begin()-3, 4, 400);
-	ftins.insert(ftins.begin()-3, 4, 400);
-	print_vector("7)insert(ftins.begin()-3, 4, 400)", ins);
-	print_vector("", ftins);
-
-	ins.insert(ins.end(), 2, 555);
-	ftins.insert(ftins.end(), 2, 555);
-	print_vector("8)insert(ins.end(), 2, 555)", ins);
-	print_vector("", ftins);
- */
-/* 	ins.insert(ins.end()+1, 3, 69);
-	ftins.insert(ftins.end() + 1, 3, 69);
-	print_vector("9)insert(ins.end() + 1, 3, 69)", ins);
-	std::cout << "->" << *(ins.end()) << "," << *(ins.end() + 1) << "\n";
-	print_vector("", ftins); */
-
-/**************************************************************************************/
-	/* std::vector<int> vf;
-	ft::vector<int>  gc;
-	std::vector<int>::iterator ivf;
-	ft::vector<int>::iterator igc;
-
-	vf.push_back(1); vf.push_back(2); vf.push_back(3); vf.push_back(4);vf.push_back(8); vf.push_back(9); vf.push_back(10);
-
-	gc.push_back(1); gc.push_back(2); gc.push_back(3); gc.push_back(4);gc.push_back(8); gc.push_back(9); gc.push_back(10);
-
-	print_vector("\nbeginning INSERT single element", vf, 1);
-	ivf = vf.insert(vf.begin()+4, 55);
-	igc = gc.insert(gc.begin()+4, 55);
-	print_vector("10)insert(vf.begin()+4, 5)", vf);
-	print_vector("", gc);
-	std::cout << *ivf << "," << *igc << "\n";
-
-	ivf = vf.insert(vf.begin()+1, 66);
-	igc = gc.insert(gc.begin()+1, 66);
-	print_vector("11)insert(vf.begin()+1, 66)", vf, 3);
-	print_vector("", gc, 3);
-	std::cout << *ivf << "," << *igc << "\n";
-
-	ivf = vf.insert(vf.begin()-3, 433);
-	igc = gc.insert(gc.begin()-3, 433);
-	print_vector("12)insert(vf.begin()-3, 433)", vf, 5);
-	print_vector("", gc, 5);
-	std::cout << *ivf << "," << *igc << "\n";
-
-	vf.insert(vf.begin()-2, 2, 45);
-	gc.insert(gc.begin()-2, 2, 45);
-	print_vector("13)insert(vf.begin()-2, 2, 45)", vf, 4);
-	print_vector("", gc, 4);
-	return (0); */
-
-
-/***********************************CLEAR***************************************************/
-
-/* 	std::vector<int> cl;
-	ft::vector<int>  ftcl;
-
-	cl.push_back(1); cl.push_back(2); cl.push_back(3); cl.push_back(4); cl.push_back(8); cl.push_back(9); cl.push_back(10);
-	print_vector("std= ", cl);
-	ftcl.push_back(1); ftcl.push_back(2); ftcl.push_back(3); ftcl.push_back(4); ftcl.push_back(8); ftcl.push_back(9); ftcl.push_back(10);
-	print_vector("ft= ", ftcl);
-	cl.clear();
-	ftcl.clear();
-	std::cout << cl.size() << std::endl;
-	std::cout << ftcl.size() << std::endl;
-	print_vector("after clear\n std= ", cl);
-	print_vector("ft= ", ftcl); */
-
 }
