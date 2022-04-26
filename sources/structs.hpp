@@ -3,26 +3,11 @@
 
 namespace ft
 {
-
-/* 	struct true_type {
-		static const bool value = true;
-		operator bool() const { return value; }
-	};
-
-	struct false_type {
-		static const bool value = false;
-		operator bool() const { return value; }
-	}; */
-
-
-
 	template <bool Cond, class T = void>
 	struct enable_if {};
 
 	template <class T>
 	struct enable_if<true, T> {typedef T type;};
-
-
 
 
    //******ITERATOR_TRAITS********//
@@ -34,9 +19,6 @@ namespace ft
 	//non è definito, in atto di compilazione, non è possibile creare la classe void_t in quanto si
 	//manifesta un errore nel ricavare dalla classe template T tale tipo. Allora per la SFINAE 
 	//il compilatore utilizza il primo costrutture per costruire la struttura.
-
-/* 	template <class = void, class = void, class = void, class = void, class = void>
-	struct void_t {typedef void value;}; */
 
 	template <class = void, class = void, class = void, class = void, class = void>
 	struct void_t {typedef void value;};
@@ -82,17 +64,7 @@ namespace ft
 	//              is_iterator<T, typename <...>::type>.
 	//              Il costruttore utilizzato sarà quindi is_iterator, con value=false.
 
-/* 	template<class T, typename v = void>
-	struct has_iterator_traits
-	{
-		const static bool value = false;
-	};
-
-	template<typename T>
-	struct has_iterator_traits<T, typename void_t<typename T::value_type>::value>
-	{
-		const static bool value = true;
-	};
+/* 	
 
 	template<typename T, typename = void>
 	struct is_iterator

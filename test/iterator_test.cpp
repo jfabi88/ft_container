@@ -29,11 +29,12 @@ int main()
     std::cout << "Il valore di ut(jt): " << *ut << std::endl;
     sit = stmp.begin();
     cit = ctmp.begin();
+    std::cout << "Il valore di *sit: " << *sit << std::endl;
+    std::vector<int>::const_iterator::pointer
     ccit = cit;
     sit = sit2;
     jt = ctmp.begin();
     ccit = ctmp.begin();
-    jt = ccit;
     //sit = ctmp.begin();
    
    

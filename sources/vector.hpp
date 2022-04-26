@@ -17,10 +17,10 @@ namespace ft
 			typedef typename allocator_type::const_reference	const_reference;	// equivalente a const T& (Jacopo non cambiare)
 			typedef typename allocator_type::pointer  			pointer;			//T*
 			typedef typename allocator_type::const_pointer  	const_pointer;		//const T*
-			typedef b_iterator<T>   							iterator;
-			typedef b_iterator<const T>   						const_iterator;
-			typedef b_reverse_iterator<T>   					reverse_iterator;
-			typedef b_reverse_iterator<T>   					const_reverse_iterator;
+			typedef iterator<T>   								iterator;
+			typedef const_iterator<T>   						const_iterator;
+/* 			typedef b_reverse_iterator<T>   					reverse_iterator;
+			typedef b_reverse_iterator<T>   					const_reverse_iterator; */
 			typedef size_t                      				size_type;
 			typedef std::ptrdiff_t              				difference_type;
 
