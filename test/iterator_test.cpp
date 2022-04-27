@@ -7,8 +7,8 @@ int main()
     ft::vector<int>     ctmp(8, 32);
     std::vector<int>    stmp(8, 32);
     ft::vector<int>::iterator jt;
-    ft::vector<int>::iterator cit;
-    ft::vector<int>::const_iterator ccit;
+    ft::vector<int>::iterator b;
+    ft::vector<int>::const_iterator a;
     std::vector<int>::const_iterator sit;
     std::vector<int>::iterator sit2;
 
@@ -28,13 +28,15 @@ int main()
     ft::vector<int>::iterator ut(jt);
     std::cout << "Il valore di ut(jt): " << *ut << std::endl;
     sit = stmp.begin();
-    cit = ctmp.begin();
+    b = ctmp.begin();
     std::cout << "Il valore di *sit: " << *sit << std::endl;
-    std::vector<int>::const_iterator::pointer
-    ccit = cit;
+    a = b;
+    //a = ctmp.begin();
+    
     sit = sit2;
     jt = ctmp.begin();
-    ccit = ctmp.begin();
+    
+    
     //sit = ctmp.begin();
    
    

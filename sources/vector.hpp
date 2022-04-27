@@ -17,17 +17,15 @@ namespace ft
 			typedef typename allocator_type::const_reference	const_reference;	// equivalente a const T& (Jacopo non cambiare)
 			typedef typename allocator_type::pointer  			pointer;			//T*
 			typedef typename allocator_type::const_pointer  	const_pointer;		//const T*
-			typedef iterator<T>   								iterator;
-			typedef const_iterator<T>   						const_iterator;
-/* 			typedef b_reverse_iterator<T>   					reverse_iterator;
-			typedef b_reverse_iterator<T>   					const_reverse_iterator; */
+			typedef b_iterator<pointer>   						iterator;
+			typedef b_iterator<const_pointer>   				const_iterator;
 			typedef size_t                      				size_type;
 			typedef std::ptrdiff_t              				difference_type;
 
 
 		private:
 			allocator_type  _allocator;  
-			value_type*     _container;
+			pointer     	_container;
 			size_type       _size;
 			size_type       _capacity;
 		public:
@@ -88,7 +86,8 @@ namespace ft
 				//std::cout << "Default destructor called" << std::endl;
 			}
 
-			iterator begin()    { return (iterator(&_container[0])); }
+/* 			iterator begin()    { return (iterator(&_container[0])); } */
+			iterator begin()    { return iterator(_container); }
 			iterator end()      { return (iterator(&_container[_size])); }
 			const_iterator begin() const    { return (const_iterator(&_container[0])); }
 			const_iterator end() const      { return (const_iterator(&_container[_size])); }
