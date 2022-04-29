@@ -11,7 +11,7 @@ int main()
     ft::vector<int>::const_iterator a;
     std::vector<int>::const_iterator sit;
     std::vector<int>::iterator sit2;
-
+    
     int diff;
 
     for (ft::vector<int>::iterator it = ctmp.begin(); it < ctmp.end(); it++)

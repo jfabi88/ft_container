@@ -38,6 +38,26 @@ struct iterator_traits<T*> {
 	typedef T&									reference;
 };
 
+template<class  T>
+struct iterator_traits<const T*>{
+	typedef T 									value_type;
+  	typedef ptrdiff_t 							difference_type;
+	typedef std::random_access_iterator_tag 	iterator_category;
+  	typedef const T* 							pointer;
+  	typedef const T& 							reference;
+  	
+};
+
+// iterator
+template<class Category, class T, class Distance = ptrdiff_t,class Pointer = T*, class Reference = T&>
+struct iterator
+{
+	typedef T         value_type;
+	typedef Distance  difference_type;
+	typedef Category  iterator_category;
+	typedef Pointer   pointer;
+	typedef Reference reference;
+};
 
 template< class, class = void >
 struct is_iterator : public false_type{};
@@ -50,78 +70,30 @@ struct is_iterator <T, typename void_t<
 					typename T::pointer,
 					typename T::reference>::value> : public true_type{};
 
+template <class T>
+class vector;
 
-
-
-/* template <class T>
-class b_iterator {
+template <class Iter>
+class b_iterator 
+{
 	public:
-		typedef std::random_access_iterator_tag iterator_category;
-		typedef T               					value_type;
-		typedef std::ptrdiff_t  					difference_type;
-		typedef T*              					pointer;
-		typedef T&              					reference;
+		typedef typename iterator_traits<Iter>::iterator_category	iterator_category;
+		typedef typename iterator_traits<Iter>::value_type			value_type;
+		typedef typename iterator_traits<Iter>::difference_type		difference_type;
+		typedef typename iterator_traits<Iter>::pointer				pointer;
+		typedef typename iterator_traits<Iter>::reference			reference;
 
-		b_iterator()  { _ptr = NULL; };
-		b_iterator(pointer p) {_ptr = p; }
-		b_iterator(const b_iterator &s) { _ptr = s._ptr; }
-		~b_iterator(){};
-
-		reference   operator*() const   { return *_ptr; }
-		pointer     operator->()        { return _ptr; }
-
-		//prefix increment operator
-		b_iterator&   operator++()        { _ptr++; return *this; }
-		//postfix increment operator
-		b_iterator    operator++(int)     { b_iterator tmp = *this; _ptr++; return tmp; }
-
-		b_iterator&   operator--()        { _ptr--; return *this; }
-		b_iterator    operator--(int)     { b_iterator tmp = *this; _ptr--; return tmp; }
-
-		friend bool    operator== (const b_iterator &f, const b_iterator &s) { return (f._ptr == s._ptr); }
-		friend bool    operator!= (const b_iterator &f, const b_iterator &s) { return (f._ptr != s._ptr); }
-		bool    operator<(const b_iterator &s)    { return (_ptr < s._ptr); }
-		bool    operator>(const b_iterator &s)    { return (_ptr > s._ptr); }
-		bool    operator<=(const b_iterator &s)    { return (_ptr <= s._ptr); }
-		bool    operator>=(const b_iterator &s)    { return (_ptr >= s._ptr); }
-
-		b_iterator    operator+(difference_type n)    { return b_iterator(_ptr + n); }
-		b_iterator    operator-(difference_type n)    { return b_iterator(_ptr - n); }
-		difference_type operator+(const b_iterator &s)    { return (_ptr + s._ptr); }
-		difference_type operator-(const b_iterator &s)    { return (_ptr - s._ptr); }
-
-		b_iterator    operator+=(difference_type n)   { _ptr += n; return (*this); }
-		b_iterator    operator-=(difference_type n)   { _ptr -= n; return (*this); }
-
-		value_type  operator[](difference_type n)  { return (_ptr + n); }
-
-		b_iterator<T>    &operator=(const b_iterator<T> &s) { _ptr = s._ptr;  return (*this);}
-		//operator const_b_iterator() { return const_b_iterator(_ptr); }
 	private:
 		pointer _ptr;
-}; */
-
-template <class T>
-class b_iterator {
+		b_iterator(pointer p) : _ptr(p){}
 	public:
-
-		typedef T                                                      		iterator_type;
-		typedef typename iterator_traits<iterator_type>::iterator_category	iterator_category;
-		typedef typename iterator_traits<iterator_type>::value_type			value_type;
-		typedef typename iterator_traits<iterator_type>::difference_type	difference_type;
-		typedef typename iterator_traits<iterator_type>::pointer			pointer;
-		typedef typename iterator_traits<iterator_type>::reference			reference;
-
-	private:
-		iterator_type _ptr;
-		b_iterator(iterator_type p) : _ptr(p){}
-		iterator_type base() const	{return _ptr;}
-	
-	public:
+		pointer base() const	{return _ptr;}
 		b_iterator() : _ptr(nullptr){};
-		template <class U>
-			b_iterator(b_iterator<U> const & s) : _ptr(s.base()) {}
+		//b_iterator(const b_iterator & p) : _ptr(p._ptr){}
 		~b_iterator(){};
+
+		template <class _Up>  
+		b_iterator(const b_iterator<_Up>& __u) : _ptr(__u.base()){}
 
 		reference   operator*() const   { return *_ptr; }
 		pointer     operator->()        { return _ptr; }
@@ -153,9 +125,9 @@ class b_iterator {
 
 		b_iterator   &operator=(const b_iterator &s) { _ptr = s._ptr;  return (*this);}
 
-
-		template <class V> friend class vector;
+		template <class T> friend class vector;
 };
+
 
 template <class T>
 class b_reverse_iterator {
