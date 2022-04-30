@@ -89,7 +89,6 @@ class b_iterator
 	public:
 		pointer base() const	{return _ptr;}
 		b_iterator() : _ptr(nullptr){};
-		//b_iterator(const b_iterator & p) : _ptr(p._ptr){}
 		~b_iterator(){};
 
 		template <class _Up>  

@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <cstdint>
 #include <sstream>
+#include "utils.hpp"
 
 namespace ft
 {   
@@ -70,6 +71,7 @@ namespace ft
 
 				_allocator = x._allocator;
 				_size = x._size;
+				_capacity = x._size;
 				_container = _allocator.allocate(_size);
 				next = 0;
 				for (vector::const_iterator it = x.begin(); it < x.end(); it++)
@@ -81,12 +83,9 @@ namespace ft
 			}
 			~vector()
 			{
-			   /*  for (int i = 0; i < _size; i++)
-					std::cout << _container[i] << std::endl;  */
-				//std::cout << "Default destructor called" << std::endl;
+				destroy_allocator();
 			}
 
-/* 			iterator begin()    { return (iterator(&_container[0])); } */
 			iterator begin()    { return iterator(_container); }
 			iterator end()      { return (iterator(&_container[_size])); }
 			const_iterator begin() const    { return (const_iterator(&_container[0])); }
@@ -102,28 +101,29 @@ namespace ft
 					alloc.deallocate(addr, capacity + 1);
 			}
 
-			struct allocator_ref
+			void	destroy_allocator()
 			{
-				allocator_type  all;
-				value_type*     ptr;
-			};
-
-			allocator_ref	copy_allocator(size_type sz, size_type capacity, vector vec)
+				destroy_allocator(_allocator, _size, _capacity, _container);
+			}
+	
+			void	copy_allocator(size_type sz, size_type NewCapacity, vector vec)
 			{
-				allocator_ref   ret;
 				allocator_type  newalloc = allocator_type();
-				value_type*     newptr = newalloc.allocate(capacity + 1);
+				value_type*     newptr = newalloc.allocate(NewCapacity + 1);
 
-				for (size_type i = 0; i < sz; i++)
+				for (size_type i = 0; i < sz; i++){
 					newalloc.construct(newptr + i, vec.at(i));
-				ret.all = newalloc;
-				ret.ptr = newptr;
-				return (ret);
+				}
+				this->destroy_allocator(_allocator, _size, _capacity, _container);
+				_container = newptr;
+				_allocator = newalloc;
+				if (NewCapacity > _capacity)
+					_capacity = NewCapacity;
+				_size = sz;
 			}
 
 			void copy_allocator(iterator position, size_type NewCapacity, vector vec)
 			{
-				allocator_ref   ret;
 				allocator_type  newalloc = allocator_type();
 				value_type*     newptr;
 
@@ -149,32 +149,20 @@ namespace ft
 				return sstm.str();
 			}
 
-			size_type _Calculate_growth(const size_type _Newsize) const
+			size_type _Calculate_capacity(const size_type _Newsize) const
 			{
 				// given _Oldcapacity and _Newsize, calculate geometric growth
 				const size_type _Oldcapacity = capacity();
 				
+				//size_type NewCapacity = _Oldcapacity + _Oldcapacity / 2;
+				size_type NewCapacity = _Oldcapacity * 2;
 
-				//if (_Oldcapacity > max_size() - _Oldcapacity / 2)
-				if (_Oldcapacity + (_Oldcapacity / 2) > max_size() )
+				if (NewCapacity < _Newsize || NewCapacity > max_size() )
 				{
-					return (_Newsize);	// geometric growth would overflow
+					return (_Newsize);	
 				}
 
-				const size_type _Geometric = _Oldcapacity + _Oldcapacity / 2;
-
-				if (_Geometric < _Newsize)
-				{
-					return (_Newsize);	// geometric growth would be insufficient
-				}
-
-				return (_Geometric);	// geometric growth is sufficient
-/* 				if (_Oldcapacity * 2 > max_size() )
-				{
-					return (_Newsize);	// geometric growth would overflow
-				}
-
-				return _Oldcapacity * 2; */
+				return (NewCapacity);	// geometric growth is sufficient
 			}
 
 /* ------------------------------- CAPACITY ------------------------------- */
@@ -199,6 +187,8 @@ namespace ft
 				}
 				else //se n > size dall'ultimo size fino a n riempio con lo stesso val passato
 				{
+					if (n > _capacity)
+						reserve(_Calculate_capacity(n));
 					for (size_type i = _size; i < n; i++)
 						this->push_back(val);
 				}
@@ -213,13 +203,7 @@ namespace ft
 				if (n > this->max_size())
 					throw (std::length_error("vector max_size"));
 				if (n > _capacity)
-				{
-					allocator_ref   tmp = copy_allocator(_size, n, *this);
-					this->destroy_allocator(_allocator, _size, _capacity, _container);
-					_container = tmp.ptr;
-					_allocator = tmp.all;
-					_capacity = n;
-				}
+					copy_allocator(_size, n, *this);
 			}
 
 			/* ------------------------------- ELEMENT ACCESS ------------------------------- */
@@ -279,12 +263,28 @@ namespace ft
 
 			/* Modifiers */
 
+			void assign (size_type n, const value_type& val) //fill assign
+			{
+				clear();
+				insert(begin(), n, val);
+			}
+
+			template <class InputIterator> //riassegna da first a last - 1, quindi last non viene considerato
+  			void assign(InputIterator first, InputIterator last, typename enable_if<!is_integral<InputIterator>::value && is_iterator<InputIterator>::value, InputIterator>::type* = 0)
+			{
+				std::cout << "Prima dell clear" << std::endl;
+				clear();
+				std::cout << "Prima dell insert" << std::endl;
+				insert(begin(), first, last);
+				std::cout << "Dopo dell insert" << std::endl;
+			}
+
 			void push_back(const value_type& val)
 			{
 				if (_size == _capacity)
 				{
 					//size_type newCapacity = _capacity ? _capacity * 2 : 1;
-					size_type newCapacity = _Calculate_growth(_size+1);
+					size_type newCapacity = _Calculate_capacity(_size+1);
 					reserve(newCapacity);
 					_capacity = newCapacity;
 				}
@@ -309,12 +309,12 @@ namespace ft
 				if (newSize > _capacity)
 				{
 					//size_type newCapacity = _capacity ? _capacity * 2 : 1;
-					size_type newCapacity = _Calculate_growth(newSize);
+					size_type newCapacity = _Calculate_capacity(newSize);
 					copy_allocator(position, newCapacity, *this);
 				}
 
 				//copio position e i valori alla sua destra traslandoli di n posizioni 
-				for ( size_type i = 0 ; i <= rightN; i++){
+				for ( size_type i = 0 ; i < rightN + (_size > 0); i++){
 					_allocator.construct(_container + newSize -i, *(position +rightN -i));
 				}
 
@@ -322,7 +322,6 @@ namespace ft
 				for (size_type i = 0 ; i < n; i++){
 					_allocator.construct(_container + pIndex + i, val);
 				}
-
 				_size = newSize;
 			}
 
@@ -333,11 +332,49 @@ namespace ft
 			}
 
 			template <class InputIterator>
-			void insert (iterator position, InputIterator first, InputIterator last,  typename enable_if<!is_integral<InputIterator>::value && is_iterator<InputIterator>::value, InputIterator>::type* = 0){
+			void insert (iterator position, InputIterator first, InputIterator last,  typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = 0){
 				while (first != last){
 					insert(position++, 1, *first);
 					first++;
 				}
+			}
+
+			iterator erase (iterator position)
+			{
+				size_type i = position - begin();
+				_allocator.destroy(_container + i);
+				for (iterator it = position; it < end() - 1; it++){
+					_container[i] = _container[i + 1];
+					i++;
+				}
+				_size = i;
+				_allocator.destroy(_container + i);
+				return (position);
+			}
+
+			iterator erase (iterator first, iterator last)
+			{
+				size_type i = first - begin();
+				size_type n = last - first;
+				for (iterator it = first; it < last; it++){
+					_allocator.destroy(_container + i++);
+				}
+				i = first - begin();
+				for (iterator it = last; it < end(); it++){
+					_container[i] = _container[i + n];
+					i++;
+				}
+				_size = i;
+				_allocator.destroy(_container + i);
+				return (last);
+			}
+
+			void swap (vector& x)
+			{
+				ft::swap(this->_allocator, x._allocator);
+				ft::swap(this->_capacity, x._capacity);
+				ft::swap(this->_size, x._size);
+				ft::swap(this->_container, x._container);
 			}
 
 			void clear()

@@ -7,10 +7,16 @@ int main()
 
 	std::vector<int> ins;
 	ft::vector<int>  ftins;
+	ft::vector<int>  e;
 
 	ins.push_back(1); ins.push_back(2); ins.push_back(3); ins.push_back(4);ins.push_back(8); ins.push_back(9); ins.push_back(10);
-
 	ftins.push_back(1); ftins.push_back(2); ftins.push_back(3); ftins.push_back(4);ftins.push_back(8); ftins.push_back(9); ftins.push_back(10);
+
+	//e.insert(e.begin(), 3, -1);
+	print_vector("Evector", e);
+	e.clear();
+	e.insert(e.begin(), 3, -1);
+	print_vector("Evector2", e);
 
 	print_vector("1)beginning", ins);
 

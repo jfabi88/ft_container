@@ -1,4 +1,4 @@
-#include "../sources/vector.hpp"
+#include "utils.hpp"
 #include <iostream>
 #include <vector>
 
@@ -31,7 +31,7 @@ int main()
     b = ctmp.begin();
     std::cout << "Il valore di *sit: " << *sit << std::endl;
     a = b;
-    //a = ctmp.begin();
+    a = ctmp.begin();
     
     sit = sit2;
     jt = ctmp.begin();
