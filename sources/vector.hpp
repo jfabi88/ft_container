@@ -29,6 +29,7 @@ namespace ft
 			pointer     	_container;
 			size_type       _size;
 			size_type       _capacity;
+
 		public:
 			vector(const allocator_type& alloc = allocator_type())
 			{
@@ -87,7 +88,9 @@ namespace ft
 			}
 
 			iterator begin()    { return iterator(_container); }
-			iterator end()      { return (iterator(&_container[_size])); }
+			iterator end()      
+			//{ return (iterator(&_container[_size])); }
+			{ return iterator(_container + _size); }
 			const_iterator begin() const    { return (const_iterator(&_container[0])); }
 			const_iterator end() const      { return (const_iterator(&_container[_size])); }
 
@@ -122,10 +125,11 @@ namespace ft
 				_size = sz;
 			}
 
-			void copy_allocator(iterator position, size_type NewCapacity, vector vec)
+			iterator copy_allocator(iterator position, size_type NewCapacity, vector vec)
 			{
 				allocator_type  newalloc = allocator_type();
 				value_type*     newptr;
+				difference_type	d = position - begin();
 
 				if (NewCapacity > capacity())
 				{
@@ -140,6 +144,7 @@ namespace ft
 					_allocator = newalloc;
 					_capacity = NewCapacity;
 				}
+				return begin() + d;
 			}
 
 			std::string myOutOfRange(size_type n) const
@@ -272,11 +277,9 @@ namespace ft
 			template <class InputIterator> //riassegna da first a last - 1, quindi last non viene considerato
   			void assign(InputIterator first, InputIterator last, typename enable_if<!is_integral<InputIterator>::value && is_iterator<InputIterator>::value, InputIterator>::type* = 0)
 			{
-				std::cout << "Prima dell clear" << std::endl;
 				clear();
-				std::cout << "Prima dell insert" << std::endl;
-				insert(begin(), first, last);
-				std::cout << "Dopo dell insert" << std::endl;
+				iterator it = begin();
+				insert(it, first, last);
 			}
 
 			void push_back(const value_type& val)
@@ -299,42 +302,48 @@ namespace ft
 				//}
 			}
 
+
 			void insert(iterator position, size_type n, const value_type& val)
 			{
 				size_type newSize = _size + n;
 				size_type rightN = end() - position;
 				int pIndex = position - begin();
 
+				
 				//alloco capacity e ricopio i valori a sinistra di position
 				if (newSize > _capacity)
 				{
-					//size_type newCapacity = _capacity ? _capacity * 2 : 1;
 					size_type newCapacity = _Calculate_capacity(newSize);
 					copy_allocator(position, newCapacity, *this);
 				}
 
 				//copio position e i valori alla sua destra traslandoli di n posizioni 
-				for ( size_type i = 0 ; i < rightN + (_size > 0); i++){
+				for (size_type i = 0 ; i < rightN + (_size > 0); i++){
 					_allocator.construct(_container + newSize -i, *(position +rightN -i));
 				}
-
 				//inerisco i nuovo valori
 				for (size_type i = 0 ; i < n; i++){
 					_allocator.construct(_container + pIndex + i, val);
 				}
 				_size = newSize;
+				
 			}
 
 			iterator insert(iterator position, const value_type& val)
 			{
+				if (_size + 1 > _capacity)
+					position = copy_allocator(position, _Calculate_capacity(_size + 1), *this);
 				insert(position, 1, val);
 				return position;
 			}
 
 			template <class InputIterator>
 			void insert (iterator position, InputIterator first, InputIterator last,  typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = 0){
+				difference_type	p = position - begin();
+				reserve(_size + (last - first));
+				position = begin() + p;
 				while (first != last){
-					insert(position++, 1, *first);
+					position = insert(position, *first)++;
 					first++;
 				}
 			}

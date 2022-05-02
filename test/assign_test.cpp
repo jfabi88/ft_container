@@ -50,16 +50,38 @@ int main ()
     ft::vector<int> ftsecond;
     ft::vector<int> ftthird;
 
-    ftfirst.assign (7,100);             // 7 ints with a value of 100
+    ftfirst.assign(7,100);             // 7 ints with a value of 100
     print_vector("ftfirst", ftfirst, 0, true);
     ft::vector<int>::iterator ftit;
     ftit = ftfirst.begin() + 1;
-    std::cout << "Ma sto iteratore????" << *ftit << "\n";
     ftsecond.assign(ftit, ftfirst.end() -1); // the 5 central values of first
-    print_vector("dopo", ftsecond, 0, true);
+    print_vector("dopo", ftsecond, 0, true); 
 
     /* int myints[] = {1776,7,4};
     third.assign (myints,myints+4);
     print_vector("THIRD", third);
     print_sz_cp(third);  // assigning from array. */
+
+ /*    std::vector<int> tmp(6, 8);
+    std::vector<int> prova(2, 7);
+    std::vector<int>::iterator itpr;
+
+
+    ft::vector<int> ftprova(2, 7);
+    ft::vector<int> fttmp(6, 8);
+    ft::vector<int>::iterator ftpr;
+
+    itpr = prova.begin();
+    prova.insert(itpr, tmp.begin(), tmp.end() - 1);
+    print_vector("STANDARD", prova, 0, true);
+
+    std::cout << "------------------------------\n";
+
+    ftpr = ftprova.begin();
+
+    ftprova.insert(ftpr, fttmp.begin(), fttmp.end() - 1);
+    print_vector("OUR", ftprova, 0, true);
+
+    itpr++; */
+
 }

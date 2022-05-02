@@ -98,12 +98,12 @@ class b_iterator
 		pointer     operator->()        { return _ptr; }
 
 		//prefix increment operator
-		b_iterator&   operator++()        { _ptr++; return *this; }
+		b_iterator&   operator++()        { ++_ptr; return *this; }
 		//postfix increment operator
-		b_iterator    operator++(int)     { b_iterator tmp = *this; _ptr++; return tmp; }
+		b_iterator    operator++(int)     { b_iterator tmp = *this; ++_ptr; return tmp; }
 
-		b_iterator&   operator--()        { _ptr--; return *this; }
-		b_iterator    operator--(int)     { b_iterator tmp = *this; _ptr--; return tmp; }
+		b_iterator&   operator--()        { --_ptr; return *this; }
+		b_iterator    operator--(int)     { b_iterator tmp = *this; --_ptr; return tmp; }
 
 		friend bool    operator== (const b_iterator &f, const b_iterator &s) { return (f._ptr == s._ptr); }
 		friend bool    operator!= (const b_iterator &f, const b_iterator &s) { return (f._ptr != s._ptr); }
@@ -112,10 +112,14 @@ class b_iterator
 		bool    operator<=(const b_iterator &s)    { return (_ptr <= s._ptr); }
 		bool    operator>=(const b_iterator &s)    { return (_ptr >= s._ptr); }
 
-		b_iterator    operator+(difference_type n)    { return b_iterator(_ptr + n); }
-		b_iterator    operator-(difference_type n)    { return b_iterator(_ptr - n); }
-		difference_type operator+(const b_iterator &s)    { return (_ptr + s._ptr); }
-		difference_type operator-(const b_iterator &s)    { return (_ptr - s._ptr); }
+		b_iterator    operator+(difference_type n)    { b_iterator _w(*this); _w += n; return _w;}
+		//{ return b_iterator(_ptr + n); } 
+		
+		b_iterator    operator-(difference_type n)   { return *this + (-n); }; 
+		//{ return b_iterator(_ptr - n); }
+
+		difference_type operator+(const b_iterator &s) const   { return (_ptr + s._ptr); }
+		difference_type operator-(const b_iterator &s) const  { return (_ptr - s._ptr); }
 
 		b_iterator    operator+=(difference_type n)   { _ptr += n; return (*this); }
 		b_iterator    operator-=(difference_type n)   { _ptr -= n; return (*this); }
