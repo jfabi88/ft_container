@@ -20,6 +20,8 @@ namespace ft
 			typedef typename allocator_type::const_pointer  	const_pointer;		//const T*
 			typedef b_iterator<pointer>   						iterator;
 			typedef b_iterator<const_pointer>   				const_iterator;
+			typedef b_reverse_iterator<iterator>				reverse_iterator;
+			typedef b_reverse_iterator<const_iterator>			const_reverse_iterator;
 			typedef size_t                      				size_type;
 			typedef std::ptrdiff_t              				difference_type;
 
@@ -61,6 +63,7 @@ namespace ft
 				_allocator = alloc;
 				_container = _allocator.allocate(dist + 1);
 				_size = dist;
+				_capacity = _size;
 				next = 0;
 				for (InputIterator i = first; i != second; i++){
 					_allocator.construct(_container + next, *i);
@@ -100,6 +103,12 @@ namespace ft
 
 			const_iterator begin() const    { return (const_iterator(&_container[0])); }
 			const_iterator end() const      { return (const_iterator(&_container[_size])); }
+
+			reverse_iterator rbegin()		{ return reverse_iterator(_container); }
+			reverse_iterator rend()			{ return reverse_iterator(_container + _size); }
+
+			const_reverse_iterator rbegin() const	{ return (const_reverse_iterator(&_container[0])); }
+			const_reverse_iterator rend() const		{ return (const_reverse_iterator(&_container[_size])); }
 
 /* ------------------------------- PRIVATE UTILS FUNCTIONS ------------------------------- */
 		private:
