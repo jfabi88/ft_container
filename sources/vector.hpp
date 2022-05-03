@@ -8,12 +8,12 @@
 
 namespace ft
 {   
-	template <class T>
+	template <class T, class Alloc = std::allocator<T> >
 	class vector
 	{
 		public:
 			typedef T                           				value_type;
-			typedef std::allocator<value_type>  				allocator_type;
+			typedef Alloc  				allocator_type;
 			typedef typename allocator_type::reference  		reference;			// equivalente a T& (Jacopo non cambiare)
 			typedef typename allocator_type::const_reference	const_reference;	// equivalente a const T& (Jacopo non cambiare)
 			typedef typename allocator_type::pointer  			pointer;			//T*
@@ -391,6 +391,58 @@ namespace ft
 				for (size_type i = 0; i < _size; i++)
 					_allocator.destroy(_container + i);
 				_size = 0;
+			}
+
+/* ------------------------------- OPERATORS------------------------------- */
+
+			bool operator==( const vector& rhs) const
+			{
+				if (this->size() != rhs.size())
+					return (false);
+				const_iterator lit = this->begin();
+				const_iterator rit = rhs.begin();
+				for (; lit < this->end(); lit++)
+				{
+					if (*lit != *rit)
+						return (false);
+					rit++;
+				}
+				return (true);
+			}
+
+			bool operator!=( const vector& rhs) const
+			{
+				if (this->size() != rhs.size())
+					return (true);
+				const_iterator lit = this->begin();
+				const_iterator rit = rhs.begin();
+				for (; lit < this->end(); lit++)
+				{
+					if (*lit == *rit)
+						return (false);
+					rit++;
+				}
+				return (true);
+			}
+
+			bool operator<( const vector& rhs) const
+			{
+				return (ft::lexicographical_compare(this->begin(), this->end(), rhs.begin(), rhs.end()));
+			}
+
+			bool operator<=( const vector& rhs) const
+			{
+				return (ft::lexicographical_compare(this->begin(), this->end(), rhs.begin(), rhs.end(), ft::lessEqual<const value_type>()));
+			}
+
+			bool operator>( const vector& rhs) const
+			{
+				return (ft::lexicographical_compare(this->begin(), this->end(), rhs.begin(), rhs.end(), ft::greater<const value_type>()));
+			}
+
+			bool operator>=( const vector& rhs) const
+			{
+				return (ft::lexicographical_compare(this->begin(), this->end(), rhs.begin(), rhs.end(), ft::greaterEqual<const value_type>()));
 			}
 	};
 }

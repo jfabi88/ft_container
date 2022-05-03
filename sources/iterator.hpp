@@ -3,7 +3,7 @@
 
 namespace ft
 {  
-	template <class V>
+	template <class V, class Alloc >
 	class vector;
 /*   ///  Marking input iterators.
   struct input_iterator_tag {};
@@ -70,8 +70,8 @@ struct is_iterator <T, typename void_t<
 					typename T::pointer,
 					typename T::reference>::value> : public true_type{};
 
-template <class T>
-class vector;
+//template <class T>
+//class vector;
 
 template <class Iter>
 class b_iterator 
@@ -128,7 +128,7 @@ class b_iterator
 
 		b_iterator   &operator=(const b_iterator &s) { _ptr = s._ptr;  return (*this);}
 
-		template <class T> friend class vector;
+		template <class T, class Alloc> friend class vector;
 };
 
 
