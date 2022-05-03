@@ -19,21 +19,6 @@ namespace ft
         bool operator()(Input &a, Input &b) const {return a < b; }
     };
 
-    template <class Input>
-    struct lessEqual {
-        bool operator()(Input &a, Input &b) const {return a <= b; }
-    };
-
-    template <class Input>
-    struct greater {
-        bool operator()(Input &a, Input &b) const {return a > b; }
-    };
-
-    template <class Input>
-    struct greaterEqual {
-        bool operator()(Input &a, Input &b) const {return a >= b; }
-    };
-
     template< class InputIt1, class InputIt2 >
     bool lexicographical_compare( InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2 )
     {

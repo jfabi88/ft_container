@@ -25,7 +25,7 @@ namespace ft
 
 
 		private:
-			allocator_type  _allocator;  
+			allocator_type  _allocator;
 			pointer     	_container;
 			size_type       _size;
 			size_type       _capacity;
@@ -40,6 +40,8 @@ namespace ft
 			}
 			vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 			{
+				if (n > this->max_size())
+					throw std::length_error("vector");
 				_allocator = alloc;
 				_container = _allocator.allocate(n + 1);
 				_size = n;
@@ -84,13 +86,16 @@ namespace ft
 			}
 			~vector()
 			{
+				std::cout << "Prima del destroy" << std::endl;
 				destroy_allocator();
+				std::cout << "Dopo del destroy" << std::endl;
 			}
 
 			iterator begin()    { return iterator(_container); }
 			iterator end()      
 			//{ return (iterator(&_container[_size])); }
 			{ return iterator(_container + _size); }
+
 			const_iterator begin() const    { return (const_iterator(&_container[0])); }
 			const_iterator end() const      { return (const_iterator(&_container[_size])); }
 
@@ -432,17 +437,17 @@ namespace ft
 
 			bool operator<=( const vector& rhs) const
 			{
-				return (ft::lexicographical_compare(this->begin(), this->end(), rhs.begin(), rhs.end(), ft::lessEqual<const value_type>()));
+				return (!ft::lexicographical_compare(rhs.begin(), rhs.end(), this->begin(), this->end()));
 			}
 
 			bool operator>( const vector& rhs) const
 			{
-				return (ft::lexicographical_compare(this->begin(), this->end(), rhs.begin(), rhs.end(), ft::greater<const value_type>()));
+				return (ft::lexicographical_compare(rhs.begin(), rhs.end(), this->begin(), this->end()));
 			}
 
 			bool operator>=( const vector& rhs) const
 			{
-				return (ft::lexicographical_compare(this->begin(), this->end(), rhs.begin(), rhs.end(), ft::greaterEqual<const value_type>()));
+				return (!ft::lexicographical_compare(this->begin(), this->end(), rhs.begin(), rhs.end()));
 			}
 	};
 }
