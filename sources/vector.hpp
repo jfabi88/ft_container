@@ -84,12 +84,14 @@ namespace ft
 				}
 				//std::cout << "Copy constructor called" << std::endl;
 			}
-			~vector()
-			{
-				std::cout << "Prima del destroy" << std::endl;
-				destroy_allocator();
-				std::cout << "Dopo del destroy" << std::endl;
-			}
+
+			vector& operator= (const vector& x)
+            {
+                copy_allocator(x.size(), x.capacity(), x);
+                return (*this);
+            }
+
+			~vector() { destroy_allocator(); }
 
 			iterator begin()    { return iterator(_container); }
 			iterator end()      
