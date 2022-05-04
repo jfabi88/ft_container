@@ -13,13 +13,15 @@ namespace ft
 	{
 		public:
 			typedef T                           				value_type;
-			typedef Alloc  				allocator_type;
+			typedef Alloc  										allocator_type;
 			typedef typename allocator_type::reference  		reference;			// equivalente a T& (Jacopo non cambiare)
 			typedef typename allocator_type::const_reference	const_reference;	// equivalente a const T& (Jacopo non cambiare)
 			typedef typename allocator_type::pointer  			pointer;			//T*
 			typedef typename allocator_type::const_pointer  	const_pointer;		//const T*
 			typedef b_iterator<pointer>   						iterator;
 			typedef b_iterator<const_pointer>   				const_iterator;
+			typedef b_reverse_iterator<iterator>             reverse_iterator;
+            typedef b_reverse_iterator<const_iterator>          const_reverse_iterator;
 			typedef size_t                      				size_type;
 			typedef std::ptrdiff_t              				difference_type;
 
@@ -36,19 +38,23 @@ namespace ft
 				_allocator = alloc;
 				_size = 0;
 				_capacity = 0;
+				_container = nullptr;
 				//std::cout << "Default constructor called" << std::endl;
 			}
 			vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 			{
-				if (n > this->max_size())
+				if (n > this->max_size()){
 					throw std::length_error("vector");
+				}
+					
 				_allocator = alloc;
-				_container = _allocator.allocate(n + 1);
 				_size = n;
 				_capacity = _size;
+				_container = _capacity ? _allocator.allocate(_capacity + 1) : nullptr;
+
 				for (size_t i = 0; i < _size; i++)
 					_allocator.construct(_container + i, val);
-				//std::cout << "Fill constructor called" << std::endl;
+				//std::cout << "Vector Fill constructor called" << std::endl;
 			}
 			template <class InputIterator>
 			vector(InputIterator first, InputIterator second, const allocator_type& alloc = allocator_type(),  typename enable_if<!is_integral<InputIterator>::value && is_iterator<InputIterator>::value, InputIterator>::type* = 0)
@@ -59,14 +65,15 @@ namespace ft
 				if ( (dist = second - first) < 0)
 					throw (std::length_error("vector"));
 				_allocator = alloc;
-				_container = _allocator.allocate(dist + 1);
 				_size = dist;
+				_capacity = _size;
+				_container = _capacity ? _allocator.allocate(_capacity + 1) : nullptr;
 				next = 0;
 				for (InputIterator i = first; i != second; i++){
 					_allocator.construct(_container + next, *i);
 					next++;
 				} 
-				//std::cout << "Range constructor called" << std::endl;
+				//std::cout << "Vector Range constructor called" << std::endl;
 			}
 			vector (const vector &x)
 			{
@@ -75,14 +82,14 @@ namespace ft
 				_allocator = x._allocator;
 				_size = x._size;
 				_capacity = x._size;
-				_container = _allocator.allocate(_size);
+				_container = _capacity ? _allocator.allocate(_capacity + 1) : nullptr;
 				next = 0;
 				for (vector::const_iterator it = x.begin(); it < x.end(); it++)
 				{
 					_allocator.construct(_container + next, *it);
 					next++;
 				}
-				//std::cout << "Copy constructor called" << std::endl;
+				//std::cout << "Vector Copy constructor called(" << _capacity << ")"<< std::endl;
 			}
 
 			vector& operator= (const vector& x)
@@ -91,7 +98,10 @@ namespace ft
                 return (*this);
             }
 
-			~vector() { destroy_allocator(); }
+			~vector() {
+				//std::cout << "Vector Destructor called" << std::endl;
+				destroy_allocator(); 
+			}
 
 			iterator begin()    { return iterator(_container); }
 			iterator end()      
@@ -101,13 +111,18 @@ namespace ft
 			const_iterator begin() const    { return (const_iterator(&_container[0])); }
 			const_iterator end() const      { return (const_iterator(&_container[_size])); }
 
+			reverse_iterator rbegin()    { return reverse_iterator(_container + _size - 1); }
+            reverse_iterator rend()     { return reverse_iterator(_container - 1); }
+            const_reverse_iterator rbegin() const   { return const_reverse_iterator(_container + _size - 1); }
+            const_reverse_iterator rend() const     { return const_reverse_iterator(_container - 1); }
+
 /* ------------------------------- PRIVATE UTILS FUNCTIONS ------------------------------- */
 		private:
 			void	destroy_allocator(allocator_type alloc, size_type sz, size_type capacity, value_type * addr)
 			{
 				for (size_type i = 0; i < sz; i++)
 					alloc.destroy(addr + i);
-				if (capacity)
+				if (capacity > 0)
 					alloc.deallocate(addr, capacity + 1);
 			}
 
@@ -163,7 +178,6 @@ namespace ft
 
 			size_type _Calculate_capacity(const size_type _Newsize) const
 			{
-				// given _Oldcapacity and _Newsize, calculate geometric growth
 				const size_type _Oldcapacity = capacity();
 				
 				//size_type NewCapacity = _Oldcapacity + _Oldcapacity / 2;
@@ -310,7 +324,7 @@ namespace ft
 			}
 
 
-			void insert(iterator position, size_type n, const value_type& val)
+/* 			void insert(iterator position, size_type n, const value_type& val)
 			{
 				size_type newSize = _size + n;
 				size_type rightN = end() - position;
@@ -333,7 +347,36 @@ namespace ft
 					_allocator.construct(_container + pIndex + i, val);
 				}
 				_size = newSize;
-				
+			} */
+
+			void insert(iterator position, size_type n, const value_type& val)
+			{
+				if (n){
+					size_type	newSize = _size + n;
+					//n di elementi da traslare verso destra di n posizioni
+					int			toRight = end() - position;
+					int 		pIndex = position - begin();
+					
+					//alloco capacity e ricopio i valori a sinistra di position
+					if (newSize > _capacity)
+					{
+						size_type newCapacity = _Calculate_capacity(newSize);
+						position = copy_allocator(position, newCapacity, *this);
+					}
+
+					position += toRight;
+					//copio position e i valori alla sua destra traslandoli di n posizioni 
+					for (size_type i = 0 ; i < toRight; i++){
+						--position;
+						_allocator.construct(_container + newSize -i, *(position));
+					}
+
+					//inerisco i nuovo valori
+					for (size_type i = 0 ; i < n; i++){
+						_allocator.construct(_container + pIndex + i, val);
+					}
+					_size = newSize;
+				}
 			}
 
 			iterator insert(iterator position, const value_type& val)

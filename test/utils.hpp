@@ -65,3 +65,39 @@ void print_vector(std::string title, ft::vector<T> &vector, size_t n = 0, bool e
     }
     std::cout << "]" << std::endl;
 }
+
+//ft::b_iterator
+
+/* template <class T>
+void prIterator(typename ft::b_iterator<typename ft::vector<T>::pointer> &fit)
+{
+    std::cout << "  (" << *fit << " == "<< *sit << ")? " << (*fit == *sit) << std::endl;
+    std::cout << "]" << std::endl;
+}
+
+template <class T>
+void prIterator(typename ft::vector<T>::iterator &fit)
+{
+    if (title != "")
+        std::cout << title << " ";
+    std::cout << "  (" << *fit << " == "<< *sit << ")? " << (*fit == *sit) << std::endl;
+    std::cout << "]" << std::endl;
+} */
+
+template <class T>
+void eqiterator(std::string title, typename ft::b_iterator<typename ft::vector<T>::pointer> &fit, typename std::vector<T>::iterator &sit)
+{
+    if (title != "")
+        std::cout << title << " ";
+    std::cout << "  (" << *fit << " == "<< *sit << ")? " << (*fit == *sit) << std::endl;
+    std::cout << "]" << std::endl;
+}
+
+template <class T>
+void eqiterator(std::string title, typename ft::vector<T>::iterator &fit, typename std::vector<T>::iterator &sit)
+{
+    if (title != "")
+        std::cout << title << " ";
+    std::cout << "  (" << *fit << " == "<< *sit << ")? " << (*fit == *sit) << std::endl;
+    std::cout << "]" << std::endl;
+}
