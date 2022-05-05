@@ -114,14 +114,25 @@ int main()
 	print_vector("ft= ", ftcl); */
 
 	ft::vector<int>  a;
+	ft::vector<int>  b;
+	ft::vector<int>::iterator it;
+	ft::vector<int>::iterator it2;
 	for(int i=0; i < 8 ; i++)
 		a.push_back(i);
 
 	print_vector("a= ", a, 0 ,true);
-/* 	a.insert(a.begin() + 3, 3, 9);
-	print_vector("a.insert(a.begin() + 3, 3, 9)", a, 0 ,true); */
-	a.insert(a.begin() + 2, 9);
+	a.insert(a.begin() + 3, 3, 9);
+	print_vector("a.insert(a.begin() + 3, 3, 9)", a, 0 ,true);
+	a.insert(a.begin() + 2, 11);
 	print_vector("a.insert(a.begin() + 2, 9) ", a, 0 ,true);
+
+	a.insert(a.begin() + 4, 3, 11);
+	print_vector("a.insert(a.begin() + 4, 3, 11)", a, 0 ,true);
+	
+	
+	it = b.begin();
+	b.insert(b.begin(), a.begin()+ 3, a.begin() + 6);
+	print_vector("range ", b, 0 ,true);
 
 	}catch (const std::exception& e) {
 		// Code that executes when an exception of type

@@ -94,13 +94,13 @@ namespace ft
 
 			vector& operator= (const vector& x)
             {
-                copy_allocator(x.size(), x.capacity(), x);
+                allocator_ref   ref = copy_allocator(x.size(), x.capacity(), x);
+				updateStatus(ref, x.size(), x.capacity());
                 return (*this);
             }
 
 			~vector() {
-				//std::cout << "Vector Destructor called" << std::endl;
-				destroy_allocator(); 
+				destroy_allocator();
 			}
 
 			iterator begin()    { return iterator(_container); }
@@ -122,6 +122,9 @@ namespace ft
 			{
 				allocator_type  newAlloc;
 				value_type*     newPtr;
+				allocator_ref(){
+					newPtr = nullptr;
+				}
 			};
 
 			allocator_ref __reserve(size_type capacity){
@@ -143,47 +146,35 @@ namespace ft
 			{
 				destroy_allocator(_allocator, _size, _capacity, _container);
 			}
-	
-			void	copy_allocator(size_type sz, size_type NewCapacity, vector &vec)
+
+			void updateStatus(allocator_ref &ref, size_type newSize, size_type newCapacity, bool _mDelete = true)
 			{
-				allocator_ref	ref = __reserve(NewCapacity);
-				allocator_type  newalloc = ref.newAlloc;
-				value_type*     newptr = ref.newPtr;
+				if(_mDelete)
+					this->destroy_allocator();
+				_size = newSize;
+				_container = ref.newPtr;
+				_allocator = ref.newAlloc;
+				_capacity = newCapacity;
+			}
+	
+			allocator_ref	copy_allocator(size_type sz, size_type NewCapacity, const vector &vec)
+			{
+				allocator_ref   ret;
+
+				ret.newAlloc = allocator_type();
+				ret.newPtr = ret.newAlloc.allocate(NewCapacity + 1);
 
 				for (size_type i = 0; i < sz; i++){
-					newalloc.construct(newptr + i, vec.at(i));
+					ret.newAlloc.construct(ret.newPtr + i, vec.at(i));
 				}
-				this->destroy_allocator(_allocator, _size, _capacity, _container);
-				
-				_container = newptr;
-				_allocator = newalloc;
-				if (NewCapacity > _capacity)
-					_capacity = NewCapacity;
-				_size = sz;
+
+				return ret;
 			}
 
-			iterator copy_allocator(iterator position, size_type NewCapacity, vector &vec)
+			allocator_ref copy_allocator(iterator position, size_type NewCapacity,const vector &vec)
 			{
 				difference_type	d = position - begin();
-				copy_allocator(d, NewCapacity, vec);
-/* 				allocator_type  newalloc = allocator_type();
-				value_type*     newptr;
-				difference_type	d = position - begin();
-
-				if (NewCapacity > capacity())
-				{
-					newptr = newalloc.allocate(NewCapacity + 1);
-					size_type i = 0;
-					for (iterator pt = begin(); pt < position; pt++){
-						newalloc.construct(newptr + i, *pt);
-						i++;
-					}
-					this->destroy_allocator(_allocator, _size, _capacity, _container);
-					_container = newptr;
-					_allocator = newalloc;
-					_capacity = NewCapacity;
-				} */
-				return begin() + d;
+				return copy_allocator(d, NewCapacity, vec);
 			}
 
 
@@ -244,10 +235,12 @@ namespace ft
 
 			void reserve (size_type n) //rialloca capacity contenere n elementi
 			{
+				allocator_ref ref;
 				if (n > this->max_size())
 					throw (std::length_error("vector max_size"));
 				if (n > _capacity)
-					copy_allocator(_size, n, *this);
+					ref = copy_allocator(_size, n, *this);
+					updateStatus(ref, _size, n);
 			}
 
 			/* ------------------------------- ELEMENT ACCESS ------------------------------- */
@@ -326,7 +319,7 @@ namespace ft
 				if (_size == _capacity)
 				{
 					//size_type newCapacity = _capacity ? _capacity * 2 : 1;
-					size_type newCapacity = _Calculate_capacity(_size+1);
+					size_type newCapacity = _Calculate_capacity(_size + 1);
 					reserve(newCapacity);
 					_capacity = newCapacity;
 				}
@@ -341,62 +334,42 @@ namespace ft
 				//}
 			}
 
-
-/* 			void insert(iterator position, size_type n, const value_type& val)
-			{
-				size_type newSize = _size + n;
-				size_type rightN = end() - position;
-				int pIndex = position - begin();
-
-				
-				//alloco capacity e ricopio i valori a sinistra di position
-				if (newSize > _capacity)
-				{
-					size_type newCapacity = _Calculate_capacity(newSize);
-					copy_allocator(position, newCapacity, *this);
-				}
-
-				//copio position e i valori alla sua destra traslandoli di n posizioni 
-				for (size_type i = 0 ; i < rightN + (_size > 0); i++){
-					_allocator.construct(_container + newSize -i, *(position +rightN -i));
-				}
-				//inerisco i nuovo valori
-				for (size_type i = 0 ; i < n; i++){
-					_allocator.construct(_container + pIndex + i, val);
-				}
-				_size = newSize;
-			} */
-
 			//insert fill
 			void insert(iterator position, size_type n, const value_type& val)
 			{
 				if (n){
-					size_type	newSize = _size + n;
+					allocator_ref 	ref;
+					size_type		newSize = _size + n;
+					size_type 		newCapacity = _capacity;
+					bool			_mDelete = false;
 					//numero di elementi da traslare verso destra di n posizioni
 					int			toRight = end() - position;
 					int 		pIndex = position - begin();
-
+					ref.newAlloc = _allocator;
+					ref.newPtr = _container;
 
 					//alloco capacity e aggiorno position
 					if (newSize > _capacity)
 					{
-						size_type newCapacity = _Calculate_capacity(newSize);
-						copy_allocator(_size, newCapacity, *this);
-						position = begin() + pIndex;
+						newCapacity = _Calculate_capacity(newSize);
+						ref = copy_allocator(_size, newCapacity, *this);
+						_mDelete = true;
+					//  position = begin() + pIndex;
 					}
 
-					position += toRight;
+					iterator newPosition(ref.newPtr + pIndex);
+					newPosition += toRight;
 					//copio position e i valori alla sua destra traslandoli di n posizioni 
 					for (size_type i = 0 ; i < toRight; i++){
-						--position;
-						_allocator.construct(_container + newSize -i -1, *(position));
+						--newPosition;
+						_allocator.construct(ref.newPtr + newSize -i -1, *(newPosition));
 					}
 
 					//inerisco i nuovo valori
 					for (size_type i = 0 ; i < n; i++){
-						_allocator.construct(_container + pIndex + i, val);
+						_allocator.construct(ref.newPtr + pIndex + i, val);
 					}
-					_size = newSize;
+					updateStatus(ref, newSize, newCapacity, _mDelete);
 				}
 			}
 
@@ -404,48 +377,49 @@ namespace ft
 			iterator insert(iterator position, const value_type& val)
 			{
 				difference_type	d = position - begin();
-				if (_size + 1 > _capacity){
-					copy_allocator(_size, _Calculate_capacity(_size + 1), *this);
-					position = begin() + d;
-				}
 				insert(position, 1, val);
-				return position;
+				return (begin() + d);
 			}
 
 			//insert range
 			template <class InputIterator>
 			void insert (iterator position, InputIterator first, InputIterator last,  typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = 0){
 				size_type	n = last - first;
-				size_type	newSize = _size + n;
-
 				if (n){
+					bool 			_mDelete = false;
+					allocator_ref 	ref;
+					size_type		newSize = _size + n;
+					size_type 		newCapacity = _capacity;
+					
 					//numero di elementi da traslare verso destra di n posizioni
 					int			toRight = end() - position;
 					int 		pIndex = position - begin();
+					ref.newAlloc = _allocator;
+					ref.newPtr = _container;
 
 					//alloco capacity e aggiorno position
 					if (newSize > _capacity)
 					{
-						size_type newCapacity = _Calculate_capacity(newSize);
-						copy_allocator(_size, newCapacity, *this);
-						position = begin() + pIndex;
+						newCapacity = _Calculate_capacity(newSize);
+						ref = copy_allocator(_size, newCapacity, *this);
+						_mDelete = true;
 					}
 
-					position += toRight;
+					iterator newPosition(ref.newPtr + pIndex);
+					newPosition += toRight;
 					//copio position e i valori alla sua destra traslandoli di n posizioni 
 					for (size_type i = 0 ; i < toRight; i++){
-						--position;
-						_allocator.construct(_container + newSize -i -1, *(position));
+						--newPosition;
+						_allocator.construct(ref.newPtr + newSize -i -1, *(newPosition));
 					}
 
 					//inerisco i nuovo valori
 					for (size_type i = 0 ; i < n; i++){
-						_allocator.construct(_container + pIndex + i, *(first));
+						_allocator.construct(ref.newPtr + pIndex + i, *(first));
 						first++;
 					}
-
-					_size = newSize;
-				}
+					updateStatus(ref, newSize, newCapacity, _mDelete);
+				}				
 			}
 
 			iterator erase (iterator position)
