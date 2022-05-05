@@ -34,6 +34,9 @@ if [ $# == 1 ]; then
 	elif [ $1 == "insert" ]; then
 		echo "[TEST INSERT]"
 		clang++ insert_test.cpp -o $FILE
+	elif [ $1 == "erase" ]; then
+		echo "[TEST INSERT]"
+		clang++ erase_test.cpp -o $FILE
 	fi
 	if [ -e $FILE ]
 	then

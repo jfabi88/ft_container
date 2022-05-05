@@ -21,29 +21,28 @@ class prova {
 int main()
 {
     std::vector<prova> v(3);
-    //diversamentedaprova.clear();
     std::cout << "AFTER THE CLEAR\n";
 
-    /* std::vector<int> er(7, 50);
+    std::vector<int> er;
     std::vector<int>::iterator it_er;
     std::vector<int>::iterator it2_er;
-    ft::vector<int> ft_er(7, 50);
+    ft::vector<int> ft_er;
     ft::vector<int>::iterator ift_er;
     ft::vector<int>::iterator ift2_er;
 
-     for (size_t i = 0; i < 20; i++)
+    for (size_t i = 0; i < 20; i++)
     {
-        er.push_back(i * 5);
-        ft_er.push_back(i * 5);
+        er.push_back(i );
+        ft_er.push_back(i);
     } 
 
-    print_vector("STANDARD VECTOR", er);
-    print_sz_cp(er);
+    print_vector("STANDARD VECTOR", er, 0, true);
+    //print_sz_cp(er);
 
-    print_vector("OUR VECTOR", ft_er);
-    print_sz_cp(ft_er); */
+    print_vector("OUR VECTOR", ft_er, 0, true);
+    //print_sz_cp(ft_er); 
 
-    /* std::cout << "----------------ERASE WITH POSITION----------------" << std::endl;
+/*      std::cout << "----------------ERASE WITH POSITION----------------" << std::endl;
 
     it_er = er.begin() + 1;
     er.erase(it_er);
@@ -61,24 +60,21 @@ int main()
     print_sz_cp(ft_er);
     std::cout << "return value = " << *(ift_er) << std::endl;
 
-    std::cout << "----------------ERASE WITH FIRST AND LAST----------------" << std::endl;
+    std::cout << "----------------ERASE WITH FIRST AND LAST----------------" << std::endl; */
 
     it_er = er.begin();
     it2_er = er.begin() + 2;
     er.erase(it_er, it2_er);
 
-    std::cout << "STANDARD VECTOR AFTER ERASE" << std::endl;
-    print_vector("", er);
-    print_sz_cp(er);
+    std::cout << "STANDARD VECTOR AFTER ERASE(begin(), begin()+2)" << std::endl;
+    print_vector("", er, 0, true);
     std::cout << "return value = " << *(it_er) << std::endl;
 
     ift_er = ft_er.begin();
     ift2_er = ft_er.begin() + 2;
     ft_er.erase(ift_er, ift2_er);
 
-    std::cout << "OUR VECTOR AFTER ERASE" << std::endl;
-    print_vector("", ft_er);
-    print_sz_cp(ft_er);
+    std::cout << "OUR VECTOR AFTER  ERASE(begin(), begin()+2)" << std::endl;
+    print_vector("", ft_er, 0, true);
     std::cout << "return value = " << *(ift_er) << std::endl;
-  */
 }

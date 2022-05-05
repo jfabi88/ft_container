@@ -238,9 +238,10 @@ namespace ft
 				allocator_ref ref;
 				if (n > this->max_size())
 					throw (std::length_error("vector max_size"));
-				if (n > _capacity)
+				if (n > _capacity){
 					ref = copy_allocator(_size, n, *this);
 					updateStatus(ref, _size, n);
+				}
 			}
 
 			/* ------------------------------- ELEMENT ACCESS ------------------------------- */
@@ -422,7 +423,7 @@ namespace ft
 				}				
 			}
 
-			iterator erase (iterator position)
+/* 			iterator erase (iterator position)
 			{
 				size_type i = position - begin();
 				_allocator.destroy(_container + i);
@@ -433,23 +434,43 @@ namespace ft
 				_size = i;
 				_allocator.destroy(_container + i);
 				return (position);
-			}
+			} */
 
-			iterator erase (iterator first, iterator last)
+			iterator erase(iterator first, iterator last)
 			{
-				size_type i = first - begin();
-				size_type n = last - first;
-				for (iterator it = first; it < last; it++){
-					_allocator.destroy(_container + i++);
+				//numero elementi da eliminare
+				int n = last - first;
+				//left = indice primo elemento da eliminare
+				int left = first - begin();
+				//right = indice ultimo elemento da eliminare
+				int	right = left + n - 1;
+
+				int  i = right;
+				while (i >= left){
+					_allocator.destroy(_container + i--);
 				}
-				i = first - begin();
-				for (iterator it = last; it < end(); it++){
+
+				_size -= n;
+				for (i = i+1; i < _size; i++){
 					_container[i] = _container[i + n];
-					i++;
 				}
 				_size = i;
+				return (first);
+			}
+
+			iterator erase (iterator position)
+			{
+				//return erase(position, position + 1);
+
+				//indice elemento da eliminare
+				int i = position - begin();
+
 				_allocator.destroy(_container + i);
-				return (last);
+				_size -= 1;
+				for (; i < _size; i++){
+					_container[i] = _container[i + 1];
+				}
+				return (position);
 			}
 
 			void swap (vector& x)

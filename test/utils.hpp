@@ -48,13 +48,13 @@ void print_vector(std::string title, ft::vector<T> &vector, size_t n = 0, bool e
 {
     typedef typename ft::vector<T>::iterator iterator;
     iterator it;
-    if (title != ""){
+    //if (title != ""){
         std::cout << title;
         if (extra){
             std::cout << " (size = " << vector.size() <<  ", capacity = " << vector.capacity() << ")";
         }
         std::cout << std::endl;
-    }
+    //}
     std::cout << "  [";
     for (it = (vector.begin() - n); it != vector.end() + n; it++){
         if (it == vector.begin() || it == vector.end() -1)
