@@ -29,8 +29,11 @@ if [ $# == 1 ]; then
 		echo "[TEST OPERATOR]"
 		clang++ operator_test.cpp -o $FILE
 	elif [ $1 == "reverse" ]; then
-		echo "[TEST REVERSE"
+		echo "[TEST REVERSE]"
 		clang++ reverse_test.cpp -o $FILE
+	elif [ $1 == "insert" ]; then
+		echo "[TEST INSERT]"
+		clang++ insert_test.cpp -o $FILE
 	fi
 	if [ -e $FILE ]
 	then

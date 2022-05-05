@@ -118,6 +118,19 @@ namespace ft
 
 /* ------------------------------- PRIVATE UTILS FUNCTIONS ------------------------------- */
 		private:
+			struct allocator_ref
+			{
+				allocator_type  newAlloc;
+				value_type*     newPtr;
+			};
+
+			allocator_ref __reserve(size_type capacity){
+				allocator_ref   ret;
+				ret.newAlloc = allocator_type();
+				ret.newPtr = ret.newAlloc.allocate(capacity + 1);
+				return (ret);
+			}
+
 			void	destroy_allocator(allocator_type alloc, size_type sz, size_type capacity, value_type * addr)
 			{
 				for (size_type i = 0; i < sz; i++)
@@ -133,13 +146,15 @@ namespace ft
 	
 			void	copy_allocator(size_type sz, size_type NewCapacity, vector vec)
 			{
-				allocator_type  newalloc = allocator_type();
-				value_type*     newptr = newalloc.allocate(NewCapacity + 1);
+				allocator_ref	ref = __reserve(NewCapacity);
+				allocator_type  newalloc = ref.newAlloc;
+				value_type*     newptr = ref.newPtr;
 
 				for (size_type i = 0; i < sz; i++){
 					newalloc.construct(newptr + i, vec.at(i));
 				}
 				this->destroy_allocator(_allocator, _size, _capacity, _container);
+				
 				_container = newptr;
 				_allocator = newalloc;
 				if (NewCapacity > _capacity)
@@ -149,7 +164,9 @@ namespace ft
 
 			iterator copy_allocator(iterator position, size_type NewCapacity, vector vec)
 			{
-				allocator_type  newalloc = allocator_type();
+				difference_type	d = position - begin();
+				copy_allocator(d, NewCapacity, vec);
+/* 				allocator_type  newalloc = allocator_type();
 				value_type*     newptr;
 				difference_type	d = position - begin();
 
@@ -165,9 +182,10 @@ namespace ft
 					_container = newptr;
 					_allocator = newalloc;
 					_capacity = NewCapacity;
-				}
+				} */
 				return begin() + d;
 			}
+
 
 			std::string myOutOfRange(size_type n) const
 			{
@@ -349,26 +367,29 @@ namespace ft
 				_size = newSize;
 			} */
 
+			//insert fill
 			void insert(iterator position, size_type n, const value_type& val)
 			{
 				if (n){
 					size_type	newSize = _size + n;
-					//n di elementi da traslare verso destra di n posizioni
+					//numero di elementi da traslare verso destra di n posizioni
 					int			toRight = end() - position;
 					int 		pIndex = position - begin();
-					
-					//alloco capacity e ricopio i valori a sinistra di position
+
+
+					//alloco capacity e aggiorno position
 					if (newSize > _capacity)
 					{
 						size_type newCapacity = _Calculate_capacity(newSize);
-						position = copy_allocator(position, newCapacity, *this);
+						copy_allocator(_size, newCapacity, *this);
+						position = begin() + pIndex;
 					}
 
 					position += toRight;
 					//copio position e i valori alla sua destra traslandoli di n posizioni 
 					for (size_type i = 0 ; i < toRight; i++){
 						--position;
-						_allocator.construct(_container + newSize -i, *(position));
+						_allocator.construct(_container + newSize -i -1, *(position));
 					}
 
 					//inerisco i nuovo valori
@@ -379,22 +400,50 @@ namespace ft
 				}
 			}
 
+			// insert single element
 			iterator insert(iterator position, const value_type& val)
 			{
-				if (_size + 1 > _capacity)
-					position = copy_allocator(position, _Calculate_capacity(_size + 1), *this);
+				difference_type	d = position - begin();
+				if (_size + 1 > _capacity){
+					copy_allocator(_size, _Calculate_capacity(_size + 1), *this);
+					position = begin() + d;
+				}
 				insert(position, 1, val);
 				return position;
 			}
 
+			//insert range
 			template <class InputIterator>
 			void insert (iterator position, InputIterator first, InputIterator last,  typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = 0){
-				difference_type	p = position - begin();
-				reserve(_size + (last - first));
-				position = begin() + p;
-				while (first != last){
-					position = insert(position, *first)++;
-					first++;
+				size_type	n = last - first;
+				size_type	newSize = _size + n;
+
+				if (n){
+					//numero di elementi da traslare verso destra di n posizioni
+					int			toRight = end() - position;
+					int 		pIndex = position - begin();
+
+
+					//alloco capacity e aggiorno position
+					if (newSize > _capacity)
+					{
+						size_type newCapacity = _Calculate_capacity(newSize);
+						copy_allocator(_size, newCapacity, *this);
+						position = begin() + pIndex;
+					}
+
+					position += toRight;
+					//copio position e i valori alla sua destra traslandoli di n posizioni 
+					for (size_type i = 0 ; i < toRight; i++){
+						--position;
+						_allocator.construct(_container + newSize -i -1, *(position));
+					}
+
+					//inerisco i nuovo valori
+					for (size_type i = 0 ; i < n; i++){
+						_allocator.construct(_container + pIndex + i, *(first));
+						first++;
+					}
 				}
 			}
 

@@ -5,7 +5,7 @@ int main()
 	try {
 /***********************************INSERT***************************************************/
 
-	std::vector<int> ins;
+/* 	std::vector<int> ins;
 	ft::vector<int>  ftins;
 	ft::vector<int>  e;
 
@@ -55,19 +55,16 @@ int main()
 	ftins.push_back(1); ftins.push_back(2); ftins.push_back(3);
 
 	std::vector<int>::const_iterator sit = ins.begin();
-	//ft::vector<int>::const_iterator cit = ftins.begin();
 
 	std::vector<int> vf;
 	ft::vector<int>  gc;
 
 	vf.insert(ins.begin(),ins.begin(),ins.end());
-	//gc.insert(gc.begin(),gc.begin(),gc.end());
-	print_vector("1)beginning", vf);
-	//print_vector("", gc);
+	print_vector("1)beginning", vf); */
 
 /**************************************************************************************/
-	/* ;
-	std::vector<int>::iterator ivf;
+
+/* 	std::vector<int>::iterator ivf;
 	ft::vector<int>::iterator igc;
 
 	vf.push_back(1); vf.push_back(2); vf.push_back(3); vf.push_back(4);vf.push_back(8); vf.push_back(9); vf.push_back(10);
@@ -97,8 +94,8 @@ int main()
 	gc.insert(gc.begin()-2, 2, 45);
 	print_vector("13)insert(vf.begin()-2, 2, 45)", vf, 4);
 	print_vector("", gc, 4);
-	return (0); */
-
+	return (0);
+ */
 
 /***********************************CLEAR***************************************************/
 
@@ -115,8 +112,18 @@ int main()
 	std::cout << ftcl.size() << std::endl;
 	print_vector("after clear\n std= ", cl);
 	print_vector("ft= ", ftcl); */
-	}
-	catch (const std::exception& e) {
+
+	ft::vector<int>  a;
+	for(int i=0; i < 8 ; i++)
+		a.push_back(i);
+
+	print_vector("a= ", a, 0 ,true);
+/* 	a.insert(a.begin() + 3, 3, 9);
+	print_vector("a.insert(a.begin() + 3, 3, 9)", a, 0 ,true); */
+	a.insert(a.begin() + 2, 9);
+	print_vector("a.insert(a.begin() + 2, 9) ", a, 0 ,true);
+
+	}catch (const std::exception& e) {
 		// Code that executes when an exception of type
 		// networkIOException is thrown in the try block
 		// ...
