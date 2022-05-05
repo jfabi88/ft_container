@@ -144,7 +144,7 @@ namespace ft
 				destroy_allocator(_allocator, _size, _capacity, _container);
 			}
 	
-			void	copy_allocator(size_type sz, size_type NewCapacity, vector vec)
+			void	copy_allocator(size_type sz, size_type NewCapacity, vector &vec)
 			{
 				allocator_ref	ref = __reserve(NewCapacity);
 				allocator_type  newalloc = ref.newAlloc;
@@ -162,7 +162,7 @@ namespace ft
 				_size = sz;
 			}
 
-			iterator copy_allocator(iterator position, size_type NewCapacity, vector vec)
+			iterator copy_allocator(iterator position, size_type NewCapacity, vector &vec)
 			{
 				difference_type	d = position - begin();
 				copy_allocator(d, NewCapacity, vec);
@@ -423,7 +423,6 @@ namespace ft
 					int			toRight = end() - position;
 					int 		pIndex = position - begin();
 
-
 					//alloco capacity e aggiorno position
 					if (newSize > _capacity)
 					{
@@ -444,6 +443,8 @@ namespace ft
 						_allocator.construct(_container + pIndex + i, *(first));
 						first++;
 					}
+
+					_size = newSize;
 				}
 			}
 
