@@ -423,19 +423,6 @@ namespace ft
 				}				
 			}
 
-/* 			iterator erase (iterator position)
-			{
-				size_type i = position - begin();
-				_allocator.destroy(_container + i);
-				for (iterator it = position; it < end() - 1; it++){
-					_container[i] = _container[i + 1];
-					i++;
-				}
-				_size = i;
-				_allocator.destroy(_container + i);
-				return (position);
-			} */
-
 			iterator erase(iterator first, iterator last)
 			{
 				//numero elementi da eliminare
@@ -461,7 +448,6 @@ namespace ft
 			iterator erase (iterator position)
 			{
 				//return erase(position, position + 1);
-
 				//indice elemento da eliminare
 				int i = position - begin();
 
