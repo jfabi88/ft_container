@@ -7,17 +7,17 @@ namespace ft
 			typedef T1	first_type;
 			typedef T2	second_type;
 			first_type	first;
-			first_type	second;
+			second_type	second;
 
 			//default constructor
 			pair(){
 				first = first_type();
-				second = first_type();
+				second = second_type();
 			}
 
 			//copy / move constructor (and implicit conversion)
-			template<class U, class V> pair (const pair<U,V>& pr);
-			pair(){
+			template<class U, class V> pair (const pair<U,V>& pr)
+			{
 				first = first_type(pr.first);
 				second = second_type(pr.second);
 			}

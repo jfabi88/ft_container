@@ -11,7 +11,7 @@ namespace ft
 	class map
 	{
 		public:
-
+			typedef pair<const Key, T>   value_type;
 		private:
 	};
 }
