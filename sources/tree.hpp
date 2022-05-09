@@ -4,44 +4,114 @@
 #include "pair.hpp"
 namespace ft {
 
-	template < class K, class T, class Compare = std::less<K> >
+	template < class Pair, class Compare = std::less< typename Pair::first_type> >
 	struct Node
 	{
-		typedef ft::pair<K, T>	value_type;
-		value_type 				value;
-		Node					*parent;
-		Node					*left;
-		Node					*right;
+		public:
+			typedef typename 	Pair::first_type	Ktype;
+			typedef typename	Pair::second_type	Vtype;
+			Ktype									key;
+			Vtype									value;
+			Node									*parent;
+			Node									*left;
+			Node									*right;
 
-		Node() : parent(nullptr), left(nullptr), right(nullptr), value(value_type()) {};
-		Node(const K &k, const T &t) : value(ft::pair<K,T>(k, t)), parent(nullptr), left(nullptr), right(nullptr){};
-		~Node(){};
-		Node(const value_type &v) : value(v), parent(nullptr), left(nullptr), right(nullptr) {};
-		Node(const value_type &v, Node *p) : value(v), parent(p), left(nullptr), right(nullptr){};
-		Node(const value_type &v, Node *p, Node* l, Node* r) : value(v), parent(p), left(l), right(r){};
+			//Node() : parent(nullptr), left(nullptr), right(nullptr), key(Ktype()), value(Vtype()) {};
+			Node(const Ktype &k = Ktype(), const Vtype &v = Vtype() ) : key(k), value(v), parent(nullptr), left(nullptr), right(nullptr){};
+			//Node(const Ktype &k = Ktype(), const Vtype &v) : key(k), value(v), parent(nullptr), left(nullptr), right(nullptr){};
+			~Node(){};
+			//Node(const Vtype &v) : value(v), parent(nullptr), left(nullptr), right(nullptr) {};
+			//Node(const Vtype &v, Node *p) : value(v), parent(p), left(nullptr), right(nullptr){};
+			//Node(const Vtype &v, Node *p, Node* l, Node* r) : value(v), parent(p), left(l), right(r){};
+			Node(Pair &pair) : Node(pair.first, pair.second) {};
 
-/* 		std::ostream& operator<<(std::ostream& os, const Node& n)
-		{
-			os << "(" << n.value.first << "," << n.value.second << ")";
-    		return os;
-		} */
-
-		bool    operator<(const Node &s)    
-		{ 
-			Compare u;
-			return u(value, s.value);
-		} 
+			bool    operator<(const Node &s)    
+			{ 
+				Compare u;
+				return u(key, s.key);
+			} 
 	};
 
-	template <class K, class T, class Compare = std::less<T> >
+	template < class Pair>
+	std::ostream& operator<<(std::ostream& os, const Node<Pair>& n)
+	{
+		os << "(" << n.key << "," << n.value << ")";
+		return os;
+	}
+
+
+	template <class Pair, class Compare = std::less< typename Pair::first_type> >
 	class Tree {
 		public:
-			typedef ft::pair<K, T>	pair_type;
-			Tree() : root(nullptr) {};
-			Tree(Node<K,T> *r) : root(r) {};
-			~Tree(){};
+			typedef	Node<Pair, Compare>				NodeType;
+			typedef	std::allocator< Node<Pair> >	allocator_type;
 		private:
-			Node<K, T, Compare> *root;
+			NodeType 			*root;
+			allocator_type  	allocator;
+		public:
+			Tree() : root(nullptr) {};
+			Tree(NodeType &r){
+				root = allocator.allocate(1);
+				allocator.construct(root, r);
+			}
+
+			//Tree(const Pair &p): Tree(NodeType(p)){}
+
+			Tree(const Pair &p){
+				root = allocator.allocate(1);
+				allocator.construct(root, NodeType(p));
+			}
+
+			~Tree(){
+				//destroyTree();
+			};
+
+			Tree   &operator=(const Tree &t) { root = t.root;  return (*this);}
+
+			NodeType& insert(const Pair &e)
+			{
+				NodeType *t = root, *p = nullptr;
+
+				while (t != NULL){
+					p = t;
+					if ( e < *t )
+						t = t->left;
+					else 
+						t = t->right;
+				}
+				if (p == nullptr){
+					root = Tree(e);
+				}else{
+					if (e < *p)
+						p->left = NodeType(e);
+					else
+						p->right = NodeType(e);
+				}
+				
+				return this->root;
+			}
+
+/* 			NodeType& insert(const NodeType &e)
+			{
+				NodeType *t = root, *p = nullptr;
+
+				while (t != NULL){
+					p = t;
+					if ( e < *t )
+						t = t->left;
+					else 
+						t = t->right;
+				}
+				if (p == nullptr){
+					root = Tree(e);
+				}else{
+					if (e < *p)
+						p->left = 
+				}
+				
+				return this->root;
+			} */
+			//p punta al padre if (e<= pp> value) else    >left = preturn cons_tree ( e,NULL,NULL ); >right = root ;  }
 	};
 
 

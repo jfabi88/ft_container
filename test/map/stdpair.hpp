@@ -128,12 +128,9 @@ struct _LIBCPP_TEMPLATE_VIS pair
     _T1 first;
     _T2 second;
 
-#if !defined(_LIBCPP_CXX03_LANG)
     pair(pair const&) = default;
     pair(pair&&) = default;
-#else
-  // Use the implicitly declared copy constructor in C++03
-#endif
+
 
     template <bool _Val>
     using _EnableB = typename enable_if<_Val, bool>::type;

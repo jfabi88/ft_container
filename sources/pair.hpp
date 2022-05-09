@@ -1,3 +1,5 @@
+#include "structs.hpp"
+
 namespace ft
 {   
 	template <class T1, class T2>
@@ -22,6 +24,10 @@ namespace ft
 				second = second_type(pr.second);
 			}
 
+			pair(const pair &p): pair(p){
+
+			}
+
 			//initialization constructor
 			pair(const first_type& a, const second_type& b)
 			{
@@ -29,13 +35,16 @@ namespace ft
 				second = second_type(a);
 			}
 
-			pair& operator= (const pair& pr)
+			pair& operator= (const pair& rhs)
 			{
-				first = pr.first;
-				second = pr.second;
+				first = rhs.first;
+				second = rhs.second;
+				return *this;
 			}
-
 	};
+
+
+
 
 	template <class T1, class T2>
 	bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
@@ -66,4 +75,11 @@ namespace ft
 	{
 		return ( pair<T1,T2>(x,y) );
 	}
+
+
+	template< class T >
+	struct is_pair :  public false_type{};
+
+	template< class T1 , class T2 >
+	struct is_pair< ft::pair< T1 , T2 > > :  public true_type{};
 }
