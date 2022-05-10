@@ -17,6 +17,11 @@ testMap setMap()
     ret.insert(testMap::value_type("resize.cpp", "resize"));
     ret.insert(testMap::value_type("empty.cpp", "empty"));
     ret.insert(testMap::value_type("reserve.cpp", "reserve"));
+    ret.insert(testMap::value_type("operatorQQ.cpp", "operator[]"));
+    ret.insert(testMap::value_type("at.cpp", "at"));
+    ret.insert(testMap::value_type("front.cpp", "front"));
+    ret.insert(testMap::value_type("back.cpp", "back"));
+    ret.insert(testMap::value_type("assign_fill.cpp", "assign fill"));
     return (ret);
 }
 
