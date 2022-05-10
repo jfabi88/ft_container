@@ -1,7 +1,7 @@
 #include "structs.hpp"
 
 namespace ft
-{   
+{  
 	template <class T1, class T2>
 	struct pair
 	{
@@ -20,8 +20,8 @@ namespace ft
 			//copy / move constructor (and implicit conversion)
 			template<class U, class V> pair (const pair<U,V>& pr)
 			{
-				first = first_type(pr.first);
-				second = second_type(pr.second);
+				first = U(pr.first);
+				second = V(pr.second);
 			}
 
 			pair(const pair &p): pair(p){
@@ -32,7 +32,7 @@ namespace ft
 			pair(const first_type& a, const second_type& b)
 			{
 				first = first_type(a);
-				second = second_type(a);
+				second = second_type(b);
 			}
 
 			pair& operator= (const pair& rhs)
@@ -42,8 +42,6 @@ namespace ft
 				return *this;
 			}
 	};
-
-
 
 
 	template <class T1, class T2>
@@ -56,7 +54,7 @@ namespace ft
 
 	template <class T1, class T2>
 	bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-	{ return lhs.first<rhs.first || (!(rhs.first<lhs.first) && lhs.second<rhs.second); }
+	{ return lhs.first < rhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second); }
 
 	template <class T1, class T2>
 	bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)

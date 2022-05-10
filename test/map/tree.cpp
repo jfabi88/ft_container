@@ -16,7 +16,10 @@ int main(){
 	ft::Tree< ft::pair<std::string, int> > tree2(a);
 	ft::pair<std::string, int> p("ciao", 5);
 	std::pair<std::string, int> pstd("ciao", 5);
-	//ft::Tree< ft::pair<std::string, int> > tree3(p);
+	ft::Tree< ft::pair<std::string, int> > tree3(p);
 
+	ft::Node< ft::pair<std::string, int> > aCopy(a);
+	std::cout << "copy of a: "<< aCopy << std::endl;
+	std::cout << *tree3.getRoot() << std::endl;
 
 }
