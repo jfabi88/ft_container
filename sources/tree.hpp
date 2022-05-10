@@ -28,7 +28,7 @@ struct Node
 
 		}; */
 
-		bool    operator<(const Node &s)    
+		bool    operator<(const Node &s) const
 		{ 
 			Compare u;
 			return u(key, s.key);
@@ -88,7 +88,7 @@ class Tree {
 					t = t->right;
 			}
 			if (p == nullptr){
-				root = Tree(e);
+				root = newNode(e);
 			}else{
 				if (e < *p)
 					p->left = newNode(e);
@@ -99,34 +99,34 @@ class Tree {
 			return this->root;
 		}
 
-		NodeType* rInsert(NodeType & *parent, const NodeType &e)
+		NodeType* rInsert(NodeType *t, const NodeType &e)
 		{
-			if (parent == nullptr){
-				root = newNode(e);
-			}else if (e < *parent){
-				return rInsert(parent->left, e);
+			if (t == nullptr){
+					root = newNode(e);
+				return root;
 			}
-			
-			NodeType *t = root, *p = nullptr;
 
-			while (t != NULL)
-			{
-				p = t;
-				if ( e < *t )
-					t = t->left;
-				else 
-					t = t->right;
-			}
-			if (p == nullptr){
-				root = Tree(e);
+			NodeType *_new;
+
+			if (e < *t){
+				if (t->left)
+					return rInsert(t->left,  e);
+				t->left = _new = newNode(e);
 			}else{
-				if (e < *p)
-					p->left = newNode(e);
-				else
-					p->right = newNode(e);
+				if (t->right)
+					return rInsert(t->right,  e);
+				t->right = _new = newNode(e);
 			}
-			
-			return this->root;
+			return _new;
+		}
+
+		void PreOrder(NodeType *nodo) {
+			if (nodo != NULL) {
+				//visita(nodo);
+				std::cout << *nodo << std::endl;
+				PreOrder(nodo->left);
+				PreOrder(nodo->right);
+			}
 		}
 };
 
