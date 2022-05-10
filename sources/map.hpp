@@ -15,3 +15,5 @@ namespace ft
 		private:
 	};
 }
+
+ft::map<std::string, int> m;
