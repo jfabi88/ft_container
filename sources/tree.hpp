@@ -51,16 +51,20 @@ class Tree {
 	private:
 		NodeType 			*root;
 		allocator_type  	allocator;
+
+		NodeType *newNode(const NodeType &e){
+			NodeType *node = allocator.allocate(1);
+			allocator.construct(node, e);
+			return node;
+		}
 	public:
 		Tree() : root(nullptr) {};
 		Tree(const NodeType &r){
-			root = allocator.allocate(1);
-			allocator.construct(root, r);
+			root = newNode(r);
 		}
 
 		Tree(const Pair &p){
-			root = allocator.allocate(1);
-			allocator.construct(root, NodeType(p));
+			root = newNode(NodeType(p));
 		}
 
 		~Tree(){
@@ -71,11 +75,12 @@ class Tree {
 
 		NodeType* getRoot() { return (root);}
 
-		NodeType& insert(const Pair &e)
+		NodeType* insert(const NodeType &e)
 		{
 			NodeType *t = root, *p = nullptr;
 
-			while (t != NULL){
+			while (t != NULL)
+			{
 				p = t;
 				if ( e < *t )
 					t = t->left;
@@ -86,9 +91,39 @@ class Tree {
 				root = Tree(e);
 			}else{
 				if (e < *p)
-					p->left = NodeType(e);
+					p->left = newNode(e);
 				else
-					p->right = NodeType(e);
+					p->right = newNode(e);
+			}
+			
+			return this->root;
+		}
+
+		NodeType* rInsert(NodeType & *parent, const NodeType &e)
+		{
+			if (parent == nullptr){
+				root = newNode(e);
+			}else if (e < *parent){
+				return rInsert(parent->left, e);
+			}
+			
+			NodeType *t = root, *p = nullptr;
+
+			while (t != NULL)
+			{
+				p = t;
+				if ( e < *t )
+					t = t->left;
+				else 
+					t = t->right;
+			}
+			if (p == nullptr){
+				root = Tree(e);
+			}else{
+				if (e < *p)
+					p->left = newNode(e);
+				else
+					p->right = newNode(e);
 			}
 			
 			return this->root;
