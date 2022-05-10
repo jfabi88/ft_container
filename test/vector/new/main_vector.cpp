@@ -12,6 +12,11 @@ testMap setMap()
 
 
     ret.insert(testMap::value_type("constructor.cpp", "constructor"));
+    ret.insert(testMap::value_type("size.cpp", "size"));
+    ret.insert(testMap::value_type("capacity.cpp", "capacity"));
+    ret.insert(testMap::value_type("resize.cpp", "resize"));
+    ret.insert(testMap::value_type("empty.cpp", "empty"));
+    ret.insert(testMap::value_type("reserve.cpp", "reserve"));
     return (ret);
 }
 

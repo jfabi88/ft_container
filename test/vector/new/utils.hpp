@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <sstream>
-#include "../../sources/vector.hpp"
+#include "../../../sources/vector.hpp"
 
 void printResult(std::string function, int flag, double timeFt, double timeStd)
 {
