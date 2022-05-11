@@ -1,4 +1,5 @@
 #include <iostream>
+#pragma once
 #include "structs.hpp"
 #include <filesystem>
 #include <cstdint>

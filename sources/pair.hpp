@@ -1,3 +1,5 @@
+#ifndef PAIR_HPP
+#define PAIR_HPP
 #include "structs.hpp"
 
 namespace ft
@@ -81,3 +83,5 @@ namespace ft
 	template< class T1 , class T2 >
 	struct is_pair< ft::pair< T1 , T2 > > :  public true_type{};
 }
+
+#endif

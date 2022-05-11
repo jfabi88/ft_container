@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include "structs.hpp"
 #include "iterator.hpp"

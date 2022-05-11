@@ -1,6 +1,7 @@
 #include <iostream>
 #include <map>
 #include "../../sources/tree.hpp"
+#include "mUtils.hpp"
 
 int main(){
 
@@ -23,30 +24,42 @@ int main(){
 	std::cout << *tree3.getRoot() << std::endl;
 
 	typedef ft::pair<int , std::string> pair;
-	ft::Tree< pair > albero;
-	ft::Tree< pair > albero2;
-	albero.insert(pair(20, "20"));
-	albero.insert(pair(50, "cinquanta"));
-	albero.insert(pair(43, "43"));
-	albero.insert(pair(39, "trenta9"));
-	albero.insert(pair(11, "11"));
-	albero.insert(pair(7, "sette"));
-	albero.insert(pair(15, "15"));
-	albero.insert(pair(9, "nove"));
+	ft::Tree< pair > ciliegio;
+	ft::Tree< pair > pero;
+	ciliegio.insert(pair(20, "20"));
+	ciliegio.insert(pair(50, "cinquanta"));
+	ciliegio.insert(pair(43, "43"));
+	ciliegio.insert(pair(39, "trenta9"));
+	ciliegio.insert(pair(11, "11"));
+	ciliegio.insert(pair(7, "sette"));
+	ciliegio.insert(pair(15, "15"));
+	ciliegio.insert(pair(9, "nove"));
 
-	albero2.rInsert(albero2.getRoot(), pair(20, "20"));
-	albero2.rInsert(albero2.getRoot(),pair(50, "cinquanta"));
-	albero2.rInsert(albero2.getRoot(),pair(43, "43"));
-	albero2.rInsert(albero2.getRoot(),pair(39, "trenta9"));
-	albero2.rInsert(albero2.getRoot(),pair(11, "11"));
-	albero2.rInsert(albero2.getRoot(),pair(7, "sette"));
-	albero2.rInsert(albero2.getRoot(),pair(15, "15"));
-	albero2.rInsert(albero2.getRoot(),pair(9, "nove"));
+	pero.rInsert(pero.getRoot(), pair(20, "20"));
+	pero.rInsert(pero.getRoot(),pair(50, "cinquanta"));
+	pero.rInsert(pero.getRoot(),pair(43, "43"));
+	pero.rInsert(pero.getRoot(),pair(39, "trenta9"));
+	pero.rInsert(pero.getRoot(),pair(11, "11"));
+	pero.rInsert(pero.getRoot(),pair(7, "sette"));
+	pero.rInsert(pero.getRoot(),pair(15, "15"));
+	pero.rInsert(pero.getRoot(),pair(9, "nove"));
 
-	std::cout << "Albero 'albero'" << std::endl;
-	albero.PreOrder(albero.getRoot());
+	std::cout << "ciliegio:" << std::endl;
+	ciliegio.PreOrder(ciliegio.getRoot());
 
-	std::cout << "Albero 'albero2'" << std::endl;
-	albero2.PreOrder(albero2.getRoot());
+	std::cout << std::endl << "pero:" << std::endl;
+	pero.PreOrder(pero.getRoot());
 
+	//prinTree(ciliegio);
+	//prinTree<pair>(ciliegio);
+	std::cout << std::endl << " HEY " << std::endl;
+	std::map<int, ft::Node< pair> > _map;
+	//visitNode< ft::Tree< pair >::NodeType >(ciliegio.getRoot(), map, 0);
+	visitNode<  ft::Node< pair> >(ciliegio.getRoot(), _map, 0);
+
+	std::map<int, ft::Node< pair> >::iterator itr;
+	for(itr = _map.begin(); itr != _map.end(); itr++) 
+	{
+		std::cout << itr->first << ") "  << itr->second << '\n';
+	}
 }

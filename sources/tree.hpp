@@ -2,7 +2,14 @@
 #define TREE_HPP
 
 #include "pair.hpp"
+
 namespace ft {
+
+template < class Pair, class Compare >
+bool is_less(typename Pair::first_type a, typename Pair::first_type b){
+	Compare u;
+	return u(a, b);
+}
 
 template < class Pair, class Compare = std::less< typename Pair::first_type> >
 struct Node
@@ -16,17 +23,9 @@ struct Node
 		Node									*left;
 		Node									*right;
 
-		//Node() : parent(nullptr), left(nullptr), right(nullptr), key(Ktype()), value(Vtype()) {};
 		Node(const Ktype &k = Ktype(), const Vtype &v = Vtype() ) : key(k), value(v), parent(nullptr), left(nullptr), right(nullptr){};
-		//Node(const Ktype &k = Ktype(), const Vtype &v) : key(k), value(v), parent(nullptr), left(nullptr), right(nullptr){};
 		~Node(){};
-		//Node(const Vtype &v) : value(v), parent(nullptr), left(nullptr), right(nullptr) {};
-		//Node(const Vtype &v, Node *p) : value(v), parent(p), left(nullptr), right(nullptr){};
-		//Node(const Vtype &v, Node *p, Node* l, Node* r) : value(v), parent(p), left(l), right(r){};
 		Node(const Pair &pair) : key(pair.first), value(pair.second), parent(nullptr), left(nullptr), right(nullptr){};
-/* 		Node(Pair &pair) {
-
-		}; */
 
 		bool    operator<(const Node &s) const
 		{ 
@@ -57,6 +56,12 @@ class Tree {
 			allocator.construct(node, e);
 			return node;
 		}
+
+		void	deleteNode( NodeType *t){
+			allocator.destroy(t);
+			allocator.deallocate(t, 1);
+		}
+
 	public:
 		Tree() : root(nullptr) {};
 		Tree(const NodeType &r){
@@ -77,19 +82,20 @@ class Tree {
 
 		NodeType* insert(const NodeType &e)
 		{
-			NodeType *t = root, *p = nullptr;
+			NodeType *node, *p;
 
-			while (t != NULL)
-			{
-				p = t;
-				if ( e < *t )
-					t = t->left;
-				else 
-					t = t->right;
-			}
-			if (p == nullptr){
-				root = newNode(e);
-			}else{
+			if (this->root == nullptr)
+				this->root = newNode(e);
+			else{
+				node = this->root;
+				while (node != nullptr)
+				{
+					p = node;
+					if ( e < *node )
+						node = node->left;
+					else 
+						node = node->right;
+				}
 				if (e < *p)
 					p->left = newNode(e);
 				else
@@ -120,6 +126,75 @@ class Tree {
 			return _new;
 		}
 
+
+		NodeType *Search(NodeType *t, typename Pair::first_type & target)
+		{
+			if ( t != nullptr ) {
+				if (target == t->key)
+					return t;
+				if (is_less(target, t->key))
+					return Search(t->left, target);
+				return Search(t->right, target);
+			}
+			return nullptr;
+		}
+
+		//Il successore di un nodo X è il più piccolo nodo maggiore del nodo X
+		NodeType *Successor(NodeType *x)
+		{
+			NodeType *t = x->right;
+			while (t->left)
+				t = t->left;
+			return t;
+		}
+
+		// rimpiazza il nodo s con il nodo r
+		void	replace(NodeType *s, NodeType *r)
+		{
+			bool left = is_less(s->key, s->parent->key);
+			r->left = s->left;
+			r->right = s->right;
+			r->parent = s->parent;
+
+			if (left)
+				r->parent->left = r;
+			else
+				r->parent->right = r;
+		}
+
+		NodeType *Remove(typename Pair::first_type & target)
+		{
+			NodeType *t = Search(root, target);
+			NodeType *s;
+			if (t)
+			{
+				//caso 1: t senza figli, caso 2: t con un solo figlio
+				if (!t->left || !t->right)
+				{
+					NodeType *c = (t->left) ? t->left : t->right;
+					if (is_less(t->key, t->parent->key))
+						t->parent->left = c;
+					else
+						t->parent->right = c;
+				}else if( (s = Successor(t)) == t->right){
+					//caso 3a: t ha 2 figli e il figlio destro è il suo successore
+					NodeType *tmp = s->right;
+					replace(t, s);
+					s->right = tmp;
+				}else{
+					//caso 3b: t ha 2 figli e il suo successore si trova nell sottalbero(sinistro) del suo figlio destro
+					//sostituisco il successore con il suo figlio destro
+					s->parent->left = s->right;
+					if (s->right)
+						s->right->parent = s->parent;
+					//sostituisco t con il successore s
+					replace(t, s);
+				}
+				deleteNode(t);
+			}
+			return root;
+		}
+
 		void PreOrder(NodeType *nodo) {
 			if (nodo != NULL) {
 				//visita(nodo);
@@ -128,7 +203,21 @@ class Tree {
 				PreOrder(nodo->right);
 			}
 		}
+
+
 };
+
+/* template <class Pair>
+void prinTree(Tree<Pair> &tree) {
+
+
+	if (nodo != NULL) {
+		//visita(nodo);
+		std::cout << *nodo << std::endl;
+		PreOrder(nodo->left);
+		PreOrder(nodo->right);
+	}
+} */
 
 
 }
