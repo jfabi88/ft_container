@@ -34,6 +34,7 @@ int main(){
 	ciliegio.insert(pair(7, "sette"));
 	ciliegio.insert(pair(15, "15"));
 	ciliegio.insert(pair(9, "nove"));
+	ciliegio.insert(pair(23, "23"));
 
 	pero.rInsert(pero.getRoot(), pair(20, "20"));
 	pero.rInsert(pero.getRoot(),pair(50, "cinquanta"));
@@ -43,23 +44,15 @@ int main(){
 	pero.rInsert(pero.getRoot(),pair(7, "sette"));
 	pero.rInsert(pero.getRoot(),pair(15, "15"));
 	pero.rInsert(pero.getRoot(),pair(9, "nove"));
-
+	
 	std::cout << "ciliegio:" << std::endl;
-	ciliegio.PreOrder(ciliegio.getRoot());
+	//ciliegio.PreOrder(ciliegio.getRoot());
 
 	std::cout << std::endl << "pero:" << std::endl;
-	pero.PreOrder(pero.getRoot());
+	//pero.PreOrder(pero.getRoot());
 
 	//prinTree(ciliegio);
 	//prinTree<pair>(ciliegio);
 	std::cout << std::endl << " HEY " << std::endl;
-	std::map<int, ft::Node< pair> > _map;
-	//visitNode< ft::Tree< pair >::NodeType >(ciliegio.getRoot(), map, 0);
-	visitNode<  ft::Node< pair> >(ciliegio.getRoot(), _map, 0);
-
-	std::map<int, ft::Node< pair> >::iterator itr;
-	for(itr = _map.begin(); itr != _map.end(); itr++) 
-	{
-		std::cout << itr->first << ") "  << itr->second << '\n';
-	}
+	prinTree(ciliegio);
 }

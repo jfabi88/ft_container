@@ -37,7 +37,8 @@ struct Node
 template < class Pair>
 std::ostream& operator<<(std::ostream& os, const Node<Pair>& n)
 {
-	os << "(" << n.key << "," << n.value << ")";
+	//os << "(" << n.key << "," << n.value << ")";
+	os << n.key;
 	return os;
 }
 

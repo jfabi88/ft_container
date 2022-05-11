@@ -1,9 +1,13 @@
 #include <iostream>
 #include <map>
+#include <vector>
 #include "../../sources/tree.hpp"
 #include "../../sources/vector.hpp"
-#include <math.h> 
-
+#include <math.h>
+#define KGRN  "\x1B[32m"
+#define RESET   "\033[0m"
+#define GREEN   "\033[32m"
+#define RED   	"\033[31m" 
 
 /* template <class T , class N = typename ft::Tree<T>::NodeType >
 void visitNode(N *node, std::map<int, N > &map, int n)
@@ -30,14 +34,37 @@ void visitNode(T *node, std::map<int, T > &map, int n = 0, int h = 0)
 	visitNode(node->right, map, a+1, h + 1);
 }
 
-/* template <class T , class N = typename ft::Tree<T>::NodeType>
-void prinTree(ft::Tree<T> &tree)
+template <class P>
+void prinTree(ft::Tree<P> &tree)
 {
-	std::map<int, N> map;
-	typename std::map<int, N>::iterator itr;
-	visitNode(tree.getRoot(), map, 0);
-	for(itr = map.begin(); itr != map.end(); itr++) 
+	typedef typename ft::Tree<P>::NodeType type;
+
+	std::map<int, type > _map;
+	visitNode< type >(tree.getRoot(), _map, 0);
+
+	std::vector<int> v;
+	typename std::map<int, type >::iterator itr;
+	int h = 0, n = 0;
+	std::vector<int>::iterator it;
+	for(itr = _map.begin(); itr != _map.end(); ) 
 	{
-		std::cout << itr->second << '\n';
+		it = std::find(v.begin(), v.end(), n);
+		if (n == itr->first){
+			if (it != v.end())
+				v.erase(it);
+			int p = 2*n + 1;
+			v.push_back(p); v.push_back(p+1);
+			std::cout << itr->first << ") "  << GREEN << itr->second << RESET << " ";
+			itr++;
+		}else if(it != v.end()){
+			std::cout << n << ") " << RED << "x " << RESET;
+			v.erase(it);
+		}
+		if (n == nTreeH(h) - 1){
+			std::cout << "\n";
+			h++;
+		}
+		n++;
 	}
-} */
+	std::cout << "\n";
+}
