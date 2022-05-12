@@ -21,9 +21,10 @@ int main(){
 
 	ft::Node< ft::pair<std::string, int> > aCopy(a);
 	std::cout << "copy of a: "<< aCopy << std::endl;
-	std::cout << *tree3.getRoot() << std::endl;
+	//std::cout << *tree3.getRoot() << std::endl;
 
 	typedef ft::pair<int , std::string> pair;
+	typedef ft::Node< pair > NodeType;
 	ft::Tree< pair > ciliegio;
 	ft::Tree< pair > pero;
 	ciliegio.insert(pair(20, "20"));
@@ -37,22 +38,13 @@ int main(){
 	ciliegio.insert(pair(23, "23"));
 	ciliegio.insert(pair(40, "quaranta"));
 	ciliegio.insert(pair(53, "53"));
-/* 	pero.rInsert(pero.getRoot(), pair(20, "20"));
-	pero.rInsert(pero.getRoot(),pair(50, "cinquanta"));
-	pero.rInsert(pero.getRoot(),pair(43, "43"));
-	pero.rInsert(pero.getRoot(),pair(39, "trenta9"));
-	pero.rInsert(pero.getRoot(),pair(11, "11"));
-	pero.rInsert(pero.getRoot(),pair(7, "sette"));
-	pero.rInsert(pero.getRoot(),pair(15, "15"));
-	pero.rInsert(pero.getRoot(),pair(9, "nove")); */
+	ciliegio.insert(pair(8, "otto"));
+	ciliegio.insert(pair(10, "dieci"));
 	
 	std::cout << "ciliegio:" << std::endl;
 	//ciliegio.PreOrder(ciliegio.getRoot());
-
-	//std::cout << std::endl << "pero:" << std::endl;
-	//pero.PreOrder(pero.getRoot());
-
-	//prinTree(ciliegio);
-	//prinTree<pair>(ciliegio);
 	prinTree(ciliegio);
+	//NodeType *t = ciliegio.Search(ciliegio.getRoot(), 15);
+	ciliegio.Remove(15);
+	std::cout << "\nremove:" << std::endl;
 }

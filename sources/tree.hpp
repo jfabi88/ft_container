@@ -128,12 +128,13 @@ class Tree {
 		}
 
 
-		NodeType *Search(NodeType *t, typename Pair::first_type & target)
+		NodeType *Search(NodeType *t, typename Pair::first_type target)
 		{
 			if ( t != nullptr ) {
 				if (target == t->key)
 					return t;
-				if (is_less(target, t->key))
+				//if (is_less(target, t->key))
+				if (is_less< Pair,Compare>(target, t->key))
 					return Search(t->left, target);
 				return Search(t->right, target);
 			}
@@ -150,9 +151,9 @@ class Tree {
 		}
 
 		// rimpiazza il nodo s con il nodo r
-		void	replace(NodeType *s, NodeType *r)
+		void replace(NodeType *s, NodeType *r)
 		{
-			bool left = is_less(s->key, s->parent->key);
+			bool left = is_less<Pair,Compare>(s->key, s->parent->key);
 			r->left = s->left;
 			r->right = s->right;
 			r->parent = s->parent;
@@ -163,7 +164,7 @@ class Tree {
 				r->parent->right = r;
 		}
 
-		NodeType *Remove(typename Pair::first_type & target)
+		NodeType *Remove(typename Pair::first_type target)
 		{
 			NodeType *t = Search(root, target);
 			NodeType *s;
@@ -173,7 +174,7 @@ class Tree {
 				if (!t->left || !t->right)
 				{
 					NodeType *c = (t->left) ? t->left : t->right;
-					if (is_less(t->key, t->parent->key))
+					if (is_less<Pair,Compare>(t->key, t->parent->key))
 						t->parent->left = c;
 					else
 						t->parent->right = c;
@@ -199,7 +200,7 @@ class Tree {
 		size_t PreOrder(NodeType *nodo) {
 			if (nodo != NULL) {
 				//visita(nodo);
-				std::cout << *nodo << std::endl;
+				//std::cout << *nodo << std::endl;
 				return  std::max(PreOrder(nodo->left), PreOrder(nodo->right)) + 1;
 			}
 			return 0;
