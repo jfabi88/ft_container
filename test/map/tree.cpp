@@ -46,5 +46,34 @@ int main(){
 	prinTree(ciliegio);
 	//NodeType *t = ciliegio.Search(ciliegio.getRoot(), 15);
 	ciliegio.Remove(15);
-	std::cout << "\nremove:" << std::endl;
+	std::cout << std::endl << "remove 15:" << std::endl;
+	prinTree(ciliegio);
+
+	ciliegio.Remove(7);
+	std::cout << std::endl << "remove 7:" << std::endl;
+	prinTree(ciliegio);
+
+	ciliegio.Remove(9);
+	std::cout << std::endl << "remove 9:" << std::endl;
+	prinTree(ciliegio);
+
+	ciliegio.Remove(39);
+	std::cout << std::endl << "remove 39:" << std::endl;
+	prinTree(ciliegio);
+
+	ciliegio.Remove(20);
+	std::cout << std::endl << "remove 20 [Root]:" << std::endl;
+	prinTree(ciliegio);
+
+	ciliegio.Remove(43);
+	std::cout << std::endl << "remove 43:" << std::endl;
+	prinTree(ciliegio);
+
+	ciliegio.Remove(11);
+	std::cout << std::endl << "remove 11:" << std::endl;
+	prinTree(ciliegio);
+
+/* 	ciliegio.Remove(23);
+	std::cout << std::endl << "remove 23 [Root]:" << std::endl;
+	prinTree(ciliegio); */
 }

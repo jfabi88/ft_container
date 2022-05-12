@@ -81,26 +81,29 @@ class Tree {
 
 		NodeType* getRoot() { return (root);}
 
-		NodeType* insert(const NodeType &e)
+		//NodeType* insert(const NodeType &e)
+		NodeType* insert(const Pair &pair)
 		{
-			NodeType *node, *p;
+			NodeType *node, *parent;
 
+			NodeType *_new = newNode(pair);
 			if (this->root == nullptr)
-				this->root = newNode(e);
+				this->root = _new;
 			else{
 				node = this->root;
 				while (node != nullptr)
 				{
-					p = node;
-					if ( e < *node )
+					parent = node;
+					if ( *_new < *node )
 						node = node->left;
 					else 
 						node = node->right;
 				}
-				if (e < *p)
-					p->left = newNode(e);
+				_new->parent = parent;
+				if (*_new < *parent)
+					parent->left = _new;
 				else
-					p->right = newNode(e);
+					parent->right = _new;
 			}
 			
 			return this->root;
@@ -151,17 +154,32 @@ class Tree {
 		}
 
 		// rimpiazza il nodo s con il nodo r
-		void replace(NodeType *s, NodeType *r)
+/* 		void replace(NodeType * &original, NodeType * &replace)
 		{
-			bool left = is_less<Pair,Compare>(s->key, s->parent->key);
-			r->left = s->left;
-			r->right = s->right;
-			r->parent = s->parent;
+			bool left = is_less<Pair,Compare>(original->key, original->parent->key);
+			replace->left = original->left;
+			replace->right = original->right;
+			replace->parent = original->parent;
 
 			if (left)
-				r->parent->left = r;
+				replace->parent->left = replace;
 			else
-				r->parent->right = r;
+				replace->parent->right = replace;
+		} */
+		
+		void replace(NodeType *original, NodeType *replace)
+		{
+			replace->left = original->left;
+			replace->right = original->right;
+			replace->parent = original->parent;
+			if (original->parent)
+			{
+				bool left = is_less<Pair,Compare>(original->key, original->parent->key);
+				if (left)
+					replace->parent->left = replace;
+				else
+					replace->parent->right = replace;
+			}
 		}
 
 		NodeType *Remove(typename Pair::first_type target)
@@ -173,16 +191,24 @@ class Tree {
 				//caso 1: t senza figli, caso 2: t con un solo figlio
 				if (!t->left || !t->right)
 				{
-					NodeType *c = (t->left) ? t->left : t->right;
-					if (is_less<Pair,Compare>(t->key, t->parent->key))
-						t->parent->left = c;
-					else
-						t->parent->right = c;
+					NodeType *child = (t->left) ? t->left : t->right;
+					if (t->parent)
+					{
+						if (is_less<Pair,Compare>(t->key, t->parent->key))
+							t->parent->left = child;
+						else
+							t->parent->right = child;
+					}
+					if (child)
+						child->parent = t->parent;
 				}else if( (s = Successor(t)) == t->right){
 					//caso 3a: t ha 2 figli e il figlio destro è il suo successore
 					NodeType *tmp = s->right;
 					replace(t, s);
 					s->right = tmp;
+					s->left->parent = s;
+					if(t == root)
+						root = s;
 				}else{
 					//caso 3b: t ha 2 figli e il suo successore si trova nell sottalbero(sinistro) del suo figlio destro
 					//sostituisco il successore con il suo figlio destro
@@ -191,7 +217,10 @@ class Tree {
 						s->right->parent = s->parent;
 					//sostituisco t con il successore s
 					replace(t, s);
+					if(t == root)
+					root = s;
 				}
+				
 				deleteNode(t);
 			}
 			return root;
