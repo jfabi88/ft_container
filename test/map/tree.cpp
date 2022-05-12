@@ -35,24 +35,24 @@ int main(){
 	ciliegio.insert(pair(15, "15"));
 	ciliegio.insert(pair(9, "nove"));
 	ciliegio.insert(pair(23, "23"));
-
-	pero.rInsert(pero.getRoot(), pair(20, "20"));
+	ciliegio.insert(pair(40, "quaranta"));
+	ciliegio.insert(pair(53, "53"));
+/* 	pero.rInsert(pero.getRoot(), pair(20, "20"));
 	pero.rInsert(pero.getRoot(),pair(50, "cinquanta"));
 	pero.rInsert(pero.getRoot(),pair(43, "43"));
 	pero.rInsert(pero.getRoot(),pair(39, "trenta9"));
 	pero.rInsert(pero.getRoot(),pair(11, "11"));
 	pero.rInsert(pero.getRoot(),pair(7, "sette"));
 	pero.rInsert(pero.getRoot(),pair(15, "15"));
-	pero.rInsert(pero.getRoot(),pair(9, "nove"));
+	pero.rInsert(pero.getRoot(),pair(9, "nove")); */
 	
 	std::cout << "ciliegio:" << std::endl;
 	//ciliegio.PreOrder(ciliegio.getRoot());
 
-	std::cout << std::endl << "pero:" << std::endl;
+	//std::cout << std::endl << "pero:" << std::endl;
 	//pero.PreOrder(pero.getRoot());
 
 	//prinTree(ciliegio);
 	//prinTree<pair>(ciliegio);
-	std::cout << std::endl << " HEY " << std::endl;
 	prinTree(ciliegio);
 }
