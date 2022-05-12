@@ -196,13 +196,13 @@ class Tree {
 			return root;
 		}
 
-		void PreOrder(NodeType *nodo) {
+		size_t PreOrder(NodeType *nodo) {
 			if (nodo != NULL) {
 				//visita(nodo);
 				std::cout << *nodo << std::endl;
-				PreOrder(nodo->left);
-				PreOrder(nodo->right);
+				return  std::max(PreOrder(nodo->left), PreOrder(nodo->right)) + 1;
 			}
+			return 0;
 		}
 
 
