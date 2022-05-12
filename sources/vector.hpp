@@ -150,10 +150,12 @@ namespace ft
 
 			void updateStatus(allocator_ref &ref, size_type newSize, size_type newCapacity, bool _mDelete = true)
 			{
+				std::cout << "siamo dentro update status" << std::endl;
 				if(_mDelete)
 					this->destroy_allocator();
 				_size = newSize;
 				_container = ref.newPtr;
+				std::cout << "alla fine: " << ref.newPtr << std::endl;
 				_allocator = ref.newAlloc;
 				_capacity = newCapacity;
 			}
@@ -404,6 +406,7 @@ namespace ft
 					{
 						newCapacity = _Calculate_capacity(newSize);
 						ref = copy_allocator(_size, newCapacity, *this);
+						std::cout << ref.newPtr << std::endl;
 						_mDelete = true;
 					}
 
