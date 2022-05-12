@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
 #include <sstream>
 #include "../../../sources/vector.hpp"
@@ -29,13 +30,17 @@ std::string printVector(ft::vector<int> vec)
     it = vec.begin();
     if (it != vec.end())
     {
-        ret += *it;
+        oss << *it;
+        ret += oss.str();
+        oss.str("");
         it++;
     }
     for (; it < vec.end(); it++)
     {
         ret += ", ";
-        ret += *it;
+        oss << *it;
+        ret += oss.str();
+        oss.str("");
     }
     ret += "]\n";
     oss << "Size: " << vec.size() << ", Capacity: " << vec.capacity() << "\n";

@@ -10,22 +10,27 @@ testMap setMap()
 {
     testMap ret;
 
-
-    ret.insert(testMap::value_type("constructor.cpp", "constructor"));
-    ret.insert(testMap::value_type("size.cpp", "size"));
-    ret.insert(testMap::value_type("capacity.cpp", "capacity"));
-    ret.insert(testMap::value_type("resize.cpp", "resize"));
-    ret.insert(testMap::value_type("empty.cpp", "empty"));
-    ret.insert(testMap::value_type("reserve.cpp", "reserve"));
-    ret.insert(testMap::value_type("operatorQQ.cpp", "operator[]"));
-    ret.insert(testMap::value_type("at.cpp", "at"));
-    ret.insert(testMap::value_type("front.cpp", "front"));
-    ret.insert(testMap::value_type("back.cpp", "back"));
-    ret.insert(testMap::value_type("assign_fill.cpp", "assign fill"));
+    ret.insert(testMap::value_type("constructor", "constructor.cpp"));
+    ret.insert(testMap::value_type("size", "size.cpp"));
+    ret.insert(testMap::value_type("capacity", "capacity.cpp"));
+    ret.insert(testMap::value_type("resize", "resize.cpp"));
+    ret.insert(testMap::value_type("empty", "empty.cpp"));
+    ret.insert(testMap::value_type("reserve", "reserve.cpp"));
+    ret.insert(testMap::value_type("operator[]", "operatorQQ.cpp"));
+    ret.insert(testMap::value_type("at", "at.cpp"));
+    ret.insert(testMap::value_type("front", "front.cpp"));
+    ret.insert(testMap::value_type("back", "back.cpp"));
+    ret.insert(testMap::value_type("assign fill", "assign_fill.cpp"));
+    ret.insert(testMap::value_type("assign range", "assign_range.cpp"));
+    ret.insert(testMap::value_type("push_back", "push_back.cpp"));
+    ret.insert(testMap::value_type("clear", "clear.cpp"));
+    ret.insert(testMap::value_type("erase", "erase.cpp"));
+    ret.insert(testMap::value_type("swap", "swap.cpp"));
+    ret.insert(testMap::value_type("insert", "insert.cpp"));
     return (ret);
 }
 
-void compileTest(int *status, char *path, char *env[])
+void compileTest(int *status, char* path, char *env[])
 {
     int fd = open("log.txt", O_RDWR | O_CREAT | O_APPEND, 0777);
     pid_t   pid;
@@ -76,22 +81,27 @@ void execTest(char *env[])
     free(command);
 }
 
-void runTest(char *path, char *env[], testMap map)
+void runTest(std::string path, char *env[], std::string function)
 {
     int status = 0;
-
-    compileTest(&status, path, env);
+    char *newpath = (char *)malloc(sizeof(char) * (path.size() + 1));
+    for (int i = 0; i < path.size(); i++)
+        newpath[i] = path[i];
+    newpath[path.size()] = 0;
+    compileTest(&status, newpath, env);
+    free(newpath);
     if (status == 0) {
         execTest(env);
     }
     else if (status == 256) {
-        std::cout << std::setw(20) << std::left << map.at(path);
+        std::cout << std::setw(20) << std::left << function;
         std::cout << std::setw(20) << std::left << "NOT COMPILED";
         std::cout << std::endl;
     }
     else
     {
-        std::cout << std::setw(20) << std::left << map.at(path);
+        std::cout << status << std::endl;
+        std::cout << std::setw(20) << std::left << function;
         std::cout << std::setw(20) << std::left << "UNKOWN";
         std::cout << std::endl;
     }
@@ -112,8 +122,21 @@ int main(int argc, char *argv[], char *env[])
     std::cout << std::setw(20) << std::left << "RESULT";
     std::cout << std::setw(20) << std::left << "FT_TIME";
     std::cout << std::setw(20) << std::left << "STD_TIME";
+    std::cout << std::setw(20) << std::left << "LEAKS";
     std::cout << std::endl;
 
-    for (int i = 1; i < argc; i++)
-        runTest(argv[i], env, map);
+    if (argc == 1)
+    {
+        for (testMap::iterator it = map.begin(); it != map.end(); it++)
+            runTest(it->second, env, it->first);
+    }
+    else
+    {
+        for (int i = 1; i < argc; i++)
+        {
+            testMap::iterator it = map.find(argv[i]);
+            if (it != map.end())
+                runTest(it->second, env, it->first);
+        }
+    }
 }

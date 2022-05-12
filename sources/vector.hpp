@@ -345,7 +345,7 @@ namespace ft
 					size_type 		newCapacity = _capacity;
 					bool			_mDelete = false;
 					//numero di elementi da traslare verso destra di n posizioni
-					int			toRight = end() - position;
+					size_type	toRight = end() - position;
 					int 		pIndex = position - begin();
 					ref.newAlloc = _allocator;
 					ref.newPtr = _container;
@@ -427,17 +427,18 @@ namespace ft
 			iterator erase(iterator first, iterator last)
 			{
 				//numero elementi da eliminare
-				int n = last - first;
+				size_type n = last - first;
 				//left = indice primo elemento da eliminare
-				int left = first - begin();
+				size_type left = first - begin();
 				//right = indice ultimo elemento da eliminare
-				int	right = left + n - 1;
+				size_type	right = left + n - 1;
 
-				int  i = right;
-				while (i >= left){
+				size_type  i = right;
+				while (i >= left && i != 0){
 					_allocator.destroy(_container + i--);
 				}
-
+				if (left == 0)
+					_allocator.destroy(_container + i--);
 				_size -= n;
 				for (i = i+1; i < _size; i++){
 					_container[i] = _container[i + n];
@@ -450,7 +451,7 @@ namespace ft
 			{
 				//return erase(position, position + 1);
 				//indice elemento da eliminare
-				int i = position - begin();
+				size_type i = position - begin();
 
 				_allocator.destroy(_container + i);
 				_size -= 1;
