@@ -394,7 +394,7 @@ namespace ft
 					size_type 		newCapacity = _capacity;
 					
 					//numero di elementi da traslare verso destra di n posizioni
-					int			toRight = end() - position;
+					size_type	toRight = end() - position;
 					int 		pIndex = position - begin();
 					ref.newAlloc = _allocator;
 					ref.newPtr = _container;
