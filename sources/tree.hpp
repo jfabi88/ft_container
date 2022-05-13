@@ -180,9 +180,54 @@ class Tree {
 				else
 					replace->parent->right = replace;
 			}
+			if (replace->left)
+				replace->left->parent = replace;
+			if (replace->right)
+				replace->right->parent = replace;
 		}
 
 		NodeType *Remove(typename Pair::first_type target)
+		{
+			NodeType *t = Search(root, target);
+			NodeType *s = nullptr;
+			if (t)
+			{
+				//caso 1: t senza figli, caso 2: t con un solo figlio
+				if (!t->left || !t->right)
+				{					
+					s = (t->left) ? t->left : t->right;
+					if (t->parent)
+					{
+						if (is_less<Pair,Compare>(t->key, t->parent->key))
+							t->parent->left = s;
+						else
+							t->parent->right = s;
+					}
+					if (s)
+						s->parent = t->parent;
+				}else if( (s = Successor(t)) == t->right){
+					//caso 3a: t ha 2 figli e il figlio destro è il suo successore
+					NodeType *tmp = s->right;
+					replace(t, s);
+					s->right = tmp;
+					s->left->parent = s;
+				}else{
+					//caso 3b: t ha 2 figli e il suo successore si trova nell sottalbero(sinistro) del suo figlio destro
+					//sostituisco il successore con il suo figlio destro
+					s->parent->left = s->right;
+					if (s->right)
+						s->right->parent = s->parent;
+					//sostituisco t con il successore s
+					replace(t, s);
+				}
+				if (t == root)
+					root = s;				
+				deleteNode(t);
+			}
+			return root;
+		}
+
+/* 		NodeType *Remove(typename Pair::first_type target)
 		{
 			NodeType *t = Search(root, target);
 			NodeType *s;
@@ -224,7 +269,7 @@ class Tree {
 				deleteNode(t);
 			}
 			return root;
-		}
+		} */
 
 		size_t PreOrder(NodeType *nodo) {
 			if (nodo != NULL) {

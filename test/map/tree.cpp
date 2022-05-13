@@ -73,7 +73,36 @@ int main(){
 	std::cout << std::endl << "remove 11:" << std::endl;
 	prinTree(ciliegio);
 
-/* 	ciliegio.Remove(23);
+	ciliegio.Remove(10);
+	std::cout << std::endl << "remove 10:" << std::endl;
+	prinTree(ciliegio);
+
+	ciliegio.Remove(50);
+	std::cout << std::endl << "remove 50:" << std::endl;
+	prinTree(ciliegio);
+
+	ciliegio.Remove(23);
 	std::cout << std::endl << "remove 23 [Root]:" << std::endl;
-	prinTree(ciliegio); */
+	prinTree(ciliegio);
+
+	ciliegio.Remove(40);
+	std::cout << std::endl << "remove 40 [Root]:" << std::endl;
+	prinTree(ciliegio);
+
+	ciliegio.Remove(53);
+	std::cout << std::endl << "remove 53 [Root]:" << std::endl;
+	prinTree(ciliegio);
+
+	ciliegio.Remove(8);
+	std::cout << std::endl << "remove 8:" << std::endl;
+	prinTree(ciliegio);
+
+	ciliegio.Remove(8);
+	std::cout << std::endl << "remove 8:" << std::endl;
+	prinTree(ciliegio);
+
+
+	ciliegio.insert(pair(77, "77"));
+	std::cout << std::endl << "insert 77:" << std::endl;
+	prinTree(ciliegio);
 }
