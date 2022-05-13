@@ -2,6 +2,7 @@
 #define TREE_HPP
 
 #include "pair.hpp"
+#include "iterator.hpp"
 
 namespace ft {
 
@@ -50,7 +51,10 @@ class Tree {
 		typedef	std::allocator< Node<Pair, Compare> >	allocator_type;
 	private:
 		NodeType 			*root;
+		NodeType 			*end;
+		NodeType			*_begin;
 		allocator_type  	allocator;
+		size_t				_size;
 
 		NodeType *newNode(const NodeType &e){
 			NodeType *node = allocator.allocate(1);
@@ -64,16 +68,16 @@ class Tree {
 		}
 
 	public:
-		Tree() : root(nullptr) {};
-		Tree(const NodeType &r){
-			root = newNode(r);
-		}
+		Tree() : root(nullptr), _size(0), end(newNode(NodeType())) {};
 
 		Tree(const Pair &p){
-			root = newNode(NodeType(p));
+			end = newNode(NodeType());
+			insert(p);
+			//root = newNode(NodeType(p));
 		}
 
 		~Tree(){
+			deleteNode(end);
 			//destroyTree();
 		};
 
@@ -87,11 +91,15 @@ class Tree {
 			NodeType *node, *parent;
 
 			NodeType *_new = newNode(pair);
-			if (this->root == nullptr)
+			if (this->root == nullptr){
 				this->root = _new;
+				root->right = end;
+				_begin = root;
+				end->parent = root;
+			}
 			else{
 				node = this->root;
-				while (node != nullptr)
+				while (node != nullptr && node != end)
 				{
 					parent = node;
 					if ( *_new < *node )
@@ -101,11 +109,17 @@ class Tree {
 				}
 				_new->parent = parent;
 				if (*_new < *parent)
+				{
 					parent->left = _new;
+					if (parent == _begin)
+						_begin = _new;
+				}
 				else
 					parent->right = _new;
+				if (node == end)
+					_new->right = end;
 			}
-			
+			_size++;
 			return this->root;
 		}
 
@@ -133,15 +147,14 @@ class Tree {
 
 		NodeType *Search(NodeType *t, typename Pair::first_type target)
 		{
-			if ( t != nullptr ) {
+			if ( t != nullptr && t != end) {
 				if (target == t->key)
 					return t;
-				//if (is_less(target, t->key))
 				if (is_less< Pair,Compare>(target, t->key))
 					return Search(t->left, target);
 				return Search(t->right, target);
 			}
-			return nullptr;
+			return t;
 		}
 
 		//Il successore di un nodo X è il più piccolo nodo maggiore del nodo X
@@ -153,20 +166,13 @@ class Tree {
 			return t;
 		}
 
-		// rimpiazza il nodo s con il nodo r
-/* 		void replace(NodeType * &original, NodeType * &replace)
-		{
-			bool left = is_less<Pair,Compare>(original->key, original->parent->key);
-			replace->left = original->left;
-			replace->right = original->right;
-			replace->parent = original->parent;
-
-			if (left)
-				replace->parent->left = replace;
-			else
-				replace->parent->right = replace;
-		} */
-		
+		NodeType *Next(NodeType *x) {
+			NodeType *t = x->right ? Successor(x) :  x->parent;
+			while (*t < *x)
+				t = t->parent;
+			return t;
+		}
+	
 		void replace(NodeType *original, NodeType *replace)
 		{
 			replace->left = original->left;
@@ -190,7 +196,7 @@ class Tree {
 		{
 			NodeType *t = Search(root, target);
 			NodeType *s = nullptr;
-			if (t)
+			if (t && t != end)
 			{
 				//caso 1: t senza figli, caso 2: t con un solo figlio
 				if (!t->left || !t->right)
@@ -221,55 +227,19 @@ class Tree {
 					replace(t, s);
 				}
 				if (t == root)
-					root = s;				
+					root = s;
+				_size--;
+				if (_size == 0)
+					_begin = end;
+				else if (t == _begin)
+					_begin = Next(_begin);
 				deleteNode(t);
 			}
 			return root;
 		}
 
-/* 		NodeType *Remove(typename Pair::first_type target)
-		{
-			NodeType *t = Search(root, target);
-			NodeType *s;
-			if (t)
-			{
-				//caso 1: t senza figli, caso 2: t con un solo figlio
-				if (!t->left || !t->right)
-				{
-					NodeType *child = (t->left) ? t->left : t->right;
-					if (t->parent)
-					{
-						if (is_less<Pair,Compare>(t->key, t->parent->key))
-							t->parent->left = child;
-						else
-							t->parent->right = child;
-					}
-					if (child)
-						child->parent = t->parent;
-				}else if( (s = Successor(t)) == t->right){
-					//caso 3a: t ha 2 figli e il figlio destro è il suo successore
-					NodeType *tmp = s->right;
-					replace(t, s);
-					s->right = tmp;
-					s->left->parent = s;
-					if(t == root)
-						root = s;
-				}else{
-					//caso 3b: t ha 2 figli e il suo successore si trova nell sottalbero(sinistro) del suo figlio destro
-					//sostituisco il successore con il suo figlio destro
-					s->parent->left = s->right;
-					if (s->right)
-						s->right->parent = s->parent;
-					//sostituisco t con il successore s
-					replace(t, s);
-					if(t == root)
-					root = s;
-				}
-				
-				deleteNode(t);
-			}
-			return root;
-		} */
+		NodeType	*begin() { return (_begin); }
+		size_t		size() { return (_size); }
 
 		size_t PreOrder(NodeType *nodo) {
 			if (nodo != NULL) {
@@ -280,21 +250,41 @@ class Tree {
 			return 0;
 		}
 
-
 };
 
-/* template <class Pair>
-void prinTree(Tree<Pair> &tree) {
-
-
-	if (nodo != NULL) {
-		//visita(nodo);
-		std::cout << *nodo << std::endl;
-		PreOrder(nodo->left);
-		PreOrder(nodo->right);
-	}
-} */
-
+template <class Pair, class Compare = std::less< typename Pair::first_type> >
+class tree_iterator
+{
+	typedef typename Tree<Pair, Compare>::NodeType NodeType;
+	public:
+		typedef typename iterator_traits<NodeType>::iterator_category	iterator_category;
+		typedef typename iterator_traits<NodeType>::value_type			value_type;
+		typedef typename iterator_traits<NodeType>::difference_type		difference_type;
+		typedef typename iterator_traits<NodeType>::pointer				pointer;
+		typedef typename iterator_traits<NodeType>::reference			reference;
+	private:
+		pointer _ptr;
+		pointer next_node(NodeType *x) {
+			NodeType *t = x->right;
+			if (t)
+			{
+				while (t->left)
+					t = t->left;
+			}
+			else
+			{
+				t = x->parent;
+				while (*t < *x)
+					t = t->parent;
+			}
+			return t;
+		}
+	public:
+		tree_iterator(pointer p) : _ptr(p){}
+		tree_iterator& operator++() {_ptr = next_node(_ptr); return *this; };
+		tree_iterator operator++(int) {tree_iterator tmp = *this; _ptr = next_node(_ptr); return tmp; };
+		template <class Key, class T, class Comp, class Alloc> friend class map;
+};
 
 }
 

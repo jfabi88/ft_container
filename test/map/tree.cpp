@@ -14,7 +14,7 @@ int main(){
 	std::cout << b << std::endl;
 	std::cout << std::boolalpha << (a < b) << std::endl;
 
-	ft::Tree< ft::pair<std::string, int> > tree2(a);
+	//ft::Tree< ft::pair<std::string, int> > tree2(a);
 	ft::pair<std::string, int> p("ciao", 5);
 	std::pair<std::string, int> pstd("ciao", 5);
 	ft::Tree< ft::pair<std::string, int> > tree3(p);
@@ -44,6 +44,14 @@ int main(){
 	std::cout << "ciliegio:" << std::endl;
 	//ciliegio.PreOrder(ciliegio.getRoot());
 	prinTree(ciliegio);
+	NodeType *tmp = ciliegio.begin();
+	for (int i = 0; i < ciliegio.size() - 1; i++)
+	{
+		std::cout << *tmp << std::endl;
+		tmp = ciliegio.Next(tmp);
+	}
+	std::cout << *tmp << std::endl;
+/*
 	//NodeType *t = ciliegio.Search(ciliegio.getRoot(), 15);
 	ciliegio.Remove(15);
 	std::cout << std::endl << "remove 15:" << std::endl;
@@ -104,5 +112,5 @@ int main(){
 
 	ciliegio.insert(pair(77, "77"));
 	std::cout << std::endl << "insert 77:" << std::endl;
-	prinTree(ciliegio);
+	prinTree(ciliegio);*/
 }
