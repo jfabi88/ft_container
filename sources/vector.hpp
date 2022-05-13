@@ -150,12 +150,10 @@ namespace ft
 
 			void updateStatus(allocator_ref &ref, size_type newSize, size_type newCapacity, bool _mDelete = true)
 			{
-				std::cout << "siamo dentro update status" << std::endl;
 				if(_mDelete)
 					this->destroy_allocator();
 				_size = newSize;
 				_container = ref.newPtr;
-				std::cout << "alla fine: " << ref.newPtr << std::endl;
 				_allocator = ref.newAlloc;
 				_capacity = newCapacity;
 			}
@@ -406,24 +404,26 @@ namespace ft
 					{
 						newCapacity = _Calculate_capacity(newSize);
 						ref = copy_allocator(_size, newCapacity, *this);
-						std::cout << ref.newPtr << std::endl;
 						_mDelete = true;
 					}
 
 					iterator newPosition(ref.newPtr + pIndex);
 					newPosition += toRight;
-					//copio position e i valori alla sua destra traslandoli di n posizioni 
-					for (size_type i = 0 ; i < toRight; i++){
-						--newPosition;
-						_allocator.construct(ref.newPtr + newSize -i -1, *(newPosition));
-					}
+					//copio position e i valori alla sua destra traslandoli di n posizioni
+					try {
+						for (size_type i = 0 ; i < toRight; i++){
+							--newPosition;
+							_allocator.construct(ref.newPtr + newSize -i -1, *(newPosition));
+						}
 
-					//inerisco i nuovo valori
-					for (size_type i = 0 ; i < n; i++){
-						_allocator.construct(ref.newPtr + pIndex + i, *(first));
-						first++;
+						//inerisco i nuovo valori
+						for (size_type i = 0 ; i < n; i++){
+							_allocator.construct(ref.newPtr + pIndex + i, *(first));
+							first++;
+						}
+						updateStatus(ref, newSize, newCapacity, _mDelete);
 					}
-					updateStatus(ref, newSize, newCapacity, _mDelete);
+					catch (const char *e) { destroy_allocator(ref.newAlloc, newSize, newCapacity, ref.newPtr); throw e;}
 				}				
 			}
 
