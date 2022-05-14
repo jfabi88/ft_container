@@ -19,7 +19,7 @@ int nTreeH(int h)
 template <class T>
 void visitNode(T *node, std::map<int, std::vector< std::pair<int, T> > > &map, int n = 0, int h = 0)
 {
-	if (node == nullptr)
+	if (node == nullptr || node->end)
 		return;
 
 	if ( map.find(h) == map.end() ) {

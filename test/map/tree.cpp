@@ -6,35 +6,59 @@
 int main(){
 
 	ft::Tree< ft::pair<std::string, int> > tree;
-	ft::Node< ft::pair<std::string, int> > a("a", 11);
+/* 	ft::Node< ft::pair<std::string, int> > a("a", 11);
 	ft::Node< ft::pair<std::string, int> > b("b", 12);
 
 	//std::boolalpha;
 	std::cout << a << std::endl;
 	std::cout << b << std::endl;
-	std::cout << std::boolalpha << (a < b) << std::endl;
+	std::cout << std::boolalpha << (a < b) << std::endl; */
 
 	//ft::Tree< ft::pair<std::string, int> > tree2(a);
 	ft::pair<std::string, int> p("ciao", 5);
 	std::pair<std::string, int> pstd("ciao", 5);
 	ft::Tree< ft::pair<std::string, int> > tree3(p);
-
-	ft::Node< ft::pair<std::string, int> > aCopy(a);
-	std::cout << "copy of a: "<< aCopy << std::endl;
+ 
+/* 	ft::Node< ft::pair<std::string, int> > aCopy(a);
+	std::cout << "copy of a: "<< aCopy << std::endl; */
 	//std::cout << *tree3.getRoot() << std::endl;
 
 	typedef ft::pair<int , std::string> pair;
-	typedef ft::Node< pair > NodeType;
+	typedef ft::Tree< pair >::NodeType NodeType;
 	ft::Tree< pair > ciliegio;
 	ft::Tree< pair > pero;
 	ciliegio.insert(pair(20, "20"));
+/* 	std::cout << "ciliegio(20):" << std::endl;
+	prinTree(ciliegio); */
+
 	ciliegio.insert(pair(50, "cinquanta"));
+/* 	std::cout << "ciliegio(50):" << std::endl;
+	prinTree(ciliegio); */
+
 	ciliegio.insert(pair(43, "43"));
+/* 	std::cout << "ciliegio(43):" << std::endl;
+	prinTree(ciliegio); */
+
 	ciliegio.insert(pair(39, "trenta9"));
+/* 	std::cout << "ciliegio(39):" << std::endl;
+	prinTree(ciliegio); */
+
 	ciliegio.insert(pair(11, "11"));
+/* 	std::cout << "ciliegio(11):" << std::endl;
+	prinTree(ciliegio); */
+
 	ciliegio.insert(pair(7, "sette"));
+/* 	std::cout << "ciliegio(7):" << std::endl;
+	prinTree(ciliegio); */
+
 	ciliegio.insert(pair(15, "15"));
-	ciliegio.insert(pair(9, "nove"));
+/* 	std::cout << "ciliegio(15):" << std::endl;
+	prinTree(ciliegio); */
+
+/* 	ciliegio.insert(pair(9, "nove"));
+	std::cout << "ciliegio(9):" << std::endl;
+	prinTree(ciliegio); */
+
 	ciliegio.insert(pair(23, "23"));
 	ciliegio.insert(pair(40, "quaranta"));
 	ciliegio.insert(pair(53, "53"));

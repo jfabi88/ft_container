@@ -133,6 +133,12 @@ class b_iterator
 		template <class T, class Alloc> friend class vector;
 };
 
+/* template <class Pair>
+class map_iterator : public b_iterator<Pair>
+{
+
+}; */
+
 template <class Iter>
 class b_reverse_iterator
 {
