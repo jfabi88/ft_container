@@ -24,16 +24,6 @@ namespace ft
 			pair (const pair<U,V>& pr): first(pr.first), second(pr.second)
 			{
 			}
-/* 			template<class U, class V>
-			pair (const pair<U,V>& pr)
-			{
-				first = U(pr.first);
-				second = V(pr.second);
-			} */
-
-/* 			pair(const pair &p): pair(p){
-
-			} */
 
 			pair(const pair &p){
 				first = first_type(p.first);

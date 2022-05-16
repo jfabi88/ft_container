@@ -37,7 +37,7 @@ struct Node
 		{ 
 			Compare u;
 			return u(first, s.first);
-		} 
+		}
 };
 
 template < class Pair, class Compare>
@@ -66,9 +66,15 @@ class Tree {
 		allocator_type  	_allocator;
 		size_t				_size;
 
-		NodeType *newNode(const NodeType &e){
+		NodeType *newNode(const NodeType &e, bool end = false){
 			NodeType *node = _allocator.allocate(1);
 			_allocator.construct(node, e);
+			if (!end){
+				node->left = _end;
+				node->right = _end;
+			}else
+				node->end = true;
+				
 			return node;
 		}
 
@@ -76,23 +82,23 @@ class Tree {
 			_allocator.destroy(t);
 			_allocator.deallocate(t, 1);
 		}
-
 		
 
 	public:
 		Tree() : _size(0) {
-			this->_end = newNode(NodeType());
-			this->_end->end = true;
+			this->_end = newNode(NodeType(), true);
 			this->_begin = _end;
 			this->_root = _begin;
+			this->_root->parent = this->_end;
 		};
 
 		Tree(const Pair &p){
-			this->_end = newNode(NodeType());
+			this->_end = newNode(NodeType(), true);
 			this->_end->end = true;
 			this->_begin = _end;
 			this->_root = _begin;
-			insert(p);
+			this->_root->parent = this->_end;
+			insert(this->_root, p);
 		}
 
 		~Tree(){
@@ -106,15 +112,14 @@ class Tree {
 
 		bool end(pointer & p){return (p == _end);}
 
-		NodeType* insert(const Pair &pair)
+		NodeType* insert(NodeType * &node, const Pair &pair)
 		{
-			NodeType *node, *parent, *entry;
+			NodeType *parent, *entry;
 
 			entry = newNode(pair);
 			parent = nullptr;
-			node = _root;
 
-			while (!end(node))
+			while (!node->end)
 			{
 				parent = node;
 				if ( *entry < *node )
@@ -136,6 +141,7 @@ class Tree {
 				entry->parent = parent;
 			}else{
 				this->_root = entry;
+				this->_root->parent = this->_end;
 				_begin = _root;
 			}
 
@@ -145,42 +151,6 @@ class Tree {
 			return entry;
 		}
 
-/* 		NodeType* insert(const Pair &pair)
-		{
-			NodeType *node, *parent;
-
-			NodeType *_new = newNode(pair);
-			if (this->root == nullptr){
-				this->root = _new;
-				root->right = end;
-				_begin = root;
-				end->parent = root;
-			}
-			else{
-				node = this->root;
-				while (node != nullptr && node != end)
-				{
-					parent = node;
-					if ( *_new < *node )
-						node = node->left;
-					else 
-						node = node->right;
-				}
-				_new->parent = parent;
-				if (*_new < *parent)
-				{
-					parent->left = _new;
-					if (parent == _begin)
-						_begin = _new;
-				}
-				else
-					parent->right = _new;
-				if (node == end)
-					_new->right = end;
-			}
-			_size++;
-			return _new;
-		} */
 
 /* 		NodeType* rInsert(NodeType *t, const NodeType &e)
 		{
@@ -206,13 +176,16 @@ class Tree {
 
 		NodeType *Search(NodeType *t, typename Pair::first_type target)
 		{
+			//salvo in _end->parent l'ultimo nodo confrontato (per ottimizzare insert)
+			_end->parent = t;
 			if (!end(t)) {
 				if (target == t->first)
 					return t;
-				if (is_less< Pair,Compare>(target, t->first))
+				if (is_less< Pair, Compare>(target, t->first) )
 					return Search(t->left, target);
 				return Search(t->right, target);
 			}
+			
 			return t;
 		}
 
@@ -227,7 +200,7 @@ class Tree {
 
 		NodeType *Next(NodeType *x) {
 			NodeType *t = (!end(x->right)) ? Successor(x) :  x->parent;
-			while (*t < *x)
+			while (!end(t) && *t < *x)
 				t = t->parent;
 			return t;
 		}
@@ -315,8 +288,6 @@ class Tree {
 template <class Node, class Compare >
 class tree_iterator
 {
-	//private:
-		//typedef Node<Pair, Compare> NodeType;
 	public:
 		typedef typename iterator_traits<Node>::iterator_category	iterator_category;
 		typedef typename iterator_traits<Node>::value_type			value_type;
@@ -325,17 +296,17 @@ class tree_iterator
 		typedef typename iterator_traits<Node>::reference			reference;
 	private:
 		pointer _ptr;
-		pointer next_node(pointer *x) {
-			pointer *t = x->right;
-			if (t)
+		pointer next_node(pointer x) {
+			pointer t = x->right;
+			if (!t->end)
 			{
-				while (t->left)
+				while (!t->left->end)
 					t = t->left;
 			}
 			else
 			{
 				t = x->parent;
-				while (*t < *x)
+				while (!t->end && *t < *x)
 					t = t->parent;
 			}
 			return t;

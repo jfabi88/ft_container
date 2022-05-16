@@ -76,12 +76,60 @@ namespace ft
 				NodeType *t = _tree.Search(_tree.getRoot(), val.first);
 
 				if (!_tree.end(t))
-				{
 					return ft::make_pair<iterator,  bool>(iterator(t), false);
-				}
-				t = _tree.insert(val);
+
+				t = _tree.insert(t->parent, val);
 				return ft::make_pair<iterator, bool>(iterator(t), true);
 			}
+
+			//with hint
+			iterator insert(iterator position, const value_type& val)
+			{
+				NodeType *t = _tree.Search(_tree.getRoot(), val.first);
+				
+				//se non esiste un elemento con la stessa chiave
+				if (t->end)
+				{
+					if (_comp(position._ptr->first, val.first)){
+						NodeType *next = _tree.Next(position._ptr);
+						
+						//se sono l'elemento successivo a quello in position
+						if (next->end || _comp(val.first, next->first)){
+							t = _tree.insert(position._ptr, val);
+							return iterator(t);	
+						}
+					}
+					t = _tree.insert(_tree.getRoot(), val);
+				}
+				
+				return iterator(t);				
+			}
+
+			//range
+			template <class InputIterator>
+			void insert (InputIterator first, InputIterator last,  typename enable_if<!is_integral<InputIterator>::value && is_iterator<InputIterator>::value, InputIterator>::type* = 0)
+			{
+
+				for (InputIterator i = first; i != last; i++){
+					insert(const value_type& val)
+					_allocator.construct(_container + next, *i);
+					next++;
+				} 
+
+			}
+
+			key_compare key_comp() const
+			{
+				return key_compare();
+			}
+
+			value_compare value_comp() const
+			{
+				return value_compare(key_comp());
+			}
+
+
+
 	};
 }
 
