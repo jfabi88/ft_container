@@ -4,8 +4,6 @@
 #include "tree.hpp"
 #include  "iterator.hpp"
 
-#include "string.h"
-
 namespace ft
 {   
 	template < class Key,                                    	 // map::key_type
