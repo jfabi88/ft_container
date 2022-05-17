@@ -14,35 +14,26 @@ namespace ft
 			second_type	second;
 
 			//default constructor
-			pair(){
-				first = first_type();
-				second = second_type();
-			}
+			pair() : first(first_type()), second(second_type()) {}
 
 			//copy / move constructor (and implicit conversion)
 			template<class U, class V>
-			pair (const pair<U,V>& pr): first(pr.first), second(pr.second)
-			{
-			}
+			pair (const pair<U,V>& pr): first(pr.first), second(pr.second) {}
 
-			pair(const pair &p){
-				first = first_type(p.first);
-				second = second_type(p.second);
-			}
+			pair(const pair &p) : first(p.getFirst()), second(p.getSecond()) {}
 
 			//initialization constructor
-			pair(const first_type& a, const second_type& b)
-			{
-				first = first_type(a);
-				second = second_type(b);
-			}
+			pair(const first_type& a, const second_type& b) : first(first_type(a)), second(second_type(b)) {}
 
 			pair& operator= (const pair& rhs)
 			{
-				first = rhs.first;
-				second = rhs.second;
+				first = rhs.getFirst();
+				second = rhs.getSecond();
 				return *this;
 			}
+
+			first_type getFirst() const { return first; } ;
+			second_type getSecond() const { return second; } ;
 	};
 
 

@@ -87,7 +87,7 @@ void prinTree(ft::Tree<P> &tree)
 					printSpace(qnt, '_');
 				else
 					printSpace(qnt);
-				value = std::to_string(it->second.key);
+				value = std::to_string(it->second._pair.first);
 				size_t s = nSpace - value.length() - 2;
 				size_t l = s / 2;
 				color = n % colors.size();

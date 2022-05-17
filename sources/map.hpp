@@ -42,8 +42,8 @@ namespace ft
 			typedef typename allocator_type::const_reference			const_reference;
 			typedef typename allocator_type::pointer					pointer;
 			typedef typename allocator_type::const_pointer				const_pointer;
-			typedef tree_iterator<typename TreeType::pointer, key_compare>   	iterator;
-			typedef tree_iterator<typename TreeType::const_pointer, key_compare>   const_iterator;
+			typedef tree_iterator< pointer, key_compare>   	iterator;
+			typedef tree_iterator< const_pointer, key_compare>   const_iterator;
 			typedef std::ptrdiff_t			difference_type;
 			typedef size_t					size_type;
 		private:
@@ -52,8 +52,9 @@ namespace ft
 			pointer     	_container;
 			size_type       _size;
 			key_compare		_comp;
-			ft::Tree<value_type, key_compare>	_tree;
+			
 		public:
+			ft::Tree<value_type, key_compare>	_tree;
 			explicit map(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
 			{
 				_size = 0;
@@ -70,15 +71,25 @@ namespace ft
 				return const_iterator(_tree._begin);
 			}
 
+			iterator end()
+			{
+				return iterator(_tree._end);
+			}
+
+			const_iterator end() const{
+				return const_iterator(_tree._end);
+			}
+
 			//single element
 			pair<iterator,  bool> insert(const value_type& val)
 			{
 				NodeType *t = _tree.Search(_tree.getRoot(), val.first);
 
-				if (!_tree.end(t))
+				if (!t->end)
 					return ft::make_pair<iterator,  bool>(iterator(t), false);
-
-				t = _tree.insert(t->parent, val);
+				//_end->parent punta al ' ultimo nodo confrontato da Search
+				t = _tree.insert(_tree._end->parent, val);
+				//t = _tree.insert(_tree.getRoot(), val);
 				return ft::make_pair<iterator, bool>(iterator(t), true);
 			}
 
@@ -90,11 +101,11 @@ namespace ft
 				//se non esiste un elemento con la stessa chiave
 				if (t->end)
 				{
-					if (_comp(position._ptr->first, val.first)){
+					if (_comp(position._ptr->getFirst(), val.first)){
 						NodeType *next = _tree.Next(position._ptr);
 						
 						//se sono l'elemento successivo a quello in position
-						if (next->end || _comp(val.first, next->first)){
+						if (next->end || _comp(val.first, next->getFirst())){
 							t = _tree.insert(position._ptr, val);
 							return iterator(t);	
 						}
@@ -109,13 +120,9 @@ namespace ft
 			template <class InputIterator>
 			void insert (InputIterator first, InputIterator last,  typename enable_if<!is_integral<InputIterator>::value && is_iterator<InputIterator>::value, InputIterator>::type* = 0)
 			{
-
-				for (InputIterator i = first; i != last; i++){
-					insert(const value_type& val)
-					_allocator.construct(_container + next, *i);
-					next++;
-				} 
-
+				for (; first != last; first++) {
+					insert(*first);
+				}
 			}
 
 			key_compare key_comp() const

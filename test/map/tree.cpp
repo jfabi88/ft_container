@@ -27,31 +27,31 @@ int main(){
 	typedef ft::Tree< pair >::NodeType NodeType;
 	ft::Tree< pair > ciliegio;
 	ft::Tree< pair > pero;
-	ciliegio.insert(pair(20, "20"));
-/* 	std::cout << "ciliegio(20):" << std::endl;
-	prinTree(ciliegio); */
+	ciliegio.insert(ciliegio.getRoot(),pair(20, "20"));
+	std::cout << "ciliegio(20):" << std::endl;
+	prinTree(ciliegio);
 
-	ciliegio.insert(pair(50, "cinquanta"));
-/* 	std::cout << "ciliegio(50):" << std::endl;
-	prinTree(ciliegio); */
+	ciliegio.insert(ciliegio.getRoot(),pair(50, "cinquanta"));
+	std::cout << "ciliegio(50):" << std::endl;
+	prinTree(ciliegio);
 
-	ciliegio.insert(pair(43, "43"));
+	ciliegio.insert(ciliegio.getRoot(),pair(43, "43"));
 /* 	std::cout << "ciliegio(43):" << std::endl;
 	prinTree(ciliegio); */
 
-	ciliegio.insert(pair(39, "trenta9"));
+	ciliegio.insert(ciliegio.getRoot(),pair(39, "trenta9"));
 /* 	std::cout << "ciliegio(39):" << std::endl;
 	prinTree(ciliegio); */
 
-	ciliegio.insert(pair(11, "11"));
+	ciliegio.insert(ciliegio.getRoot(),pair(11, "11"));
 /* 	std::cout << "ciliegio(11):" << std::endl;
 	prinTree(ciliegio); */
 
-	ciliegio.insert(pair(7, "sette"));
+	ciliegio.insert(ciliegio.getRoot(),pair(7, "sette"));
 /* 	std::cout << "ciliegio(7):" << std::endl;
 	prinTree(ciliegio); */
 
-	ciliegio.insert(pair(15, "15"));
+	ciliegio.insert(ciliegio.getRoot(),pair(15, "15"));
 /* 	std::cout << "ciliegio(15):" << std::endl;
 	prinTree(ciliegio); */
 
@@ -59,11 +59,11 @@ int main(){
 	std::cout << "ciliegio(9):" << std::endl;
 	prinTree(ciliegio); */
 
-	ciliegio.insert(pair(23, "23"));
-	ciliegio.insert(pair(40, "quaranta"));
-	ciliegio.insert(pair(53, "53"));
-	ciliegio.insert(pair(8, "otto"));
-	ciliegio.insert(pair(10, "dieci"));
+	ciliegio.insert(ciliegio.getRoot(),pair(23, "23"));
+	ciliegio.insert(ciliegio.getRoot(),pair(40, "quaranta"));
+	ciliegio.insert(ciliegio.getRoot(),pair(53, "53"));
+	ciliegio.insert(ciliegio.getRoot(),pair(8, "otto"));
+	ciliegio.insert(ciliegio.getRoot(),pair(10, "dieci"));
 	
 	std::cout << "ciliegio:" << std::endl;
 	//ciliegio.PreOrder(ciliegio.getRoot());

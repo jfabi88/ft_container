@@ -16,35 +16,36 @@ template < class Pair, class Compare>
 struct Node
 {
 	public:
-		typedef typename 	Pair::first_type	Ktype;
+		typedef typename	Pair::first_type	Ktype;
 		typedef typename	Pair::second_type	Vtype;
-		//Ktype									key;
-		Ktype									first;
-		//Vtype									value;
-		Vtype									second;
+		Pair									_pair;
 		Node									*parent;
 		Node									*left;
 		Node									*right;
 		bool 									end;
 
-		Node(const Ktype &k = Ktype(), const Vtype &v = Vtype() ) : first(k), second(v), parent(nullptr), left(nullptr), right(nullptr), end(false){
-		};
+		Node(const Ktype &k = Ktype(), const Vtype &v = Vtype() ) : _pair(k, v), parent(nullptr), left(nullptr), right(nullptr), end(false)
+		{};
 		~Node(){};
-		Node(const Pair &pair) : first(pair.first), second(pair.second), parent(nullptr), left(nullptr), right(nullptr),  end(false){
+		Node(const Pair &pair) : _pair(pair), parent(nullptr), left(nullptr), right(nullptr),  end(false) {
 		};
 
 		bool    operator<(const Node &s) const
 		{ 
 			Compare u;
-			return u(first, s.first);
+			return u(_pair.first, s._pair.first);
 		}
+
+		Ktype getFirst() { return _pair.getFirst(); };
+		Vtype getSecond() { return _pair.getSecond(); };
 };
 
 template < class Pair, class Compare>
 std::ostream& operator<<(std::ostream& os, const Node<Pair, Compare>& n)
 {
 	//os << "(" << n.key << "," << n.value << ")";
-	os << n.first;
+	os << n._pair.first;
+	//os << n.getFirst();
 	return os;
 }
 
@@ -54,14 +55,14 @@ class Tree {
 	public:
 		typedef	Node<Pair, Compare>							NodeType;
 		typedef	std::allocator< NodeType >					allocator_type;
-		typedef typename allocator_type::reference  		reference;			
+		typedef typename std::allocator< NodeType >::reference  		reference;			
 		typedef typename allocator_type::const_reference	const_reference;
 		typedef typename allocator_type::pointer  			pointer;			
 		typedef typename allocator_type::const_pointer  	const_pointer;
-		NodeType			*_begin;
+		NodeType			*_begin;						//jfabi: da mettere privati e fare
+		NodeType 			*_end;							//getBeign e getEnd
 	private:
 		NodeType 			*_root;
-		NodeType 			*_end;
 		
 		allocator_type  	_allocator;
 		size_t				_size;
@@ -69,11 +70,16 @@ class Tree {
 		NodeType *newNode(const NodeType &e, bool end = false){
 			NodeType *node = _allocator.allocate(1);
 			_allocator.construct(node, e);
-			if (!end){
+			if (end){
+				node->end = true;
+				node->left = node;
+				node->right = node;
+				node->parent = node;
+			}else{
 				node->left = _end;
 				node->right = _end;
-			}else
-				node->end = true;
+				node->parent = _end;
+			}
 				
 			return node;
 		}
@@ -112,9 +118,9 @@ class Tree {
 
 		bool end(pointer & p){return (p == _end);}
 
-		NodeType* insert(NodeType * &node, const Pair &pair)
+		NodeType* insert(NodeType * node, const Pair &pair)
 		{
-			NodeType *parent, *entry;
+			NodeType *parent, *entry, *tmp;
 
 			entry = newNode(pair);
 			parent = nullptr;
@@ -177,11 +183,11 @@ class Tree {
 		NodeType *Search(NodeType *t, typename Pair::first_type target)
 		{
 			//salvo in _end->parent l'ultimo nodo confrontato (per ottimizzare insert)
-			_end->parent = t;
-			if (!end(t)) {
-				if (target == t->first)
+			if (!t->end) {
+				_end->parent = t;
+				if (target == t->getFirst())
 					return t;
-				if (is_less< Pair, Compare>(target, t->first) )
+				if (is_less< Pair, Compare>(target, t->getFirst()) )
 					return Search(t->left, target);
 				return Search(t->right, target);
 			}
@@ -285,19 +291,22 @@ class Tree {
 
 };
 
-template <class Node, class Compare >
+template <class Pair, class Compare >
 class tree_iterator
 {
 	public:
-		typedef typename iterator_traits<Node>::iterator_category	iterator_category;
-		typedef typename iterator_traits<Node>::value_type			value_type;
-		typedef typename iterator_traits<Node>::difference_type		difference_type;
-		typedef typename iterator_traits<Node>::pointer				pointer;
-		typedef typename iterator_traits<Node>::reference			reference;
+		typedef typename iterator_traits<Pair>::value_type				value_type;
+		typedef	Node<value_type, Compare> NodeType;
+		typedef typename std::allocator< NodeType >::pointer 			NodePointer;	   
+		typedef typename iterator_traits<Pair>::iterator_category		iterator_category;
+		
+		typedef ptrdiff_t												difference_type;
+		typedef typename iterator_traits<Pair>::pointer					pointer;
+		typedef typename iterator_traits<Pair>::reference				reference;	
 	private:
-		pointer _ptr;
-		pointer next_node(pointer x) {
-			pointer t = x->right;
+		NodePointer _ptr;
+		NodePointer next_node(NodePointer x) {
+			NodePointer t = x->right;
 			if (!t->end)
 			{
 				while (!t->left->end)
@@ -313,14 +322,16 @@ class tree_iterator
 		}
 	public:
 		tree_iterator() : _ptr(nullptr){}
-		tree_iterator(pointer p) : _ptr(p){}
+		tree_iterator(NodePointer p) : _ptr(p){}
 
-		reference   operator*() const   { return *_ptr; }
-		pointer     operator->()        { return _ptr; }
+		reference   operator*() const   { return _ptr->_pair; }
+		pointer     operator->()        { return &_ptr->_pair; }
 
 		tree_iterator& operator++() {_ptr = next_node(_ptr); return *this; };
 		tree_iterator operator++(int) {tree_iterator tmp = *this; _ptr = next_node(_ptr); return tmp; };
 		template <class Key, class T, class Comp, class Alloc> friend class map;
+
+		bool operator!=(const tree_iterator &tri) { return (_ptr != tri._ptr); };
 };
 
 }
