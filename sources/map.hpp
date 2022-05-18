@@ -3,6 +3,7 @@
 #include "pair.hpp"
 #include "tree.hpp"
 #include  "iterator.hpp"
+#include  "utils.hpp"
 
 namespace ft
 {   
@@ -62,6 +63,11 @@ namespace ft
 				_allocator = alloc;
 			}
 
+			size_type size() const
+			{
+				return this->_size;
+			}
+
 			iterator begin()
 			{
 				return iterator(_tree._begin);
@@ -87,9 +93,8 @@ namespace ft
 
 				if (!t->end)
 					return ft::make_pair<iterator,  bool>(iterator(t), false);
-				//_end->parent punta al ' ultimo nodo confrontato da Search
+				//_end->parent punta al' ultimo nodo confrontato da Search
 				t = _tree.insert(_tree._end->parent, val);
-				//t = _tree.insert(_tree.getRoot(), val);
 				return ft::make_pair<iterator, bool>(iterator(t), true);
 			}
 
@@ -136,6 +141,29 @@ namespace ft
 			}
 
 
+			bool operator== ( const map<Key,T,Compare,Alloc>& rhs){
+					return this->_size == rhs._size || ft::equal(this->begin(), this->end(), rhs.begin());
+			}
+
+			bool operator!= (const map<Key,T,Compare,Alloc>& rhs){
+				return !(*this == rhs);
+			}
+
+			bool operator<  (const map<Key,T,Compare,Alloc>& rhs){
+				return ft::lexicographical_compare(this->begin(), this->end(), rhs.begin());
+			}
+
+			bool operator<= (const map<Key,T,Compare,Alloc>& rhs){
+				return !(rhs < *this);
+			}
+
+			bool operator>  (const map<Key,T,Compare,Alloc>& rhs){
+				return (rhs < *this);
+			}
+
+			bool operator>= (const map<Key,T,Compare,Alloc>& rhs){
+				return !(*this < rhs);
+			}
 
 	};
 }

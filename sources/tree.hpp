@@ -18,33 +18,33 @@ struct Node
 	public:
 		typedef typename	Pair::first_type	Ktype;
 		typedef typename	Pair::second_type	Vtype;
-		Pair									_pair;
+		Pair									_value;
 		Node									*parent;
 		Node									*left;
 		Node									*right;
 		bool 									end;
 
-		Node(const Ktype &k = Ktype(), const Vtype &v = Vtype() ) : _pair(k, v), parent(nullptr), left(nullptr), right(nullptr), end(false)
+		Node(const Ktype &k = Ktype(), const Vtype &v = Vtype() ) : _value(k, v), parent(nullptr), left(nullptr), right(nullptr), end(false)
 		{};
 		~Node(){};
-		Node(const Pair &pair) : _pair(pair), parent(nullptr), left(nullptr), right(nullptr),  end(false) {
+		Node(const Pair &pair) : _value(pair), parent(nullptr), left(nullptr), right(nullptr),  end(false) {
 		};
 
 		bool    operator<(const Node &s) const
 		{ 
 			Compare u;
-			return u(_pair.first, s._pair.first);
+			return u(_value.first, s._value.first);
 		}
 
-		Ktype getFirst() { return _pair.getFirst(); };
-		Vtype getSecond() { return _pair.getSecond(); };
+		Ktype getFirst() { return _value.getFirst(); };
+		Vtype getSecond() { return _value.getSecond(); };
 };
 
 template < class Pair, class Compare>
 std::ostream& operator<<(std::ostream& os, const Node<Pair, Compare>& n)
 {
 	//os << "(" << n.key << "," << n.value << ")";
-	os << n._pair.first;
+	os << n._value.first;
 	//os << n.getFirst();
 	return os;
 }
@@ -324,13 +324,13 @@ class tree_iterator
 		tree_iterator() : _ptr(nullptr){}
 		tree_iterator(NodePointer p) : _ptr(p){}
 
-		reference   operator*() const   { return _ptr->_pair; }
-		pointer     operator->()        { return &_ptr->_pair; }
+		reference   operator*() const   { return _ptr->_value; }
+		pointer     operator->()        { return &_ptr->_value; }
 
 		tree_iterator& operator++() {_ptr = next_node(_ptr); return *this; };
 		tree_iterator operator++(int) {tree_iterator tmp = *this; _ptr = next_node(_ptr); return tmp; };
 		template <class Key, class T, class Comp, class Alloc> friend class map;
-
+		bool operator==(const tree_iterator &tri) { return (_ptr == tri._ptr); };
 		bool operator!=(const tree_iterator &tri) { return (_ptr != tri._ptr); };
 };
 

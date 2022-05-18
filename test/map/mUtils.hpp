@@ -44,10 +44,10 @@ void printSpace(size_t n, char c = ' ')
 }
 
 
-template <class P>
-void prinTree(ft::Tree<P> &tree)
+template <class P, class Compare>
+void prinTree(ft::Tree<P, Compare> &tree)
 {
-	typedef typename ft::Tree<P>::NodeType type;
+	typedef typename ft::Tree<P, Compare>::NodeType type;
 	size_t h = tree.PreOrder(tree.getRoot());
 	size_t max = nTreeH(h);
 	size_t lastN = pow(2, h);
@@ -87,7 +87,7 @@ void prinTree(ft::Tree<P> &tree)
 					printSpace(qnt, '_');
 				else
 					printSpace(qnt);
-				value = std::to_string(it->second._pair.first);
+				value = std::to_string(it->second._value.first);
 				size_t s = nSpace - value.length() - 2;
 				size_t l = s / 2;
 				color = n % colors.size();
