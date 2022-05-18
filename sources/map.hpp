@@ -48,7 +48,7 @@ namespace ft
 			typedef std::ptrdiff_t										difference_type;
 			typedef size_t												size_type;
 			typedef Node<value_type, key_compare> 						map_node;
-			typedef typename Alloc::template rebind<map_node>::other	alloc_node;
+			typedef typename Alloc::template rebind<map_node>::other	alloc_node; 	/* https://stackoverflow.com/questions/14148756/what-does-template-rebind-do */
 		private:
 			typedef typename Tree<value_type, key_compare>::NodeType NodeType;
 			allocator_type  _allocator;
@@ -76,6 +76,8 @@ namespace ft
 			{
 				return (_alloc.max_size());
 			}
+
+
 
 			iterator begin()
 			{
