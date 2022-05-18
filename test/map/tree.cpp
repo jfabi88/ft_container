@@ -1,6 +1,7 @@
 #include <iostream>
 #include <map>
 #include "../../sources/tree.hpp"
+#include "../../sources/map.hpp"
 #include "mUtils.hpp"
 
 int main(){
@@ -24,8 +25,13 @@ int main(){
 	//std::cout << *tree3.getRoot() << std::endl;
 
 	typedef ft::pair<int , std::string> pair;
-	typedef ft::Tree< pair >::NodeType NodeType;
-	ft::Tree< pair > ciliegio;
+	typedef ft::map<int, std::string> MapType;
+	typedef ft::Tree< MapType::value_type,  MapType::key_compare > TreeType;
+	//ft::map<int, std::string>:: ciliegio;
+	TreeType ciliegio;
+	TreeType::pointer NodePointer;
+	typedef TreeType::NodeType NodeType;
+
 	ft::Tree< pair > pero;
 	ciliegio.insert(ciliegio.getRoot(),pair(20, "20"));
 	std::cout << "ciliegio(20):" << std::endl;
