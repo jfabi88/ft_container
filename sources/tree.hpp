@@ -118,6 +118,10 @@ class Tree {
 
 		bool end(pointer & p){return (p == _end);}
 
+/* 		size_type max_size(){
+			return(_allocator.max_size());
+		} */
+
 		NodeType* insert(NodeType * node, const Pair &pair)
 		{
 			NodeType *parent, *entry, *tmp;

@@ -7,7 +7,7 @@
 
 namespace ft
 {   
-	template < class Key,                                    	 // map::key_type
+	template < class Key,                                    	// map::key_type
 		class T,                                       			// map::mapped_type
 		class Compare = std::less<Key>,                     	// map::key_compare
 		class Alloc = std::allocator< pair< const Key, T > >    // map::allocator_type
@@ -43,16 +43,19 @@ namespace ft
 			typedef typename allocator_type::const_reference			const_reference;
 			typedef typename allocator_type::pointer					pointer;
 			typedef typename allocator_type::const_pointer				const_pointer;
-			typedef tree_iterator< pointer, key_compare>   	iterator;
-			typedef tree_iterator< const_pointer, key_compare>   const_iterator;
-			typedef std::ptrdiff_t			difference_type;
-			typedef size_t					size_type;
+			typedef tree_iterator< pointer, key_compare>				iterator;
+			typedef tree_iterator< const_pointer, key_compare>			const_iterator;
+			typedef std::ptrdiff_t										difference_type;
+			typedef size_t												size_type;
+			typedef Node<value_type, key_compare> 						map_node;
+			typedef typename Alloc::template rebind<map_node>::other	alloc_node;
 		private:
 			typedef typename Tree<value_type, key_compare>::NodeType NodeType;
 			allocator_type  _allocator;
 			pointer     	_container;
 			size_type       _size;
 			key_compare		_comp;
+			alloc_node		_alloc;
 			
 		public:
 			ft::Tree<value_type, key_compare>	_tree;
@@ -63,9 +66,15 @@ namespace ft
 				_allocator = alloc;
 			}
 
-			size_type size() const
+/* ------------------------------- CAPACITY ------------------------------- */
+
+			size_type size() const { return this->_size; }
+
+			bool empty() const { return (this->_size == 0); }
+
+			size_type max_size() const 
 			{
-				return this->_size;
+				return (_alloc.max_size());
 			}
 
 			iterator begin()
