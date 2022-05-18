@@ -108,19 +108,30 @@ class Tree {
 		}
 
 		~Tree(){
-			deleteNode(_end);
-			//destroyTree();
+			destroyTree();
 		};
+
+
+		void	clear(NodeType *nodo)
+		{
+			if (nodo != nullptr && !nodo->end) {
+				clear(nodo->left);
+				clear(nodo->right);
+				deleteNode(nodo);
+			}
+		}
+
+		void	destroyTree()
+		{
+			clear(_root);
+			deleteNode(_end);
+		}
 
 		Tree   &operator=(const Tree &t) { _root = t._root;  return (*this);}
 
 		NodeType* & getRoot() { return (_root);}
 
 		bool end(pointer & p){return (p == _end);}
-
-/* 		size_type max_size(){
-			return(_allocator.max_size());
-		} */
 
 		NodeType* insert(NodeType * node, const Pair &pair)
 		{
@@ -184,14 +195,14 @@ class Tree {
 		} */
 
 
-		NodeType *Search(NodeType *t, typename Pair::first_type target)
+		NodeType *Search(NodeType *t, typename Pair::first_type &target)
 		{
 			//salvo in _end->parent l'ultimo nodo confrontato (per ottimizzare insert)
 			if (!t->end) {
 				_end->parent = t;
-				if (target == t->getFirst())
+				if (target == t->_value.first)
 					return t;
-				if (is_less< Pair, Compare>(target, t->getFirst()) )
+				if (is_less< Pair, Compare>(target, t->_value.first) )
 					return Search(t->left, target);
 				return Search(t->right, target);
 			}
@@ -200,7 +211,7 @@ class Tree {
 		}
 
 		//Il successore di un nodo X è il più piccolo nodo maggiore del nodo X
-		NodeType *Successor(NodeType *x)
+		NodeType *Successor(NodeType * &x)
 		{
 			NodeType *t = x->right;
 			while (!end(t->left))
@@ -208,9 +219,13 @@ class Tree {
 			return t;
 		}
 
-		NodeType *Next(NodeType *x) {
-			NodeType *t = (!end(x->right)) ? Successor(x) :  x->parent;
-			while (!end(t) && *t < *x)
+		NodeType *Next(NodeType * &x) {
+			//NodeType *t = (!x->right->end) ? Successor(x) :  x->parent;
+			NodeType *t;
+			if (!x->right->end)
+				return Successor(x);
+			t = x->parent;
+			while (!t->end && *t < *x)
 				t = t->parent;
 			return t;
 		}

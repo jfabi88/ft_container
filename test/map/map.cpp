@@ -67,11 +67,20 @@ int main(){
 
 	prinTree(map2._tree);
 
-	std::cout << "STD-1) " <<  (smap2.begin() == smap.begin()) << "/"
+/* 	std::cout << "STD=) " <<  (smap2.begin() == smap.begin()) << "/"
 					   << ( *(smap2.begin()) == *(smap.begin()) ) << std::endl;
 
-	std::cout << "FT-1) " <<  (map2.begin() == map.begin()) << "/"
-					   << ( *(map2.begin()) == *(map.begin()) ) << std::endl;
+	std::cout << "FT=) " <<  (map2.begin() == map.begin()) << "/"
+					   << ( *(map2.begin()) == *(map.begin()) ) << std::endl; */
+
+	std::cout << "STD=) " <<  (smap2 == smap) << std::endl;
+	std::cout << "FT=) " <<  (map2 == map) << std::endl;
+
+	std::cout << "STD<) " <<  (smap2 < smap) << std::endl;
+	std::cout << "FT<) " <<  (map2 < map) << std::endl;
+
+	std::cout << "STD>) " <<  (smap2 > smap) << std::endl;
+	std::cout << "FT>) " <<  (map2 > map) << std::endl;
 /*     std::map<int, std::string> roma;
 	std::map<int, std::string>::iterator a;
 	std::map<int, std::string>::const_iterator b;
