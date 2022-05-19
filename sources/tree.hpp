@@ -113,9 +113,10 @@ class Tree {
 
 
 		void rotate_left(pointer p){
-			std::cout << "rotate_left of " << *p << " _root == p ?" << (_root == p) << "\n";
+			//std::cout << "rotate_left of " << *p << " _root == p ?" << (_root == p) << "\n";
 			pointer rChild = p->right;
 			p->right = rChild->left;
+			rChild->left->parent = p;
 			rChild->left = p;
 			rChild->parent = p->parent;
 			if (p == p->parent->left)
@@ -126,13 +127,13 @@ class Tree {
 			if(_root == p){
 				_root = rChild;
 			}
-			//pNext(_root);
 		}
 
 		void rotate_right(pointer p){
-			std::cout << "rotate_right of " << *p << " _root == p ?" << (_root == p) << "\n";
+			//std::cout << "rotate_right of " << *p << " _root == p ?" << (_root == p) << "\n";
 			pointer lChild = p->left;
 			p->left = lChild->right;
+			lChild->right->parent = p;
 			lChild->right = p;
 			lChild->parent = p->parent;
 			if (p == p->parent->left)
@@ -144,7 +145,6 @@ class Tree {
 				_root = lChild;
 				//_root->parent = _end;
 			}
-			//pNext(_root);
 		}
 
 		//se il nuovo nodo inserito è la root lo coloro di nero
@@ -392,7 +392,7 @@ class Tree {
 		}
 
 		pointer		begin() { return (_begin); }
-		size_t		size() { return (_size); }
+		size_t		size() const { return (_size); }
 
 		size_t PreOrder(pointer	nodo) {
 			if (nodo != nullptr && !nodo->end) {

@@ -88,9 +88,9 @@ namespace ft
 
 /* ------------------------------- CAPACITY ------------------------------- */
 
-			size_type size() const { return this->_tree._size; }
+			size_type size() const { return this->_tree.size(); }
 
-			bool empty() const { return (this->_tree._size == 0); }
+			bool empty() const { return (this->_tree.size() == 0); }
 
 			size_type max_size() const 
 			{
@@ -132,16 +132,15 @@ namespace ft
 			{
 				NodeType *t;
 				
-				//se il nuovo elemento >= di quello in position
-				if (_comp(position._ptr->_value.first, val.first)){
-					NodeType *next = _tree.Next(position._ptr);
-					//NodeType *next = _tree._end;
-					//se il nuovo elemento è l'elemento successivo a quello in position
-					//if (next->end || _comp(val.first, next->getFirst())){
-					if (next->end || _comp(val.first, next->_value.first)){
-						//std::cout << "Eccomi!!!\n";
-						t = _tree.insert(position._ptr, val);
-						return iterator(t);	
+				if (!position._ptr->end){
+					//se il nuovo elemento >= di quello in position
+					if (_comp(position._ptr->getFirst(), val.first)){
+						NodeType *next = _tree.Next(position._ptr);
+						//se il nuovo elemento è l'elemento successivo a quello in position
+						if (next->end || _comp(val.first, next->getFirst())){
+							t = _tree.insert(position._ptr, val);
+							return iterator(t);	
+						}
 					}
 				}
 
