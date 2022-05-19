@@ -64,8 +64,8 @@ void prinTree(ft::Tree<P, Compare> &tree)
 						// 	green,	blue,	magenta,	yellow,		_RED,	white	
 	const char* args[] = {"\033[32m", "\033[34m", "\033[35m", "\033[33m", "\033[31m", "\033[13m"};
  	std::vector<std::string> colors(args, args + 6);
-/* 	std::cout << "_map.size() = " << _map.size() << "\n";
-	std::cout << "max = " << max << "\n";
+ 	//std::cout << "_map.size() = " << _map.size() << "\n";
+	/*std::cout << "max = " << max << "\n";
 	std::cout << "lastN = " << lastN << "\n";
 	std::cout << "lenght = " << lenght << "\n"; */
 	bool root;
@@ -77,7 +77,6 @@ void prinTree(ft::Tree<P, Compare> &tree)
 		size_t qnt = calcSpace(nOnThisLevel, nSpace, lenght);
 		std::string  value;
 		
-		//for( typename std::vector< std::pair<int, type> >::iterator it = v.begin(); it != v.end(); )
 		typename std::vector< std::pair<int, type> >::iterator it = v.begin();
 		
 		for (size_t i = 0; i < nOnThisLevel; i++)

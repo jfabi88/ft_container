@@ -88,9 +88,9 @@ namespace ft
 
 /* ------------------------------- CAPACITY ------------------------------- */
 
-			size_type size() const { return this->_size; }
+			size_type size() const { return this->_tree._size; }
 
-			bool empty() const { return (this->_size == 0); }
+			bool empty() const { return (this->_tree._size == 0); }
 
 			size_type max_size() const 
 			{
