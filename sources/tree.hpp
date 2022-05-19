@@ -1,8 +1,11 @@
 #ifndef TREE_HPP
 #define TREE_HPP
 
+#define  BLACK	0
+#define  RED	1
 #include "pair.hpp"
 #include "iterator.hpp"
+
 
 namespace ft {
 
@@ -23,11 +26,12 @@ struct Node
 		Node									*left;
 		Node									*right;
 		bool 									end;
+		int										color;
 
-		Node(const Ktype &k = Ktype(), const Vtype &v = Vtype() ) : _value(k, v), parent(nullptr), left(nullptr), right(nullptr), end(false)
+		Node(const Ktype &k = Ktype(), const Vtype &v = Vtype() ) : _value(k, v), parent(nullptr), left(nullptr), right(nullptr), end(false), color(RED)
 		{};
 		~Node(){};
-		Node(const Pair &pair) : _value(pair), parent(nullptr), left(nullptr), right(nullptr),  end(false) {
+		Node(const Pair &pair) : _value(pair), parent(nullptr), left(nullptr), right(nullptr),  end(false), color(RED) {
 		};
 
 		bool    operator<(const Node &s) const
@@ -49,32 +53,39 @@ std::ostream& operator<<(std::ostream& os, const Node<Pair, Compare>& n)
 	return os;
 }
 
-
+/*	PROPRIETà ALBERO ROSSO-NERO (il cui mantenimento garantisce il bilanciamento)
+	1) Ogni nodo ha colore rosso o nero.
+	2) Il nodo root inizialmente è nero.
+	3) Ogni foglia è nera e contiene elemento null;
+	4) Entrambi i figli di ciascun nodo rosso sono neri;
+	5) Ogni cammino da un nodo a una foglia nel suo sottoalbero contiene lo stesso numero di nodi neri.
+*/
 template <class Pair, class Compare = std::less< typename Pair::first_type> >
 class Tree {
 	public:
-		typedef	Node<Pair, Compare>							NodeType;
-		typedef	std::allocator< NodeType >					allocator_type;
+		typedef	Node<Pair, Compare>										NodeType;
+		typedef	std::allocator< NodeType >								allocator_type;
 		typedef typename std::allocator< NodeType >::reference  		reference;			
-		typedef typename allocator_type::const_reference	const_reference;
-		typedef typename allocator_type::pointer  			pointer;			
-		typedef typename allocator_type::const_pointer  	const_pointer;
-		NodeType			*_begin;						//jfabi: da mettere privati e fare
-		NodeType 			*_end;							//getBeign e getEnd
+		typedef typename allocator_type::const_reference				const_reference;
+		typedef typename allocator_type::pointer  						pointer;			
+		typedef typename allocator_type::const_pointer  				const_pointer;
+		pointer				_begin;						//jfabi: da mettere privati e fare
+		pointer				_end;							//getBeign e getEnd
 	private:
-		NodeType 			*_root;
+		pointer				_root;
 		
 		allocator_type  	_allocator;
 		size_t				_size;
 
-		NodeType *newNode(const NodeType &e, bool end = false){
-			NodeType *node = _allocator.allocate(1);
+		pointer	newNode(const NodeType &e, bool end = false){
+			pointer	node = _allocator.allocate(1);
 			_allocator.construct(node, e);
 			if (end){
 				node->end = true;
 				node->left = node;
 				node->right = node;
 				node->parent = node;
+				node->color = BLACK;
 			}else{
 				node->left = _end;
 				node->right = _end;
@@ -84,12 +95,102 @@ class Tree {
 			return node;
 		}
 
-		void	deleteNode( NodeType *t){
+		void	deleteNode(pointer t){
 			_allocator.destroy(t);
 			_allocator.deallocate(t, 1);
 		}
-		
 
+		pointer grandparent(pointer n) {
+			return n->parent->parent;
+		}
+
+		pointer uncle(pointer n) {
+			if (n->parent == grandparent(n)->left)
+				return grandparent(n)->right;
+			else
+				return grandparent(n)->left;
+		}	
+
+
+		void rotate_left(pointer p){
+			std::cout << "rotate_left of " << *p << "\n";
+			pointer rChild = p->right;
+			p->right = rChild->left;
+			rChild->left = p;
+			rChild->parent = p->parent;
+			if (p == p->parent->left)
+				p->parent->left = rChild;
+			else
+				p->parent->right = rChild;
+			p->parent = rChild;
+		}
+
+		void rotate_right(pointer p){
+			std::cout << "rotate_right of " << *p << "\n";
+			pointer lChild = p->left;
+			p->left = lChild->right;
+			lChild->right = p;
+			lChild->parent = p->parent;
+			if (p == p->parent->left)
+				p->parent->left = lChild;
+			else
+				p->parent->right = lChild;
+			p->parent = lChild;
+		}
+
+		//se il nuovo nodo inserito è la root lo coloro di nero
+		void insert_case1(pointer n) {
+			if (n->parent->end)
+				n->color = BLACK;
+			else
+				insert_case2(n);
+		}
+
+		//se il padre del nuovo nodo(rosso) è nero
+		void insert_case2(pointer n) {
+			if (n->parent->color == RED)
+				insert_case3(n);
+		}
+
+		//casi 3,4,5 assumo n abbia nonno G, poichè il padre rosso non può essere per regola 2 la root
+		//se P(padre) e U(uncle) di N sono entrambi rossi, li coloro di nero e G di rosso.
+		//Data possibile violazione delle prorietà 2 e 4 applico ricorsivamente su G insert_case1
+		void insert_case3(pointer n) {
+			if (!uncle(n)->end && uncle(n)->color == RED) {
+				n->parent->color = BLACK;
+				uncle(n)->color = BLACK;
+				grandparent(n)->color = RED;
+				insert_case1(grandparent(n));
+			}
+			else
+				insert_case4(n);
+		}
+
+		//se il padre P è rosso ma lo zio U è nero
+		void insert_case4(pointer n) {
+			//se N figlio destro e P figlio sinistro
+			if (n == n->parent->right && n->parent == grandparent(n)->left) {
+				rotate_left(n->parent);
+				n = n->left;
+			} //se N figlio sinistro e P figlio destro
+			else if (n == n->parent->left && n->parent == grandparent(n)->right) {
+				rotate_right(n->parent);
+				n = n->right;
+			}
+			insert_case5(n);
+		}
+
+		//il padre P è rosso ma il nonno G e lo zio U sono neri, il nuovo nodo N è il figlio sinistro di P, e P è il figlio sinistro di G.
+		void insert_case5(pointer n) {
+			n->parent->color = BLACK;
+			grandparent(n)->color = RED;
+			if (n == n->parent->left && n->parent == grandparent(n)->left) {
+				rotate_right(grandparent(n));
+			} else {
+				/* Here, n == n->parent->right && n->parent == grandparent(n)->right */
+				rotate_left(grandparent(n));
+			}
+		}
 	public:
 		Tree() : _size(0) {
 			this->_end = newNode(NodeType(), true);
@@ -112,7 +213,7 @@ class Tree {
 		};
 
 
-		void	clear(NodeType *nodo)
+		void	clear(pointer nodo)
 		{
 			if (nodo != nullptr && !nodo->end) {
 				clear(nodo->left);
@@ -129,13 +230,13 @@ class Tree {
 
 		Tree   &operator=(const Tree &t) { _root = t._root;  return (*this);}
 
-		NodeType* & getRoot() { return (_root);}
+		pointer & getRoot() { return (_root);}
 
 		bool end(pointer & p){return (p == _end);}
 
-		NodeType* insert(NodeType * node, const Pair &pair)
+		pointer insert(pointer node, const Pair &pair)
 		{
-			NodeType *parent, *entry, *tmp;
+			pointer parent, entry, tmp;
 
 			entry = newNode(pair);
 			parent = nullptr;
@@ -169,33 +270,11 @@ class Tree {
 			entry->left = _end;
 			entry->right = _end;
 			_size++;
+			//insert_case1(entry);
 			return entry;
 		}
 
-
-/* 		NodeType* rInsert(NodeType *t, const NodeType &e)
-		{
-			if (t == nullptr){
-					root = newNode(e);
-				return root;
-			}
-
-			NodeType *_new;
-
-			if (e < *t){
-				if (t->left)
-					return rInsert(t->left,  e);
-				t->left = _new = newNode(e);
-			}else{
-				if (t->right)
-					return rInsert(t->right,  e);
-				t->right = _new = newNode(e);
-			}
-			return _new;
-		} */
-
-
-		NodeType *Search(NodeType *t, typename Pair::first_type &target)
+		pointer	Search(pointer	t, typename Pair::first_type &target)
 		{
 			//salvo in _end->parent l'ultimo nodo confrontato (per ottimizzare insert)
 			if (!t->end) {
@@ -210,18 +289,18 @@ class Tree {
 			return t;
 		}
 
-		//Il successore di un nodo X è il più piccolo nodo maggiore del nodo X
-		NodeType *Successor(NodeType * &x)
+		//Il successore di un nodo X è il più piccolo nodo maggiore del sottalbero destro del nodo X
+		pointer	Successor(pointer &x)
 		{
-			NodeType *t = x->right;
+			pointer t = x->right;
 			while (!end(t->left))
 				t = t->left;
 			return t;
 		}
 
-		NodeType *Next(NodeType * &x) {
-			//NodeType *t = (!x->right->end) ? Successor(x) :  x->parent;
-			NodeType *t;
+		pointer	Next(pointer &x) {
+			//pointer	t = (!x->right->end) ? Successor(x) :  x->parent;
+			pointer	t;
 			if (!x->right->end)
 				return Successor(x);
 			t = x->parent;
@@ -230,7 +309,7 @@ class Tree {
 			return t;
 		}
 	
-		void replace(NodeType *original, NodeType *replace)
+		void replace(pointer	original, pointer	replace)
 		{
 			replace->left = original->left;
 			replace->right = original->right;
@@ -249,10 +328,10 @@ class Tree {
 				replace->right->parent = replace;
 		}
 
-		NodeType *Remove(typename Pair::first_type target)
+		pointer	Remove(typename Pair::first_type target)
 		{
-			NodeType *t = Search(_root, target);
-			NodeType *s = _end;
+			pointer	t = Search(_root, target);
+			pointer	s = _end;
 
 			if (!end(t))
 			{
@@ -271,7 +350,7 @@ class Tree {
 						s->parent = t->parent;
 				}else if( (s = Successor(t)) == t->right){
 					//caso 3a: t ha 2 figli e il figlio destro è il suo successore
-					NodeType *tmp = s->right;
+					pointer	tmp = s->right;
 					replace(t, s);
 					s->right = tmp;
 					s->left->parent = s;
@@ -296,10 +375,10 @@ class Tree {
 			return _root;
 		}
 
-		NodeType	*begin() { return (_begin); }
+		pointer		begin() { return (_begin); }
 		size_t		size() { return (_size); }
 
-		size_t PreOrder(NodeType *nodo) {
+		size_t PreOrder(pointer	nodo) {
 			if (nodo != nullptr && !nodo->end) {
 				//visita(nodo);
 				//std::cout << *nodo << std::endl;

@@ -42,12 +42,12 @@ int main(){
 	prinTree(ciliegio);
 
 	ciliegio.insert(ciliegio.getRoot(),pair(43, "43"));
-/* 	std::cout << "ciliegio(43):" << std::endl;
-	prinTree(ciliegio); */
+	std::cout << "ciliegio(43):" << std::endl;
+	prinTree(ciliegio);
 
 	ciliegio.insert(ciliegio.getRoot(),pair(39, "trenta9"));
-/* 	std::cout << "ciliegio(39):" << std::endl;
-	prinTree(ciliegio); */
+	std::cout << "ciliegio(39):" << std::endl;
+	prinTree(ciliegio);
 
 	ciliegio.insert(ciliegio.getRoot(),pair(11, "11"));
 /* 	std::cout << "ciliegio(11):" << std::endl;

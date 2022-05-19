@@ -5,10 +5,10 @@
 #include "../../sources/vector.hpp"
 #include <math.h>
 #include <iomanip>
-#define KGRN  "\x1B[32m"
+#define _KGRN  "\x1B[32m"
 #define RESET   "\033[0m"
 #define GREEN   "\033[32m"
-#define RED   	"\033[31m" 
+#define _RED   	"\033[31m" 
 
 
 int nTreeH(int h)
@@ -61,14 +61,14 @@ void prinTree(ft::Tree<P, Compare> &tree)
 	typename std::map<int, std::vector< std::pair<int, type> > >::iterator itm;
 
 	int lVl = 0, last = 0, n = 0, color = 0, pcolor = 5;
-						// 	green,	blue,	magenta,	yellow,		red,	white	
+						// 	green,	blue,	magenta,	yellow,		_RED,	white	
 	const char* args[] = {"\033[32m", "\033[34m", "\033[35m", "\033[33m", "\033[31m", "\033[13m"};
  	std::vector<std::string> colors(args, args + 6);
 /* 	std::cout << "_map.size() = " << _map.size() << "\n";
 	std::cout << "max = " << max << "\n";
 	std::cout << "lastN = " << lastN << "\n";
 	std::cout << "lenght = " << lenght << "\n"; */
-
+	bool root;
 	for(itm = _map.begin(); itm != _map.end(); itm++) 
 	{
 		lVl = itm->first;
@@ -79,8 +79,10 @@ void prinTree(ft::Tree<P, Compare> &tree)
 		
 		//for( typename std::vector< std::pair<int, type> >::iterator it = v.begin(); it != v.end(); )
 		typename std::vector< std::pair<int, type> >::iterator it = v.begin();
+		
 		for (size_t i = 0; i < nOnThisLevel; i++)
 		{
+			root = (lVl == 0 && i== 0);
 			if (n == it->first){
 				//se sono fratello destro(it->first % 2 == 0) ed è stato stampato il mio fratello sinistro (last == it->first-1)
 				if ( (it->first % 2 == 0) && last == it->first-1)
@@ -92,9 +94,10 @@ void prinTree(ft::Tree<P, Compare> &tree)
 				size_t l = s / 2;
 				color = n % colors.size();
 				pcolor = ((n-1) / 2)  % colors.size();
-				std::cout << std::string(s-l,' ') << colors.at(pcolor) << "[" << RESET
-				<< colors.at(color) << value << RESET 
-				<< colors.at(pcolor) << "]" << RESET << std::string(l,' ');
+				bool left = (it->second < *it->second.parent);
+				std::cout << std::string(s-l,' ') << colors.at(pcolor) << (left || root? "[" : "") << RESET
+				<< colors.at(color) << value << RESET << (it->second.color? "r" : "b")
+				<< colors.at(pcolor) << (!left || root? "]" : "") << RESET << std::string(l,' ');
 				//color = (n + 1) % colors.size();
 				last = it->first;
 				it++;
