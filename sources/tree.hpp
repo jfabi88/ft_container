@@ -10,12 +10,17 @@
 namespace ft {
 
 template < class Pair, class Compare >
-bool is_less(typename Pair::first_type a, typename Pair::first_type b){
+bool is_less(typename Pair::first_type &a, typename Pair::first_type &b){
 	Compare u;
 	return u(a, b);
 }
 
-template < class Pair, class Compare>
+template < class Pair, class Compare >
+bool is_less(Pair &a, Pair &b){
+	return (is_less(a.first, b.first));
+}
+
+template < class Pair>
 struct Node
 {
 	public:
@@ -34,18 +39,33 @@ struct Node
 		Node(const Pair &pair) : _value(pair), parent(nullptr), left(nullptr), right(nullptr),  end(false), color(RED) {
 		};
 
-		bool    operator<(const Node &s) const
+/* 		Node(const Node &x){
+			*this = x;
+		}
+
+		Node   &operator=(const Node &s) 
+		{
+			_value = s._value;
+			parent = s.parent;
+			left = s.left;
+			right = s.right;
+			end = s.end;
+			color = s.color;
+			return (*this);
+		} */
+
+/* 		bool    operator<(const Node &s) const
 		{ 
 			Compare u;
 			return u(_value.first, s._value.first);
-		}
+		} */
 
 		Ktype getFirst() { return _value.getFirst(); };
 		Vtype getSecond() { return _value.getSecond(); };
 };
 
-template < class Pair, class Compare>
-std::ostream& operator<<(std::ostream& os, const Node<Pair, Compare>& n)
+template < class Pair>
+std::ostream& operator<<(std::ostream& os, const Node<Pair>& n)
 {
 	//os << "(" << n.key << "," << n.value << ")";
 	os << n._value.first;
@@ -63,7 +83,7 @@ std::ostream& operator<<(std::ostream& os, const Node<Pair, Compare>& n)
 template <class Pair, class Compare = std::less< typename Pair::first_type> >
 class Tree {
 	public:
-		typedef	Node<Pair, Compare>										NodeType;
+		typedef	Node<Pair>												NodeType;
 		typedef	std::allocator< NodeType >								allocator_type;
 		typedef typename std::allocator< NodeType >::reference  		reference;			
 		typedef typename allocator_type::const_reference				const_reference;
@@ -100,16 +120,24 @@ class Tree {
 			_allocator.deallocate(t, 1);
 		}
 
+		void destroyNode(pointer t) {
+			_allocator.destroy(t);
+		}
+
 		pointer grandparent(pointer n) {
+			if (n->parent->end)
+				return this->_end;
 			return n->parent->parent;
 		}
 
 		pointer uncle(pointer n) {
+			if (grandparent(n)->end)
+				return this->_end;
 			if (n->parent == grandparent(n)->left)
 				return grandparent(n)->right;
 			else
 				return grandparent(n)->left;
-		}	
+		}
 
 
 		void rotate_left(pointer p){
@@ -126,6 +154,7 @@ class Tree {
 			p->parent = rChild;
 			if(_root == p){
 				_root = rChild;
+				_root->parent = _end;
 			}
 		}
 
@@ -143,7 +172,7 @@ class Tree {
 			p->parent = lChild;
 			if (_root == p){
 				_root = lChild;
-				//_root->parent = _end;
+				_root->parent = _end;
 			}
 		}
 
@@ -205,15 +234,15 @@ class Tree {
 			this->_end = newNode(NodeType(), true);
 			this->_begin = _end;
 			this->_root = _begin;
-			this->_root->parent = this->_end;
+			//this->_root->parent = this->_end;
 		};
 
 		Tree(const Pair &p){
 			this->_end = newNode(NodeType(), true);
-			this->_end->end = true;
+			//this->_end->end = true;
 			this->_begin = _end;
 			this->_root = _begin;
-			this->_root->parent = this->_end;
+			//this->_root->parent = this->_end;
 			insert(this->_root, p);
 		}
 
@@ -222,13 +251,22 @@ class Tree {
 		};
 
 
-		void	clear(pointer nodo)
+		void	ft_clear(pointer nodo)
 		{
 			if (nodo != nullptr && !nodo->end) {
 				clear(nodo->left);
 				clear(nodo->right);
 				deleteNode(nodo);
 			}
+		}
+
+		void clear(pointer nodo)
+		{
+			ft_clear(nodo);
+			this->_begin = _end;
+			this->_root = _end;
+			this->_size = 0;
+			this->_root->parent = this->_end;
 		}
 
 		void	destroyTree()
@@ -253,7 +291,7 @@ class Tree {
 			while (!node->end)
 			{
 				parent = node;
-				if ( *entry < *node )
+				if ( less(entry, node) )
 					node = node->left;
 				else 
 					node = node->right;
@@ -261,19 +299,27 @@ class Tree {
 
 			if (parent != nullptr)
 			{
-				if (*entry < *parent)
+				if (less(entry, parent))
 				{
 					parent->left = entry;
 					if (parent == _begin)
 						_begin = entry;
 				}
-				else
+				else{
 					parent->right = entry;
+					if(parent == this->_end->parent)
+					{
+						std::cout << "end aggiornato: " << *parent << " entry: " << *entry << " parent end: " << *this->_end->parent<< std::endl;
+						this->_end->parent = entry;
+					}
+				}
 				entry->parent = parent;
+
 			}else{
 				this->_root = entry;
 				this->_root->parent = this->_end;
 				_begin = _root;
+				this->_end->parent = this->_root;
 			}
 
 			entry->left = _end;
@@ -283,16 +329,16 @@ class Tree {
 			return entry;
 		}
 
-		pointer	Search(pointer	t, typename Pair::first_type &target)
+		pointer	Search(pointer	t, typename Pair::first_type &target, pointer &last)
 		{
 			//salvo in _end->parent l'ultimo nodo confrontato (per ottimizzare insert)
 			if (!t->end) {
-				_end->parent = t;
+				last = t;
 				if (target == t->_value.first)
 					return t;
 				if (is_less< Pair, Compare>(target, t->_value.first) )
-					return Search(t->left, target);
-				return Search(t->right, target);
+					return Search(t->left, target, last);
+				return Search(t->right, target, last);
 			}
 			
 			return t;
@@ -304,6 +350,14 @@ class Tree {
 			pointer t = x->right;
 			while (!end(t->left))
 				t = t->left;
+			return t;
+		}
+
+		pointer	Predecessor(pointer &x)
+		{
+			pointer t = x->left;
+			while (!end(t->right))
+				t = t->right;
 			return t;
 		}
 
@@ -320,11 +374,21 @@ class Tree {
 			if (!x->right->end)
 				return Successor(x);
 			t = x->parent;
-			while (!t->end && *t < *x)
+			while (!t->end && less(t, x))
 				t = t->parent;
 			return t;
 		}
 	
+		pointer	Prev(pointer &x) {
+			pointer	t;
+			if (!x->left->end)
+				return Predecessor(x);
+			t = x->parent;
+			while (!t->end && less(x, t))
+				t = t->parent;
+			return t;
+		}
+
 		void replace(pointer	original, pointer	replace)
 		{
 			replace->left = original->left;
@@ -332,7 +396,7 @@ class Tree {
 			replace->parent = original->parent;
 			if (original->parent)
 			{
-				bool left = is_less<Pair,Compare>(original->key, original->parent->key);
+				bool left = is_less<Pair,Compare>(original->_value.first, original->parent->_value.first);
 				if (left)
 					replace->parent->left = replace;
 				else
@@ -346,10 +410,12 @@ class Tree {
 
 		pointer	Remove(typename Pair::first_type target)
 		{
-			pointer	t = Search(_root, target);
+			std::cout << "remove" << std::endl;
+			pointer	last;
+			pointer	t = Search(_root, target, last);
 			pointer	s = _end;
 
-			if (!end(t))
+			if (!t->end)
 			{
 				//caso 1: t senza figli, caso 2: t con un solo figlio
 				if (end(t->left) || end(t->right))
@@ -357,7 +423,7 @@ class Tree {
 					s = (end(t->left)) ? t->right : t->left;
 					if (t->parent)
 					{
-						if (is_less<Pair,Compare>(t->key, t->parent->key))
+						if (is_less<Pair,Compare>(t->_value.first, t->parent->_value.first))
 							t->parent->left = s;
 						else
 							t->parent->right = s;
@@ -386,6 +452,10 @@ class Tree {
 					_begin = _end;
 				else if (t == _begin)
 					_begin = Next(_begin);
+
+				if(t == this->_end->parent){
+					this->_end->parent = Prev(t);
+				}
 				deleteNode(t);
 			}
 			return _root;
@@ -403,6 +473,12 @@ class Tree {
 			return 0;
 		}
 
+		bool less(pointer &a, pointer &b) {
+			Compare comp;
+
+			return (comp(a->_value.first, b->_value.first));
+		}
+
 };
 
 template <class Pair, class Compare >
@@ -410,7 +486,7 @@ class tree_iterator
 {
 	public:
 		typedef typename iterator_traits<Pair>::value_type				value_type;
-		typedef	Node<value_type, Compare> NodeType;
+		typedef	Node<value_type> NodeType;
 		typedef typename std::allocator< NodeType >::pointer 			NodePointer;	   
 		typedef typename iterator_traits<Pair>::iterator_category		iterator_category;
 		
@@ -418,6 +494,12 @@ class tree_iterator
 		typedef typename iterator_traits<Pair>::pointer					pointer;
 		typedef typename iterator_traits<Pair>::reference				reference;	
 	private:
+		bool less(NodePointer &a, NodePointer &b) {
+			Compare comp;
+
+			return (comp(a->_value.first, b->_value.first));
+		}
+	
 		NodePointer _ptr;
 		NodePointer next_node(NodePointer x) {
 			NodePointer t = x->right;
@@ -429,11 +511,32 @@ class tree_iterator
 			else
 			{
 				t = x->parent;
-				while (!t->end && *t < *x)
+				while (!t->end && less(t, x))
 					t = t->parent;
 			}
 			return t;
 		}
+
+		NodePointer prev_node(NodePointer x) {
+			NodePointer t = x->left;
+			if (x->end){
+				std::cout << *(x->parent) << std::endl;
+				return x->parent;	
+			}
+			if (!t->end)
+			{
+				while (!t->right->end)
+					t = t->right;
+			}
+			else
+			{
+				t = x->parent;
+				while (!t->end && less(x, t))
+					t = t->parent;
+			}
+			return t;
+        }
+
 	public:
 		tree_iterator() : _ptr(nullptr){}
 		tree_iterator(NodePointer p) : _ptr(p){}
@@ -443,6 +546,8 @@ class tree_iterator
 
 		tree_iterator& operator++() {_ptr = next_node(_ptr); return *this; };
 		tree_iterator operator++(int) {tree_iterator tmp = *this; _ptr = next_node(_ptr); return tmp; };
+		tree_iterator& operator--() {_ptr = prev_node(_ptr); return *this; };
+		tree_iterator operator--(int) {tree_iterator tmp = *this; _ptr = prev_node(_ptr); return tmp; };
 		template <class Key, class T, class Comp, class Alloc> friend class map;
 		bool operator==(const tree_iterator &tri) { return (_ptr == tri._ptr); };
 		bool operator!=(const tree_iterator &tri) { return (_ptr != tri._ptr); };

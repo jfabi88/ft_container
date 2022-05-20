@@ -47,7 +47,7 @@ namespace ft
 			typedef tree_iterator< const_pointer, key_compare>			const_iterator;
 			typedef std::ptrdiff_t										difference_type;
 			typedef size_t												size_type;
-			typedef Node<value_type, key_compare> 						map_node;
+			typedef Node<value_type> 						map_node;
 			typedef typename Alloc::template rebind<map_node>::other	alloc_node; 	/* https://stackoverflow.com/questions/14148756/what-does-template-rebind-do */
 		private:
 			typedef typename Tree<value_type, key_compare>::NodeType NodeType;
@@ -86,6 +86,14 @@ namespace ft
 				insert(x.begin(), x.end());
 			}
 
+			map& operator= (const map& x)
+			{
+				this->_size = 0;
+				this->_comp = x._comp;
+				this->_tree.clear(this->_tree.getRoot());
+				this->insert(x.begin(), x.end());
+				return (*this);
+			}
 /* ------------------------------- CAPACITY ------------------------------- */
 
 			size_type size() const { return this->_tree.size(); }
@@ -118,37 +126,40 @@ namespace ft
 			//single element
 			pair<iterator,  bool> insert(const value_type& val)
 			{
-				NodeType *t = _tree.Search(_tree.getRoot(), val.first);
+				NodeType * last;
+				NodeType *t = _tree.Search(_tree.getRoot(), val.first, last);
 
 				if (!t->end)
 					return ft::make_pair<iterator,  bool>(iterator(t), false);
-				//_end->parent punta al' ultimo nodo confrontato da Search
-				t = _tree.insert(_tree._end->parent, val);
+				//last punta al' ultimo nodo confrontato da Search
+				//t = _tree.insert(last, val);
+				t = _tree.insert(_tree.getRoot(), val);
 				return ft::make_pair<iterator, bool>(iterator(t), true);
 			}
 
 			//with hint
 			iterator insert(iterator position, const value_type& val)
 			{
-				NodeType *t;
+				NodeType *t, *last;
 				
-				if (!position._ptr->end){
-					//se il nuovo elemento >= di quello in position
-					if (_comp(position._ptr->getFirst(), val.first)){
-						NodeType *next = _tree.Next(position._ptr);
-						//se il nuovo elemento è l'elemento successivo a quello in position
-						if (next->end || _comp(val.first, next->getFirst())){
-							t = _tree.insert(position._ptr, val);
-							return iterator(t);	
-						}
+				//se il nuovo elemento >= di quello in position
+				if (_comp(position._ptr->_value.first, val.first)){
+					NodeType *next = _tree.Next(position._ptr);
+					//NodeType *next = _tree._end;
+					//se il nuovo elemento è l'elemento successivo a quello in position
+					//if (next->end || _comp(val.first, next->getFirst())){
+					if (next->end || _comp(val.first, next->_value.first)){
+						//std::cout << "Eccomi!!!\n";
+						t = _tree.insert(position._ptr, val);
+						return iterator(t);	
 					}
 				}
 
-				t = _tree.Search(_tree.getRoot(), val.first);
+				t = _tree.Search(_tree.getRoot(), val.first, last);
 				//se non esiste un elemento con la stessa chiave
 				if (t->end)
-					t = _tree.insert(_tree._end->parent, val);
-					//t = _tree.insert(_tree.getRoot(), val);
+					//t = _tree.insert(last, val);
+					t = _tree.insert(_tree.getRoot(), val);
 				
 				return iterator(t);				
 			}
@@ -175,6 +186,15 @@ namespace ft
 			{
 				return value_compare(key_comp());
 			}
+
+			const_iterator upper_bound (const key_type& k) const
+            {
+                NodeType *node = this->_tree.Search(this->_tree.getRoot(), k);
+                if (!node->end){
+                    node = this->_tree.Next(node);
+                }
+                return const_iterator(node);
+            }
 	};
 
 
