@@ -98,19 +98,22 @@ namespace ft
 				this->insert(x.begin(), x.end());
 				return (*this);
 			}
+
+			mapped_type& operator[] (const key_type& k)
+			{
+				return (*( ( this->insert(make_pair(k, mapped_type())) ).first ) ).second;
+			}
 /* ------------------------------- CAPACITY ------------------------------- */
 
 			size_type size() const { return this->_tree.size(); }
 
 			bool empty() const { return (this->_tree.size() == 0); }
 
-			size_type max_size() const 
-			{
+			size_type max_size() const {
 				return (_alloc.max_size());
 			}
 
-			iterator begin()
-			{
+			iterator begin(){
 				return iterator(_tree._begin);
 			}
 
@@ -118,8 +121,7 @@ namespace ft
 				return const_iterator(_tree._begin);
 			}
 
-			reverse_iterator rbegin()
-			{
+			reverse_iterator rbegin(){
 				return reverse_iterator(_tree._end);
 			}
 
@@ -127,8 +129,15 @@ namespace ft
 				return const_reverse_iterator(_tree._end);
 			}
 
-			reverse_iterator end()
-			{
+			iterator end(){
+				return iterator(_tree._end);
+			}
+
+			const_iterator end() const{
+				return const_iterator(_tree._end);
+			}
+
+			reverse_iterator rend(){
 				return reverse_iterator(_tree._begin);
 			}
 
@@ -136,14 +145,6 @@ namespace ft
 				return const_reverse_iterator(_tree._begin);
 			}
 
-			iterator rend()
-			{
-				return iterator(_tree._end);
-			}
-
-			const_iterator end() const{
-				return const_iterator(_tree._end);
-			}
 
 			//single element
 			pair<iterator,  bool> insert(const value_type& val)

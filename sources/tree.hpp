@@ -560,6 +560,8 @@ class tree_iterator
 		template <class Key, class T, class Comp, class Alloc> friend class map;
 		bool operator==(const tree_iterator &tri) { return (_ptr == tri._ptr); };
 		bool operator!=(const tree_iterator &tri) { return (_ptr != tri._ptr); };
+
+		//tree_iterator   &operator=(const tree_iterator &s) { _ptr = s._ptr;  return (*this);}
 };
 
 template <class Pair, class Compare >
@@ -630,6 +632,7 @@ class reverse_tree_iterator
 		reverse_tree_iterator operator++(int) {reverse_tree_iterator tmp = *this; _ptr = prev_node(_ptr); return tmp; };
 		reverse_tree_iterator& operator--() {_ptr = next_node(_ptr); return *this; };
 		reverse_tree_iterator operator--(int) {reverse_tree_iterator tmp = *this; _ptr = next_node(_ptr); return tmp; };
+		//reverse_tree_iterator   &operator=(const reverse_tree_iterator &s) { _ptr = s._ptr;  return (*this);}
 };
 
 }
