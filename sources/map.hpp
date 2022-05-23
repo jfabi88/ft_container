@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MAP_HPP
+#define MAP_HPP
+
 #include <iostream>
 #include "pair.hpp"
 #include "tree.hpp"
@@ -97,10 +99,21 @@ namespace ft
 				return (*this);
 			}
 
-/* ------------------------------- ITERATORS ------------------------------- */
-
-			iterator begin()
+			mapped_type& operator[] (const key_type& k)
 			{
+				return (*( ( this->insert(make_pair(k, mapped_type())) ).first ) ).second;
+			}
+/* ------------------------------- CAPACITY ------------------------------- */
+
+			size_type size() const { return this->_tree.size(); }
+
+			bool empty() const { return (this->_tree.size() == 0); }
+
+			size_type max_size() const {
+				return (_alloc.max_size());
+			}
+
+			iterator begin(){
 				return iterator(_tree._begin);
 			}
 
@@ -109,8 +122,15 @@ namespace ft
 				return const_iterator(_tree._begin);
 			}
 
-			iterator end()
-			{
+			reverse_iterator rbegin(){
+				return reverse_iterator(_tree._end);
+			}
+
+			const_reverse_iterator rbegin() const{
+				return const_reverse_iterator(_tree._end);
+			}
+
+			iterator end(){
 				return iterator(_tree._end);
 			}
 
@@ -206,6 +226,22 @@ namespace ft
 				}
 			}
 
+
+     		void erase(iterator position)
+			{
+				this->erase(position->first);
+			}
+	
+			size_type erase(const key_type& k)
+			{
+				return this->_tree.Remove(k);
+			}
+	
+    		 void erase (iterator first, iterator last)
+			 {
+
+			 }
+
 			key_compare key_comp() const
 			{
 				return key_compare();
@@ -264,3 +300,5 @@ namespace ft
 	}
 
 }
+
+#endif

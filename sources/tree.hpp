@@ -144,7 +144,8 @@ class Tree {
 			//std::cout << "rotate_left of " << *p << " _root == p ?" << (_root == p) << "\n";
 			pointer rChild = p->right;
 			p->right = rChild->left;
-			rChild->left->parent = p;
+			if (!rChild->left->end)
+				rChild->left->parent = p;
 			rChild->left = p;
 			rChild->parent = p->parent;
 			if (p == p->parent->left)
@@ -162,7 +163,8 @@ class Tree {
 			//std::cout << "rotate_right of " << *p << " _root == p ?" << (_root == p) << "\n";
 			pointer lChild = p->left;
 			p->left = lChild->right;
-			lChild->right->parent = p;
+			if (!lChild->right->end)
+				lChild->right->parent = p;
 			lChild->right = p;
 			lChild->parent = p->parent;
 			if (p == p->parent->left)
@@ -309,7 +311,7 @@ class Tree {
 					parent->right = entry;
 					if(parent == this->_end->parent)
 					{
-						std::cout << "end aggiornato: " << *parent << " entry: " << *entry << " parent end: " << *this->_end->parent<< std::endl;
+						//std::cout << "end aggiornato: " << *parent << " entry: " << *entry << " parent end: " << *this->_end->parent<< std::endl;
 						this->_end->parent = entry;
 					}
 				}
@@ -326,6 +328,7 @@ class Tree {
 			entry->right = _end;
 			_size++;
 			insert_case1(entry);
+			//std::cout << "entry = " << *entry << "(" << *_root << "),  end_addr =  " << _end << " parent_end: " << *this->_end->parent << std::endl;
 			return entry;
 		}
 
@@ -362,7 +365,7 @@ class Tree {
 		}
 
 		void	pNext(pointer &x) {
-			std::cout << *x << "\n";
+			//std::cout << *x << "\n";
 			pointer next = 	Next(x);
 			if (!next->end)
 				pNext(next);
@@ -408,13 +411,13 @@ class Tree {
 				replace->right->parent = replace;
 		}
 
-		pointer	Remove(typename Pair::first_type target)
+		size_t	Remove(typename Pair::first_type target)
 		{
-			std::cout << "remove" << std::endl;
+			//std::cout << "remove" << std::endl;
 			pointer	last;
 			pointer	t = Search(_root, target, last);
 			pointer	s = _end;
-
+			size_t n = 0;
 			if (!t->end)
 			{
 				//caso 1: t senza figli, caso 2: t con un solo figlio
@@ -457,8 +460,9 @@ class Tree {
 					this->_end->parent = Prev(t);
 				}
 				deleteNode(t);
+				n = 1;
 			}
-			return _root;
+			return n;
 		}
 
 		pointer		begin() { return (_begin); }
@@ -556,6 +560,119 @@ class Tree {
 			bool operator==(const tree_iterator &tri) { return (_ptr == tri._ptr); };
 			bool operator!=(const tree_iterator &tri) { return (_ptr != tri._ptr); };
 	};
+		NodePointer prev_node(NodePointer x) {
+			NodePointer t = x->left;
+			//std::cout << "previous of " << *x << " is ";
+			if (x->end){
+				//std::cout << *(x->parent) << std::endl;
+				return x->parent;	
+			}
+			if (!t->end)
+			{
+				while (!t->right->end)
+					t = t->right;
+			}
+			else
+			{
+				t = x->parent;
+				while (!t->end && less(x, t))
+					t = t->parent;
+			}
+			//std::cout << *t << std::endl;
+			return t;
+        }
+
+	public:
+		tree_iterator() : _ptr(nullptr){}
+		tree_iterator(NodePointer p) : _ptr(p){}
+		//tree_iterator(const tree_iterator &p) : _ptr(p._ptr){}
+/* 		template <class _Up>
+		tree_iterator(const tree_iterator<_Up>& __u) : _ptr(__u.base()){} */
+
+		reference   operator*() const   { return _ptr->_value; }
+		pointer     operator->()        { return &_ptr->_value; }
+
+		tree_iterator& operator++() {_ptr = next_node(_ptr); return *this; };
+		tree_iterator operator++(int) {tree_iterator tmp = *this; _ptr = next_node(_ptr); return tmp; };
+		tree_iterator& operator--() {_ptr = prev_node(_ptr); return *this; };
+		tree_iterator operator--(int) {tree_iterator tmp = *this; _ptr = prev_node(_ptr); return tmp; };
+		template <class Key, class T, class Comp, class Alloc> friend class map;
+		bool operator==(const tree_iterator &tri) { return (_ptr == tri._ptr); };
+		bool operator!=(const tree_iterator &tri) { return (_ptr != tri._ptr); };
+
+		//tree_iterator   &operator=(const tree_iterator &s) { _ptr = s._ptr;  return (*this);}
+};
+
+template <class Pair, class Compare >
+class reverse_tree_iterator
+{
+	public:
+		typedef typename iterator_traits<Pair>::value_type				value_type;
+		typedef	Node<value_type> 										NodeType;
+		typedef typename std::allocator< NodeType >::pointer 			NodePointer;	   
+		typedef typename iterator_traits<Pair>::iterator_category		iterator_category;
+		
+		typedef ptrdiff_t												difference_type;
+		typedef typename iterator_traits<Pair>::pointer					pointer;
+		typedef typename iterator_traits<Pair>::reference				reference;	
+	private:
+		bool less(NodePointer &a, NodePointer &b) {
+			Compare comp;
+
+			return (comp(a->_value.first, b->_value.first));
+		}
+	
+		NodePointer _ptr;
+		NodePointer next_node(NodePointer x) {
+			NodePointer t = x->right;
+			if (!t->end)
+			{
+				while (!t->left->end)
+					t = t->left;
+			}
+			else
+			{
+				t = x->parent;
+				while (!t->end && less(t, x))
+					t = t->parent;
+			}
+			return t;
+		}
+
+		NodePointer prev_node(NodePointer x) {
+			NodePointer t = x->left;
+			//std::cout << "previous of " << *x << " is ";
+			if (x->end){
+				//std::cout << *(x->parent) << std::endl;
+				return x->parent;	
+			}
+			if (!t->end)
+			{
+				while (!t->right->end)
+					t = t->right;
+			}
+			else
+			{
+				t = x->parent;
+				while (!t->end && less(x, t))
+					t = t->parent;
+			}
+			//std::cout << *t << std::endl;
+			return t;
+        }
+
+	public:
+		reverse_tree_iterator() : _ptr(nullptr){}
+		reverse_tree_iterator(NodePointer p) : _ptr(p){}
+
+		reference   operator*() const   { return _ptr->_value; }
+		pointer     operator->()        { return &_ptr->_value; }
+		reverse_tree_iterator& operator++() {_ptr = prev_node(_ptr); return *this; };
+		reverse_tree_iterator operator++(int) {reverse_tree_iterator tmp = *this; _ptr = prev_node(_ptr); return tmp; };
+		reverse_tree_iterator& operator--() {_ptr = next_node(_ptr); return *this; };
+		reverse_tree_iterator operator--(int) {reverse_tree_iterator tmp = *this; _ptr = next_node(_ptr); return tmp; };
+		//reverse_tree_iterator   &operator=(const reverse_tree_iterator &s) { _ptr = s._ptr;  return (*this);}
+};
 
 }
 
