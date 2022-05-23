@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MAP_HPP
+#define MAP_HPP
+
 #include <iostream>
 #include "pair.hpp"
 #include "tree.hpp"
@@ -45,6 +47,8 @@ namespace ft
 			typedef typename allocator_type::const_pointer				const_pointer;
 			typedef tree_iterator< pointer, key_compare>   				iterator;
 			typedef tree_iterator< const_pointer, key_compare>			const_iterator;
+			typedef reverse_tree_iterator< pointer, key_compare>   				reverse_iterator;
+			typedef reverse_tree_iterator< const_pointer, key_compare>			const_reverse_iterator;
 			typedef std::ptrdiff_t										difference_type;
 			typedef size_t												size_type;
 			typedef Node<value_type> 						map_node;
@@ -114,7 +118,25 @@ namespace ft
 				return const_iterator(_tree._begin);
 			}
 
-			iterator end()
+			reverse_iterator rbegin()
+			{
+				return reverse_iterator(_tree._end);
+			}
+
+			const_reverse_iterator rbegin() const{
+				return const_reverse_iterator(_tree._end);
+			}
+
+			reverse_iterator end()
+			{
+				return reverse_iterator(_tree._begin);
+			}
+
+			const_reverse_iterator rend() const{
+				return const_reverse_iterator(_tree._begin);
+			}
+
+			iterator rend()
 			{
 				return iterator(_tree._end);
 			}
@@ -177,6 +199,22 @@ namespace ft
 				}
 			}
 
+
+     		void erase(iterator position)
+			{
+				this->erase(position->first);
+			}
+	
+			size_type erase(const key_type& k)
+			{
+				return this->_tree.Remove(k);
+			}
+	
+    		 void erase (iterator first, iterator last)
+			 {
+
+			 }
+
 			key_compare key_comp() const
 			{
 				return key_compare();
@@ -235,3 +273,5 @@ namespace ft
 	}
 
 }
+
+#endif

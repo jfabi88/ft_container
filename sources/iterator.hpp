@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ITERATOR_HPP
+#define ITERATOR_HPP
 
 #include <iostream>
 #include "structs.hpp"
@@ -133,12 +134,6 @@ class b_iterator
 		template <class T, class Alloc> friend class vector;
 };
 
-/* template <class Pair>
-class map_iterator : public b_iterator<Pair>
-{
-
-}; */
-
 template <class Iter>
 class b_reverse_iterator
 {
@@ -186,3 +181,5 @@ class b_reverse_iterator
 };
 
 }
+
+#endif
