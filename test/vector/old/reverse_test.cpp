@@ -1,6 +1,7 @@
-#include "utils.hpp"
+#include "utils_.hpp"
 #include <vector>
 #include <iostream>
+#include "../../../sources/vector.hpp"
 
 int main()
 {
@@ -12,6 +13,8 @@ int main()
     prova.push_back(3);
     prova.push_back(1);
     pr = prova.rend() - 1; //= begin()
+    std::vector<int>::reverse_iterator pr2;
+    pr2 = prova.rbegin();
     
 
     ft::vector<int> ftprova;
@@ -22,10 +25,16 @@ int main()
     ftprova.push_back(3);
     ftprova.push_back(1);
     ftpr = ftprova.rend() - 1; //= begin()
+    ft::vector<int>::reverse_iterator ftpr2;
+    ftpr2 = ftprova.rbegin();
     
 
     print_vector("Standard output", prova, 2, true);
+    std::cout << "REND -1 = " << *pr << std::endl;
+    std::cout << "RBEGIN = " << *pr2 << std::endl;
     print_vector("Our output", ftprova, 2, true);
+     std::cout << "REND -1 = " << *ftpr << std::endl;
+    std::cout << "RBEGIN = " << *ftpr2 << std::endl;
 
     std::cout << std::boolalpha;
     std::cout << "\n[STD] pr != prova.rend() - 1: " << (pr != prova.rend() - 1) << std::endl;

@@ -45,9 +45,11 @@ namespace ft
 			typedef typename allocator_type::const_pointer				const_pointer;
 			typedef tree_iterator< pointer, key_compare>   				iterator;
 			typedef tree_iterator< const_pointer, key_compare>			const_iterator;
+			typedef b_reverse_iterator<iterator>             			reverse_iterator;
+            typedef b_reverse_iterator<const_iterator>          		const_reverse_iterator;
 			typedef std::ptrdiff_t										difference_type;
 			typedef size_t												size_type;
-			typedef Node<value_type> 						map_node;
+			typedef Node<value_type> 									map_node;
 			typedef typename Alloc::template rebind<map_node>::other	alloc_node; 	/* https://stackoverflow.com/questions/14148756/what-does-template-rebind-do */
 		private:
 			typedef typename Tree<value_type, key_compare>::NodeType NodeType;
@@ -94,6 +96,49 @@ namespace ft
 				this->insert(x.begin(), x.end());
 				return (*this);
 			}
+
+/* ------------------------------- ITERATORS ------------------------------- */
+
+			iterator begin()
+			{
+				return iterator(_tree._begin);
+			}
+
+			const_iterator begin() const
+			{
+				return const_iterator(_tree._begin);
+			}
+
+			iterator end()
+			{
+				return iterator(_tree._end);
+			}
+
+			const_iterator end() const
+			{
+				return const_iterator(_tree._end);
+			}
+
+			reverse_iterator rbegin()
+			{
+				return reverse_iterator(end());
+			}
+
+			const_reverse_iterator rbegin() const
+			{
+				return const_reverse_iterator(end());
+			}
+
+			reverse_iterator rend()
+			{
+				return reverse_iterator(begin());
+			}
+
+			const_reverse_iterator rend() const
+			{
+				return const_reverse_iterator(begin());
+			}
+
 /* ------------------------------- CAPACITY ------------------------------- */
 
 			size_type size() const { return this->_tree.size(); }
@@ -105,23 +150,7 @@ namespace ft
 				return (_alloc.max_size());
 			}
 
-			iterator begin()
-			{
-				return iterator(_tree._begin);
-			}
-
-			const_iterator begin() const{
-				return const_iterator(_tree._begin);
-			}
-
-			iterator end()
-			{
-				return iterator(_tree._end);
-			}
-
-			const_iterator end() const{
-				return const_iterator(_tree._end);
-			}
+/* ------------------------------- MODIFIERS ------------------------------- */
 
 			//single element
 			pair<iterator,  bool> insert(const value_type& val)

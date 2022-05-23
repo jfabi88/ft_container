@@ -112,10 +112,10 @@ namespace ft
 			const_iterator begin() const    { return (const_iterator(&_container[0])); }
 			const_iterator end() const      { return (const_iterator(&_container[_size])); }
 
-			reverse_iterator rbegin()    { return reverse_iterator(_container + _size - 1); }
-            reverse_iterator rend()     { return reverse_iterator(_container - 1); }
-            const_reverse_iterator rbegin() const   { return const_reverse_iterator(_container + _size - 1); }
-            const_reverse_iterator rend() const     { return const_reverse_iterator(_container - 1); }
+			reverse_iterator rbegin()    { return reverse_iterator(end()); }
+            reverse_iterator rend()     { return reverse_iterator(begin()); }
+            const_reverse_iterator rbegin() const   { return const_reverse_iterator(end()); }
+            const_reverse_iterator rend() const     { return const_reverse_iterator(begin()); }
 
 /* ------------------------------- PRIVATE UTILS FUNCTIONS ------------------------------- */
 		private:
@@ -245,7 +245,7 @@ namespace ft
 				}
 			}
 
-			/* ------------------------------- ELEMENT ACCESS ------------------------------- */
+/* ------------------------------- ELEMENT ACCESS ------------------------------- */
 
 
 			reference operator[] (size_type n)  // Returns a reference to the element at position n in the vector container.
