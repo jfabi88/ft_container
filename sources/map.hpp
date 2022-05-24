@@ -61,10 +61,10 @@ namespace ft
 			key_compare		_comp;
 			alloc_node		_alloc;
 
-			std::string myOutOfRange(size_type n) const
+			std::string myOutOfRange(const key_type& k) const
 			{
 				std::stringstream sstm;
-				sstm << "map::_M_range_check: __n (which is " << n << ") this->size() (which is " << _size << ")" << std::endl;
+				sstm << "map::at:  key not found: __k (which is " << k << ")" << std::endl;
 				return sstm.str();
 			}
 		public:
@@ -112,13 +112,18 @@ namespace ft
 				NodeType * last;
 				NodeType *t = _tree.Search(_tree.getRoot(), k, last);
 				if (t->end)
-					throw std::out_of_range(myOutOfRange(n));
-				return (t->getSecond());
+					throw std::out_of_range(myOutOfRange(k));
+				return iterator(t)->second;
+				//return (t->getSecond());
 			}
 
 			const mapped_type& at (const key_type& k) const
 			{
-
+				NodeType * last;
+				NodeType *t = _tree.Search(_tree.getRoot(), k, last);
+				if (t->end)
+					throw std::out_of_range(myOutOfRange(k));
+				return const_iterator(t)->second;
 			}
 
 			mapped_type& operator[] (const key_type& k)
@@ -232,21 +237,23 @@ namespace ft
 				}
 			}
 
+			size_type erase(const key_type& k)
+			{
+				return this->_tree.Remove(k);
+			}
 
      		void erase(iterator position)
 			{
 				this->erase(position->first);
 			}
 	
-			size_type erase(const key_type& k)
-			{
-				return this->_tree.Remove(k);
-			}
-	
-    		 void erase (iterator first, iterator last)
-			 {
 
-			 }
+			void erase (iterator first, iterator last)
+			{
+				for (; first != last; first++) {
+					this->erase(first);
+				}			
+			}
 
 			key_compare key_comp() const
 			{
@@ -303,6 +310,11 @@ namespace ft
 	bool operator>= ( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs)
 	{
 		return !(lhs < rhs);
+	}
+
+	void debugxx()
+	{
+		int ciao;
 	}
 
 }
