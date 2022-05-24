@@ -42,7 +42,10 @@ namespace ft
 	struct is_integral<wchar_t> : public true_type{};
 
 	template <>
-	struct is_integral<short> : public true_type{};
+	struct is_integral<char16_t> : public true_type{};
+
+	template <>
+	struct is_integral<short int> : public true_type{};
 
 	template <>
 	struct is_integral<int> : public true_type{};

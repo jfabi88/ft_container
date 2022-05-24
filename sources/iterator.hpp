@@ -80,6 +80,7 @@ namespace ft
 	class b_iterator 
 	{
 		public:
+			typedef Iter                                               	iterator_type;
 			typedef typename iterator_traits<Iter>::iterator_category	iterator_category;
 			typedef typename iterator_traits<Iter>::value_type			value_type;
 			typedef typename iterator_traits<Iter>::difference_type		difference_type;
@@ -134,13 +135,6 @@ namespace ft
 			template <class T, class Alloc> friend class vector;
 	};
 
-<<<<<<< HEAD
-/* template <class Pair>
-class map_iterator : public b_iterator<Pair>
-{
-
-}; */
-
 	template <class Iter>
 	class b_reverse_iterator
 	{
@@ -186,53 +180,6 @@ class map_iterator : public b_iterator<Pair>
 			b_reverse_iterator   &operator=(const b_reverse_iterator &s) { _ptr = s._ptr;  return (*this);}
 			template <class T, class Alloc> friend class vector;
 	};
-=======
-template <class Iter>
-class b_reverse_iterator
-{
-    public:
-        typedef b_iterator<Iter>                                    iterator_type;
-        typedef typename iterator_traits<Iter>::iterator_category   iterator_category;
-        typedef typename iterator_traits<Iter>::value_type          value_type;
-        typedef typename iterator_traits<Iter>::difference_type     difference_type;
-        typedef typename iterator_traits<Iter>::pointer             pointer;
-        typedef typename iterator_traits<Iter>::reference           reference;
-    private:
-        pointer _ptr;
-        b_reverse_iterator(pointer p) : _ptr(p){}
-    public:
-        pointer base() const    {return _ptr;}
-        b_reverse_iterator() : _ptr(nullptr){};
-        ~b_reverse_iterator(){};
-        template <class _Up>
-        b_reverse_iterator(const b_reverse_iterator<_Up>& __u) : _ptr(__u.base()){}
-        reference   operator*() const   { return *_ptr; }
-        pointer     operator->()        { return _ptr; }
-        //prefix increment operator
-        b_reverse_iterator&   operator++()        { --_ptr; return *this; }
-        //postfix increment operator
-        b_reverse_iterator    operator++(int)     { b_reverse_iterator tmp = *this; --_ptr; return tmp; }
-        b_reverse_iterator&   operator--()        { ++_ptr; return *this; }
-        b_reverse_iterator    operator--(int)     { b_reverse_iterator tmp = *this; ++_ptr; return tmp; }
-        friend bool    operator== (const b_reverse_iterator &f, const b_reverse_iterator &s) { return (f._ptr == s._ptr); }
-        friend bool    operator!= (const b_reverse_iterator &f, const b_reverse_iterator &s) { return (f._ptr != s._ptr); }
-        bool    operator<(const b_reverse_iterator &s)    { return (_ptr > s._ptr); }
-        bool    operator>(const b_reverse_iterator &s)    { return (_ptr < s._ptr); }
-        bool    operator<=(const b_reverse_iterator &s)    { return (_ptr >= s._ptr); }
-        bool    operator>=(const b_reverse_iterator &s)    { return (_ptr <= s._ptr); }
-        b_reverse_iterator    operator+(difference_type n)    { b_reverse_iterator _w(*this); _w += n; return _w;}
-        //{ return b_reverse_iterator(_ptr + n); }
-        b_reverse_iterator    operator-(difference_type n)     {b_reverse_iterator _w(*this); _w -= n; return _w;} //{ return *this - n; }
-        //{ return b_reverse_iterator(_ptr - n); }
-        difference_type operator+(const b_reverse_iterator &s) const   { return (_ptr + s._ptr); }
-        difference_type operator-(const b_reverse_iterator &s) const  { return (_ptr - s._ptr); }
-        b_reverse_iterator    operator+=(difference_type n)   { _ptr -= n; return (*this); }
-        b_reverse_iterator    operator-=(difference_type n)   { _ptr += n; return (*this); }
-        value_type  operator[](difference_type n)  { return (_ptr - n); }
-        b_reverse_iterator   &operator=(const b_reverse_iterator &s) { _ptr = s._ptr;  return (*this);}
-        template <class T, class Alloc> friend class vector;
-};
->>>>>>> f1cd21cfade11f309db173db758c485e1abf99d6
 
 }
 

@@ -485,84 +485,44 @@ class Tree {
 
 };
   
-	template <class Pair, class Compare >
-	class tree_iterator
-	{
-		public:
-			typedef typename iterator_traits<Pair>::value_type				value_type;
-			typedef	Node<value_type> NodeType;
-			typedef typename std::allocator< NodeType >::pointer 			NodePointer;	   
-			typedef typename iterator_traits<Pair>::iterator_category		iterator_category;
-			
-			typedef ptrdiff_t												difference_type;
-			typedef typename iterator_traits<Pair>::pointer					pointer;
-			typedef typename iterator_traits<Pair>::reference				reference;	
-		private:
-			bool less(NodePointer &a, NodePointer &b) {
-				Compare comp;
-
-				return (comp(a->_value.first, b->_value.first));
-			}
+template <class Pair, class Compare >
+class tree_iterator
+{
+	public:
+		typedef typename iterator_traits<Pair>::value_type				value_type;
+		typedef	Node<value_type> NodeType;
+		typedef typename std::allocator< NodeType >::pointer 			NodePointer;	   
+		typedef typename iterator_traits<Pair>::iterator_category		iterator_category;
 		
-			NodePointer _ptr;
-			NodePointer next_node(NodePointer x) {
-				NodePointer t = x->right;
-				if (!t->end)
-				{
-					while (!t->left->end)
-						t = t->left;
-				}
-				else
-				{
-					t = x->parent;
-					while (!t->end && less(t, x))
-						t = t->parent;
-				}
-				return t;
+		typedef ptrdiff_t												difference_type;
+		typedef typename iterator_traits<Pair>::pointer					pointer;
+		typedef typename iterator_traits<Pair>::reference				reference;	
+	private:
+		bool less(NodePointer &a, NodePointer &b) {
+			Compare comp;
+
+			return (comp(a->_value.first, b->_value.first));
+		}
+	
+		NodePointer _ptr;
+		NodePointer next_node(NodePointer x) {
+			NodePointer t = x->right;
+			if (!t->end)
+			{
+				while (!t->left->end)
+					t = t->left;
 			}
-
-			NodePointer prev_node(NodePointer x) {
-				NodePointer t = x->left;
-				if (x->end){
-					std::cout << *(x->parent) << std::endl;
-					return x->parent;	
-				}
-				if (!t->end)
-				{
-					while (!t->right->end)
-						t = t->right;
-				}
-				else
-				{
-					t = x->parent;
-					while (!t->end && less(x, t))
-						t = t->parent;
-				}
-				return t;
+			else
+			{
+				t = x->parent;
+				while (!t->end && less(t, x))
+					t = t->parent;
 			}
+			return t;
+		}
 
-		public:
-			tree_iterator() : _ptr(nullptr){}
-			tree_iterator(NodePointer p) : _ptr(p){}
-
-			reference   operator*() const   { return _ptr->_value; }
-			pointer     operator->()        { return &_ptr->_value; }
-			
-			tree_iterator    operator+=(difference_type n)   { _ptr += n; return (*this); }
-			tree_iterator    operator-=(difference_type n)   { _ptr -= n; return (*this); }
-			tree_iterator    operator+(difference_type n)    { tree_iterator _w(*this); _w += n; return _w;}
-			tree_iterator    operator-(difference_type n)   { return *this + (-n); }; 
-			tree_iterator& operator++() {_ptr = next_node(_ptr); return *this; };
-			tree_iterator operator++(int) {tree_iterator tmp = *this; _ptr = next_node(_ptr); return tmp; };
-			tree_iterator& operator--() {_ptr = prev_node(_ptr); return *this; };								//Prefix increment operator
-			tree_iterator operator--(int) {tree_iterator tmp = *this; _ptr = prev_node(_ptr); return tmp; }; //Postfix increment operator
-			template <class Key, class T, class Comp, class Alloc> friend class map;
-			bool operator==(const tree_iterator &tri) { return (_ptr == tri._ptr); };
-			bool operator!=(const tree_iterator &tri) { return (_ptr != tri._ptr); };
-	};
 		NodePointer prev_node(NodePointer x) {
 			NodePointer t = x->left;
-			//std::cout << "previous of " << *x << " is ";
 			if (x->end){
 				//std::cout << *(x->parent) << std::endl;
 				return x->parent;	
@@ -578,29 +538,27 @@ class Tree {
 				while (!t->end && less(x, t))
 					t = t->parent;
 			}
-			//std::cout << *t << std::endl;
 			return t;
-        }
+		}
 
 	public:
 		tree_iterator() : _ptr(nullptr){}
 		tree_iterator(NodePointer p) : _ptr(p){}
-		//tree_iterator(const tree_iterator &p) : _ptr(p._ptr){}
-/* 		template <class _Up>
-		tree_iterator(const tree_iterator<_Up>& __u) : _ptr(__u.base()){} */
 
 		reference   operator*() const   { return _ptr->_value; }
 		pointer     operator->()        { return &_ptr->_value; }
-
+		
+		tree_iterator    operator+=(difference_type n)   { _ptr += n; return (*this); }
+		tree_iterator    operator-=(difference_type n)   { _ptr -= n; return (*this); }
+		tree_iterator    operator+(difference_type n)    { tree_iterator _w(*this); _w += n; return _w;}
+		tree_iterator    operator-(difference_type n)   { return *this + (-n); }; 
 		tree_iterator& operator++() {_ptr = next_node(_ptr); return *this; };
 		tree_iterator operator++(int) {tree_iterator tmp = *this; _ptr = next_node(_ptr); return tmp; };
-		tree_iterator& operator--() {_ptr = prev_node(_ptr); return *this; };
-		tree_iterator operator--(int) {tree_iterator tmp = *this; _ptr = prev_node(_ptr); return tmp; };
+		tree_iterator& operator--() {_ptr = prev_node(_ptr); return *this; };								//Prefix increment operator
+		tree_iterator operator--(int) {tree_iterator tmp = *this; _ptr = prev_node(_ptr); return tmp; }; //Postfix increment operator
 		template <class Key, class T, class Comp, class Alloc> friend class map;
 		bool operator==(const tree_iterator &tri) { return (_ptr == tri._ptr); };
 		bool operator!=(const tree_iterator &tri) { return (_ptr != tri._ptr); };
-
-		//tree_iterator   &operator=(const tree_iterator &s) { _ptr = s._ptr;  return (*this);}
 };
 
 template <class Pair, class Compare >

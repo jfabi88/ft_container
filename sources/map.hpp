@@ -60,6 +60,13 @@ namespace ft
 			size_type       _size;
 			key_compare		_comp;
 			alloc_node		_alloc;
+
+			std::string myOutOfRange(size_type n) const
+			{
+				std::stringstream sstm;
+				sstm << "map::_M_range_check: __n (which is " << n << ") this->size() (which is " << _size << ")" << std::endl;
+				return sstm.str();
+			}
 		public:
 			ft::Tree<value_type, key_compare>	_tree;
 
@@ -99,19 +106,26 @@ namespace ft
 				return (*this);
 			}
 
+/* ------------------------------- ELEMENT ACCESS ------------------------------- */
+     		mapped_type& at (const key_type& k)
+			{
+				NodeType * last;
+				NodeType *t = _tree.Search(_tree.getRoot(), k, last);
+				if (t->end)
+					throw std::out_of_range(myOutOfRange(n));
+				return (t->getSecond());
+			}
+
+			const mapped_type& at (const key_type& k) const
+			{
+
+			}
+
 			mapped_type& operator[] (const key_type& k)
 			{
 				return (*( ( this->insert(make_pair(k, mapped_type())) ).first ) ).second;
 			}
-/* ------------------------------- CAPACITY ------------------------------- */
-
-			size_type size() const { return this->_tree.size(); }
-
-			bool empty() const { return (this->_tree.size() == 0); }
-
-			size_type max_size() const {
-				return (_alloc.max_size());
-			}
+/* ------------------------------- ITERATORS ------------------------------- */
 
 			iterator begin(){
 				return iterator(_tree._begin);
@@ -120,14 +134,6 @@ namespace ft
 			const_iterator begin() const
 			{
 				return const_iterator(_tree._begin);
-			}
-
-			reverse_iterator rbegin(){
-				return reverse_iterator(_tree._end);
-			}
-
-			const_reverse_iterator rbegin() const{
-				return const_reverse_iterator(_tree._end);
 			}
 
 			iterator end(){
