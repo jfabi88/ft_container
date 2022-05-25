@@ -12,6 +12,9 @@ int main(){
 
 	ft::map<int, std::string>::iterator it;
 	std::map<int, std::string>::iterator sit;
+	std::map<int, std::string>::iterator sit2(sit);
+	std::map<int, std::string>::iterator sit3;
+	sit3 = sit2;
 
 	smap.insert(std::make_pair(0, "zero"));
 	map.insert(ft::make_pair(0, "zero"));

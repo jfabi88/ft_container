@@ -605,6 +605,18 @@ class tree_iterator
 		tree_iterator() : _ptr(nullptr){}
 		tree_iterator(NodePointer p) : _ptr(p){}
 
+		tree_iterator(const tree_iterator& __u) : _ptr(__u._ptr){}
+
+/* 		template <class _P, class _C>
+		tree_iterator(const tree_iterator<_P, _C>& __u) : _ptr(__u._ptr){} */
+
+		template <class _P, class _C>
+		tree_iterator(const tree_iterator<_P, _C>& __u)
+		{
+			*this = __u;
+		}
+		//tree_iterator(const tree_iterator<_P, _C>& __u) : _ptr(__u.base()){}
+
 		reference   operator*() const   { return _ptr->_value; }
 		pointer     operator->()        { return &_ptr->_value; }
 		
@@ -619,6 +631,7 @@ class tree_iterator
 		template <class Key, class T, class Comp, class Alloc> friend class map;
 		bool operator==(const tree_iterator &tri) { return (_ptr == tri._ptr); };
 		bool operator!=(const tree_iterator &tri) { return (_ptr != tri._ptr); };
+		tree_iterator   &operator=(const tree_iterator &s) { _ptr = s._ptr;  return (*this);}
 };
 
 
