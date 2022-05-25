@@ -39,27 +39,6 @@ struct Node
 		Node(const Pair &pair) : _value(pair), parent(nullptr), left(nullptr), right(nullptr),  end(false), color(RED) {
 		};
 
-/* 		Node(const Node &x){
-			*this = x;
-		}
-
-		Node   &operator=(const Node &s) 
-		{
-			_value = s._value;
-			parent = s.parent;
-			left = s.left;
-			right = s.right;
-			end = s.end;
-			color = s.color;
-			return (*this);
-		} */
-
-/* 		bool    operator<(const Node &s) const
-		{ 
-			Compare u;
-			return u(_value.first, s._value.first);
-		} */
-
 		Ktype getFirst() { return _value.getFirst(); };
 		Vtype getSecond() { return _value.getSecond(); };
 };
@@ -279,9 +258,10 @@ class Tree {
 
 		Tree   &operator=(const Tree &t) { _root = t._root;  return (*this);}
 
-		pointer & getRoot() { return (_root);}
+		pointer getRoot() const { return (_root);}
 
-		bool end(pointer & p){return (p == _end);}
+		//bool end(pointer & p){return (p == _end);}
+		bool end(pointer & p) const {return p->end;}
 
 		pointer insert(pointer node, const Pair &pair)
 		{
@@ -332,9 +312,9 @@ class Tree {
 			return entry;
 		}
 
-		pointer	Search(pointer	t, typename Pair::first_type &target, pointer &last)
+		pointer	Search(pointer t, typename Pair::first_type &target, pointer &last) const
 		{
-			//salvo in _end->parent l'ultimo nodo confrontato (per ottimizzare insert)
+			//salvo in last l'ultimo nodo confrontato (per ottimizzare insert)
 			if (!t->end) {
 				last = t;
 				if (target == t->_value.first)
@@ -348,7 +328,7 @@ class Tree {
 		}
 
 		//Il successore di un nodo X è il più piccolo nodo maggiore del sottalbero destro del nodo X
-		pointer	Successor(pointer &x)
+		pointer	Successor(pointer &x) const
 		{
 			pointer t = x->right;
 			while (!end(t->left))
@@ -371,8 +351,7 @@ class Tree {
 				pNext(next);
 		}
 
-		pointer	Next(pointer &x) {
-			//pointer	t = (!x->right->end) ? Successor(x) :  x->parent;
+		pointer	Next(pointer &x) const{
 			pointer	t;
 			if (!x->right->end)
 				return Successor(x);
@@ -411,7 +390,84 @@ class Tree {
 				replace->right->parent = replace;
 		}
 
+		void _Remove(pointer t, pointer s){
+			if (t == _root)
+				_root = s;
+			_size--;
+			if (_size == 0)
+				_begin = _end;
+			else if (t == _begin)
+				_begin = Next(_begin);
+
+			// t è il nodo più grande dell' albero 
+			if (t == this->_end->parent){
+				this->_end->parent = Prev(t);
+			}
+			deleteNode(t);
+		}
+
+		void _Remove1(pointer t){
+			//caso 1: t senza figli, caso 2: t con un solo figlio
+			if (end(t->left) || end(t->right))
+			{					
+				pointer	s = end(t->left) ? t->right : t->left;
+				if (t->parent)
+				{
+					// t è figlio sinistro
+					if (t == t->parent->left)
+						t->parent->left = s;
+					else // t è figlio destro
+						t->parent->right = s;
+				}
+				if (!end(s))
+					s->parent = t->parent;
+				return _Remove(t, s);
+			}
+			_Remove2(t);
+		}
+
+		void _Remove2(pointer t){
+			pointer	s;
+			//caso 3a: t ha 2 figli e il figlio destro è il suo successore
+			if( (s = Successor(t)) == t->right )
+			{
+				pointer	tmp = s->right;
+				replace(t, s);
+				s->right = tmp;
+				s->left->parent = s;
+				return _Remove(t, s);
+			}
+			_Remove3(t, s);
+		}
+
+		void _Remove3(pointer t, pointer s){
+			//caso 3b: t ha 2 figli e il suo successore si trova nell sottalbero(sinistro) del suo figlio destro
+			//sostituisco il successore con il suo figlio destro
+			s->parent->left = s->right;
+			if (s->right)
+				s->right->parent = s->parent;
+			//sostituisco t con il successore s
+			replace(t, s);
+			_Remove(t, s);
+		}
+
 		size_t	Remove(typename Pair::first_type target)
+		{
+			//std::cout << "remove" << std::endl;
+			pointer	last;
+			pointer	t = Search(_root, target, last);
+			pointer	s = _end;
+			size_t n = 0;
+			if (!t->end)
+			{
+				_Remove1(t);
+				n = 1;
+			}
+
+			return n;
+		}
+
+/* 		size_t	Remove(typename Pair::first_type target)
 		{
 			//std::cout << "remove" << std::endl;
 			pointer	last;
@@ -464,7 +520,7 @@ class Tree {
 				n = 1;
 			}
 			return n;
-		}
+		} */
 
 		pointer		begin() { return (_begin); }
 		size_t		size() const { return (_size); }
@@ -478,7 +534,7 @@ class Tree {
 			return 0;
 		}
 
-		bool less(pointer &a, pointer &b) {
+		bool less(pointer &a, pointer &b) const{
 			Compare comp;
 
 			return (comp(a->_value.first, b->_value.first));
@@ -505,10 +561,6 @@ class tree_iterator
 			return (comp(a->_value.first, b->_value.first));
 		}
 	
-	void treedebug()
-	{
-		int ciao;
-	}
 		NodePointer _ptr;
 		NodePointer next_node(NodePointer x) {
 			//treedebug();

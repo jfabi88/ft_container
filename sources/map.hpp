@@ -174,6 +174,15 @@ namespace ft
 
 			size_type size() const { return this->_tree.size(); }
 
+			size_type count(const key_type& k) const
+			{
+				NodeType *last;
+                NodeType *t = this->_tree.Search(this->_tree.getRoot(), k, last);
+				if (t->end)
+					return 0;
+				return 1;
+			}
+
 			bool empty() const { return (this->_tree.size() == 0); }
 
 			size_type max_size() const 
@@ -186,14 +195,14 @@ namespace ft
 			//single element
 			pair<iterator,  bool> insert(const value_type& val)
 			{
-				NodeType * last;
+				NodeType * last = _tree.getRoot();
 				NodeType *t = _tree.Search(_tree.getRoot(), val.first, last);
 
 				if (!t->end)
 					return ft::make_pair<iterator,  bool>(iterator(t), false);
 				//last punta al' ultimo nodo confrontato da Search
-				//t = _tree.insert(last, val);
-				t = _tree.insert(_tree.getRoot(), val);
+				t = _tree.insert(last, val);
+				//t = _tree.insert(_tree.getRoot(), val);
 				return ft::make_pair<iterator, bool>(iterator(t), true);
 			}
 
@@ -214,12 +223,12 @@ namespace ft
 						return iterator(t);	
 					}
 				}
-
+				last = _tree.getRoot();
 				t = _tree.Search(_tree.getRoot(), val.first, last);
 				//se non esiste un elemento con la stessa chiave
 				if (t->end)
-					//t = _tree.insert(last, val);
-					t = _tree.insert(_tree.getRoot(), val);
+					t = _tree.insert(last, val);
+					//t = _tree.insert(_tree.getRoot(), val);
 				
 				return iterator(t);				
 			}
@@ -228,9 +237,6 @@ namespace ft
 			template <class InputIterator>
 			void insert (InputIterator first, InputIterator last,  typename enable_if<!is_integral<InputIterator>::value && is_iterator<InputIterator>::value, InputIterator>::type* = 0)
 			{
-/* 				for (; first != last; first++) {
-					insert(*first);
-				} */
 				iterator it (_tree.getRoot());
 				for (; first != last; first++) {
 					it = insert(it, *first);
@@ -248,11 +254,16 @@ namespace ft
 			}
 	
 
-			void erase (iterator first, iterator last)
+			void erase(iterator first, iterator last)
 			{
 				for (; first != last; first++) {
 					this->erase(first);
 				}			
+			}
+
+			void clear()
+			{
+				erase(begin(), end());
 			}
 
 			key_compare key_comp() const
@@ -265,9 +276,20 @@ namespace ft
 				return value_compare(key_comp());
 			}
 
+			iterator upper_bound (const key_type& k)
+			{
+				NodeType *last;
+                NodeType *node = this->_tree.Search(this->_tree.getRoot(), k, last);
+                if (!node->end){
+                    node = this->_tree.Next(node);
+                }
+                return iterator(node);
+			}
+
 			const_iterator upper_bound (const key_type& k) const
             {
-                NodeType *node = this->_tree.Search(this->_tree.getRoot(), k);
+				NodeType *last;
+                NodeType *node = this->_tree.Search(this->_tree.getRoot(), k, last);
                 if (!node->end){
                     node = this->_tree.Next(node);
                 }
