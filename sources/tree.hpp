@@ -59,13 +59,15 @@ std::ostream& operator<<(std::ostream& os, const Node<Pair>& n)
 	4) Entrambi i figli di ciascun nodo rosso sono neri;
 	5) Ogni cammino da un nodo a una foglia nel suo sottoalbero contiene lo stesso numero di nodi neri.
 */
-template <class Pair, class Compare = std::less< typename Pair::first_type > >
+//template <class Pair, class Compare = std::less< typename Pair::first_type > >
+template <class Pair, class Compare>
 class Tree {
 	public:
 		typedef	Node<Pair>												NodeType;
 		typedef	std::allocator< NodeType >								allocator_type;
 		//typedef	A														allocator_type;
 		//typedef typename std::allocator< NodeType >::reference  		reference;
+		typedef typename allocator_type::value_type  					value_type;
 		typedef typename allocator_type::reference  					reference;				
 		typedef typename allocator_type::const_reference				const_reference;
 		typedef typename allocator_type::pointer  						pointer;			
@@ -78,7 +80,7 @@ class Tree {
 		allocator_type  	_allocator;
 		size_t				_size;
 
-		pointer	newNode(const NodeType &e, bool end = false){
+		pointer	newNode(const value_type &e, bool end = false){
 			pointer	node = _allocator.allocate(1);
 			_allocator.construct(node, e);
 			if (end){
@@ -214,14 +216,14 @@ class Tree {
 		}
 	public:
 		Tree() : _size(0) {
-			this->_end = newNode(NodeType(), true);
+			this->_end = newNode(value_type(), true);
 			this->_begin = _end;
 			this->_root = _begin;
 			//this->_root->parent = this->_end;
 		};
 
 		Tree(const Pair &p){
-			this->_end = newNode(NodeType(), true);
+			this->_end = newNode(value_type(), true);
 			//this->_end->end = true;
 			this->_begin = _end;
 			this->_root = _begin;
@@ -484,61 +486,6 @@ class Tree {
 			return n;
 		}
 
-/* 		size_t	Remove(typename Pair::first_type target)
-		{
-			//std::cout << "remove" << std::endl;
-			pointer	last;
-			pointer	t = Search(_root, target, last);
-			pointer	s = _end;
-			size_t n = 0;
-			if (!t->end)
-			{
-				//caso 1: t senza figli, caso 2: t con un solo figlio
-				if (end(t->left) || end(t->right))
-				{					
-					s = (end(t->left)) ? t->right : t->left;
-					if (t->parent)
-					{
-						//if (is_less<Pair,Compare>(t->_value.first, t->parent->_value.first))
-						if ( t == t->parent->left)
-							t->parent->left = s;
-						else
-							t->parent->right = s;
-					}
-					if (!end(s))
-						s->parent = t->parent;
-				}else if( (s = Successor(t)) == t->right){
-					//caso 3a: t ha 2 figli e il figlio destro è il suo successore
-					pointer	tmp = s->right;
-					replace(t, s);
-					s->right = tmp;
-					s->left->parent = s;
-				}else{
-					//caso 3b: t ha 2 figli e il suo successore si trova nell sottalbero(sinistro) del suo figlio destro
-					//sostituisco il successore con il suo figlio destro
-					s->parent->left = s->right;
-					if (s->right)
-						s->right->parent = s->parent;
-					//sostituisco t con il successore s
-					replace(t, s);
-				}
-				if (t == _root)
-					_root = s;
-				_size--;
-				if (_size == 0)
-					_begin = _end;
-				else if (t == _begin)
-					_begin = Next(_begin);
-
-				if(t == this->_end->parent){
-					this->_end->parent = Prev(t);
-				}
-				deleteNode(t);
-				n = 1;
-			}
-			return n;
-		} */
-
 		pointer		begin() { return (_begin); }
 		size_t		size() const { return (_size); }
 
@@ -559,16 +506,20 @@ class Tree {
 
 };
   
-template <class Pair, class Compare >
+template <class Pair, class Compare, class A >
 class tree_iterator
 {
 	public:
 		typedef typename iterator_traits<Pair>::value_type				value_type;
-		typedef	Node<value_type> NodeType;
-		typedef typename std::allocator< NodeType >::pointer 			NodePointer;	   
+		//typedef	Node<value_type> NodeType;
+		//typedef typename std::allocator< NodeType >::pointer 			NodePointer;
+		//typedef ptrdiff_t												difference_type;
+		typedef typename	A::value_type 								NodeType;
+		typedef typename 	A::pointer 									NodePointer;
+		typedef typename	A::difference_type							difference_type;   
 		typedef typename iterator_traits<Pair>::iterator_category		iterator_category;
 		
-		typedef ptrdiff_t												difference_type;
+		
 		typedef typename iterator_traits<Pair>::pointer					pointer;
 		typedef typename iterator_traits<Pair>::reference				reference;	
 	private:
@@ -628,7 +579,7 @@ class tree_iterator
 		tree_iterator(const tree_iterator<_P, _C>& __u) : _ptr(__u._ptr){} */
 
 		template <class _C>
-		tree_iterator(const tree_iterator<Pair, _C>& _u)
+		tree_iterator(const tree_iterator<Pair, _C, A>& _u)
 		{
 			std::cout << "inside tree copy costruttore: " << (*_u).first << std::endl;
 			_ptr = _u._ptr;
