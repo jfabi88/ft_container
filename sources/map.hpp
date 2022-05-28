@@ -24,6 +24,7 @@ namespace ft
 			
 		private:
 			typedef Tree<value_type, key_compare> TreeType;
+			typedef typename TreeType::NodeType NodeType;
 
 		public:
 			class value_compare : std::binary_function<value_type, value_type, bool> {
@@ -54,7 +55,6 @@ namespace ft
 			typedef Node<value_type> 									map_node;
 			typedef typename Alloc::template rebind<map_node>::other	alloc_node; 	/* https://stackoverflow.com/questions/14148756/what-does-template-rebind-do */
 		private:
-			typedef typename Tree<value_type, key_compare>::NodeType NodeType;
 			allocator_type  _allocator;
 			pointer     	_container;
 			size_type       _size;
@@ -68,7 +68,8 @@ namespace ft
 				return sstm.str();
 			}
 		public:
-			ft::Tree<value_type, key_compare>	_tree;
+			//ft::Tree<value_type, key_compare>	_tree;
+			TreeType	_tree;
 
 			//empty constructor
 			explicit map(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
@@ -272,7 +273,7 @@ namespace ft
 			{
 				erase(begin(), end());
 			}
-
+			
 			key_compare key_comp() const
 			{
 				return key_compare();
@@ -281,6 +282,24 @@ namespace ft
 			value_compare value_comp() const
 			{
 				return value_compare(key_comp());
+			}
+
+      		iterator find(const key_type& k)
+			{
+				NodeType *last;
+                NodeType *t = this->_tree.Search(this->_tree.getRoot(), k, last);
+				if (t->end)
+					return end();
+				return iterator(t);				
+			}
+
+			const_iterator find (const key_type& k) const
+			{
+				NodeType *last;
+                NodeType *t = this->_tree.Search(this->_tree.getRoot(), k, last);
+				if (t->end)
+					return end();
+				return const_iterator(t);		
 			}
 
 			iterator upper_bound (const key_type& k)

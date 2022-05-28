@@ -59,12 +59,14 @@ std::ostream& operator<<(std::ostream& os, const Node<Pair>& n)
 	4) Entrambi i figli di ciascun nodo rosso sono neri;
 	5) Ogni cammino da un nodo a una foglia nel suo sottoalbero contiene lo stesso numero di nodi neri.
 */
-template <class Pair, class Compare = std::less< typename Pair::first_type> >
+template <class Pair, class Compare = std::less< typename Pair::first_type > >
 class Tree {
 	public:
 		typedef	Node<Pair>												NodeType;
 		typedef	std::allocator< NodeType >								allocator_type;
-		typedef typename std::allocator< NodeType >::reference  		reference;			
+		//typedef	A														allocator_type;
+		//typedef typename std::allocator< NodeType >::reference  		reference;
+		typedef typename allocator_type::reference  					reference;				
 		typedef typename allocator_type::const_reference				const_reference;
 		typedef typename allocator_type::pointer  						pointer;			
 		typedef typename allocator_type::const_pointer  				const_pointer;
@@ -312,7 +314,22 @@ class Tree {
 			return entry;
 		}
 
+
 		pointer	Search(pointer t, typename Pair::first_type &target, pointer &last) const
+		{
+			//salvo in last l'ultimo nodo confrontato (per ottimizzare insert)
+			if (!t->end) {
+				last = t;
+				if (is_less< Pair, Compare>(target, t->_value.first) )
+					return Search(t->left, target, last);
+				if (is_less< Pair, Compare>(t->_value.first, target) )
+					return Search(t->right, target, last);
+			}
+			
+			return t;
+		}
+
+/* 		pointer	Search(pointer t, typename Pair::first_type &target, pointer &last) const
 		{
 			//salvo in last l'ultimo nodo confrontato (per ottimizzare insert)
 			if (!t->end) {
@@ -325,7 +342,7 @@ class Tree {
 			}
 			
 			return t;
-		}
+		} */
 
 		//Il successore di un nodo X è il più piccolo nodo maggiore del sottalbero destro del nodo X
 		pointer	Successor(pointer &x) const
