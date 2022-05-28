@@ -44,10 +44,10 @@ void printSpace(size_t n, char c = ' ')
 }
 
 
-template <class P, class Compare>
-void prinTree(ft::Tree<P, Compare> &tree)
+template <class P, class Compare, class A>
+void prinTree(ft::Tree<P, Compare, A> &tree)
 {
-	typedef typename ft::Tree<P, Compare>::NodeType type;
+	typedef typename ft::Tree<P, Compare, A>::NodeType type;
 	size_t h = tree.PreOrder(tree.getRoot());
 	size_t max = nTreeH(h);
 	size_t lastN = pow(2, h);
