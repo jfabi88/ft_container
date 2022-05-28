@@ -610,10 +610,14 @@ class tree_iterator
 /* 		template <class _P, class _C>
 		tree_iterator(const tree_iterator<_P, _C>& __u) : _ptr(__u._ptr){} */
 
-		template <class _P, class _C>
-		tree_iterator(const tree_iterator<_P, _C>& __u)
+		template <class _C>
+		tree_iterator(const tree_iterator<Pair, _C>& _u)
 		{
-			*this = __u;
+			std::cout << "inside tree copy costruttore: " << (*_u).first << std::endl;
+			_ptr = _u._ptr;
+			//tree_iterator it(_u._ptr);
+			//*this = it;
+			//*this = __u;
 		}
 		//tree_iterator(const tree_iterator<_P, _C>& __u) : _ptr(__u.base()){}
 
@@ -632,6 +636,8 @@ class tree_iterator
 		bool operator==(const tree_iterator &tri) { return (_ptr == tri._ptr); };
 		bool operator!=(const tree_iterator &tri) { return (_ptr != tri._ptr); };
 		tree_iterator   &operator=(const tree_iterator &s) { _ptr = s._ptr;  return (*this);}
+/* 		template <class _C>
+		tree_iterator   &operator=(const tree_iterator<Pair, _C> &s) { _ptr = s._ptr;  return (*this);} */
 };
 
 

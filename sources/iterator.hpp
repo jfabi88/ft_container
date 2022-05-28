@@ -91,12 +91,12 @@ namespace ft
 			pointer _ptr;
 			b_iterator(pointer p) : _ptr(p){}
 		public:
-			pointer base() const	{return _ptr;}
+			//pointer base() const	{return _ptr;}
 			b_iterator() : _ptr(nullptr){};
 			~b_iterator(){};
 
-			template <class _Up>
-			b_iterator(const b_iterator<_Up>& __u) : _ptr(__u.base()){}
+			//template <class _Up>
+			b_iterator(const b_iterator& __u) : _ptr(__u._ptr){}
 
 			reference   operator*() const   { return *_ptr; }
 			pointer     operator->()        { return _ptr; }
@@ -148,12 +148,12 @@ namespace ft
 		private:
 			iterator_type _ptr;
 		public:
-			Iter base() const    {return _ptr;}
+			//Iter base() const    {return _ptr;}
 			b_reverse_iterator() : _ptr(){};
 			explicit b_reverse_iterator( iterator_type x ) : _ptr(x) {};
 			~b_reverse_iterator(){};
-			template <class _Up>
-			b_reverse_iterator(const b_reverse_iterator<_Up>& __u) : _ptr(__u.base()){}
+			
+			b_reverse_iterator(const b_reverse_iterator& __u) : _ptr(__u._ptr){}
 			reference   operator*() const   { Iter tmp = _ptr; return *--tmp; }
 			pointer     operator->() const      { return &(operator*()); }
 			

@@ -256,9 +256,16 @@ namespace ft
 
 			void erase(iterator first, iterator last)
 			{
-				for (; first != last; first++) {
+/* 				for (; first != last; first++) {
 					this->erase(first);
-				}			
+				}	 */		
+
+				while (first != last){
+					key_type k = first->first;
+					first++;
+					erase(k);
+				}
+
 			}
 
 			void clear()

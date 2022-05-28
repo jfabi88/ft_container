@@ -90,5 +90,20 @@ int main(){
 	std::map<int, std::string>::iterator::pointer c;
 	std::map<int, std::string>::const_iterator::pointer d;
 	std::map<int, std::string>::iterator::value_type e; */
-	
+
+	ft::map<int, int > mp;
+	ft::map<int, int, std::plus<int> > mp2;
+
+	std::map<int, int > smp;
+	std::map<int, int, std::plus<int> > smp2;
+
+	mp.insert(ft::make_pair(1, 2));
+	mp2.insert(ft::make_pair(5, 5));
+	smp2.insert(std::make_pair(2, 2));
+
+	std::map<int, int >::iterator smpi = smp2.begin();
+	//ft::map<int, int >::iterator mpix = mp.begin();
+	//ft::map<int, int, std::plus<int> >::iterator mpi = mp2.begin();
+	ft::map<int, int>::iterator mpi = mp2.begin();
+	std::cout << "hey = " << mpi->first << std::endl;
 }
