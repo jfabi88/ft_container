@@ -60,13 +60,11 @@ std::ostream& operator<<(std::ostream& os, const Node<Pair>& n)
 	5) Ogni cammino da un nodo a una foglia nel suo sottoalbero contiene lo stesso numero di nodi neri.
 */
 //template <class Pair, class Compare = std::less< typename Pair::first_type > >
-template <class Pair, class Compare>
+template <class Pair, class Compare, class A>
 class Tree {
 	public:
-		typedef	Node<Pair>												NodeType;
-		typedef	std::allocator< NodeType >								allocator_type;
-		//typedef	A														allocator_type;
-		//typedef typename std::allocator< NodeType >::reference  		reference;
+		typedef	A														allocator_type;
+		typedef	typename A::value_type									NodeType;
 		typedef typename allocator_type::value_type  					value_type;
 		typedef typename allocator_type::reference  					reference;				
 		typedef typename allocator_type::const_reference				const_reference;
@@ -331,21 +329,6 @@ class Tree {
 			return t;
 		}
 
-/* 		pointer	Search(pointer t, typename Pair::first_type &target, pointer &last) const
-		{
-			//salvo in last l'ultimo nodo confrontato (per ottimizzare insert)
-			if (!t->end) {
-				last = t;
-				if (target == t->_value.first)
-					return t;
-				if (is_less< Pair, Compare>(target, t->_value.first) )
-					return Search(t->left, target, last);
-				return Search(t->right, target, last);
-			}
-			
-			return t;
-		} */
-
 		//Il successore di un nodo X è il più piccolo nodo maggiore del sottalbero destro del nodo X
 		pointer	Successor(pointer &x) const
 		{
@@ -511,15 +494,10 @@ class tree_iterator
 {
 	public:
 		typedef typename iterator_traits<Pair>::value_type				value_type;
-		//typedef	Node<value_type> NodeType;
-		//typedef typename std::allocator< NodeType >::pointer 			NodePointer;
-		//typedef ptrdiff_t												difference_type;
 		typedef typename	A::value_type 								NodeType;
 		typedef typename 	A::pointer 									NodePointer;
 		typedef typename	A::difference_type							difference_type;   
-		typedef typename iterator_traits<Pair>::iterator_category		iterator_category;
-		
-		
+		typedef typename	iterator_traits<Pair>::iterator_category	iterator_category;		
 		typedef typename iterator_traits<Pair>::pointer					pointer;
 		typedef typename iterator_traits<Pair>::reference				reference;	
 	private:

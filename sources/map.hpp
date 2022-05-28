@@ -36,7 +36,7 @@ namespace ft
 			typedef size_t												size_type;
 
 		private:
-			typedef Tree<value_type, key_compare> TreeType;
+			typedef Tree<value_type, key_compare, alloc_node> TreeType;
 			typedef typename TreeType::NodeType NodeType;
 
 		public:
