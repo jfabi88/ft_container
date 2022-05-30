@@ -320,9 +320,10 @@ class Tree {
 			//salvo in last l'ultimo nodo confrontato (per ottimizzare insert)
 			if (!t->end) {
 				last = t;
-				if (is_less< Pair, Compare>(target, t->_value.first) )
+				//if (is_less< Pair, Compare>(target, t->_value.first) )
+				if (less(target, t->_value.first) )
 					return Search(t->left, target, last);
-				if (is_less< Pair, Compare>(t->_value.first, target) )
+				if (less(t->_value.first, target) )
 					return Search(t->right, target, last);
 			}
 			
@@ -483,10 +484,13 @@ class Tree {
 
 		bool less(pointer &a, pointer &b) const{
 			Compare comp;
-
 			return (comp(a->_value.first, b->_value.first));
 		}
+		bool less(typename Pair::first_type &a, typename Pair::first_type &b) const{
+			Compare comp;
 
+			return (comp(a, b));
+		}
 };
   
 template <class Pair, class Compare, class A >
@@ -520,9 +524,15 @@ class tree_iterator
 			}
 			else
 			{
-				t = x->parent;
+/* 				t = x->parent;
 				while (t && !t->end && less(t, x))
-					t = t->parent;
+					t = t->parent; */
+
+				t = x->parent;
+				while (t && !t->end && x == t->right){
+					x = t;
+					t = x->parent;
+				}
 			}
 			return t;
 		}
@@ -540,9 +550,16 @@ class tree_iterator
 			}
 			else
 			{
-				t = x->parent;
+/* 				t = x->parent;
 				while (!t->end && less(x, t))
-					t = t->parent;
+					t = t->parent; */
+
+				t = x->parent;
+				while (t && !t->end && x == t->left){
+					x = t;
+					t = x->parent;
+				}
+
 			}
 			return t;
 		}
@@ -553,19 +570,11 @@ class tree_iterator
 
 		tree_iterator(const tree_iterator& __u) : _ptr(__u._ptr){}
 
-/* 		template <class _P, class _C>
-		tree_iterator(const tree_iterator<_P, _C>& __u) : _ptr(__u._ptr){} */
-
 		template <class _C>
 		tree_iterator(const tree_iterator<Pair, _C, A>& _u)
 		{
-			std::cout << "inside tree copy costruttore: " << (*_u).first << std::endl;
 			_ptr = _u._ptr;
-			//tree_iterator it(_u._ptr);
-			//*this = it;
-			//*this = __u;
 		}
-		//tree_iterator(const tree_iterator<_P, _C>& __u) : _ptr(__u.base()){}
 
 		reference   operator*() const   { return _ptr->_value; }
 		pointer     operator->()        { return &_ptr->_value; }
@@ -579,11 +588,13 @@ class tree_iterator
 		tree_iterator& operator--() {_ptr = prev_node(_ptr); return *this; };								//Prefix increment operator
 		tree_iterator operator--(int) {tree_iterator tmp = *this; _ptr = prev_node(_ptr); return tmp; }; //Postfix increment operator
 		template <class Key, class T, class Comp, class Alloc> friend class map;
-		bool operator==(const tree_iterator &tri) { return (_ptr == tri._ptr); };
-		bool operator!=(const tree_iterator &tri) { return (_ptr != tri._ptr); };
+		bool operator==(const tree_iterator &tri) const { return (_ptr == tri._ptr); };
+		bool operator!=(const tree_iterator &tri) const { return (_ptr != tri._ptr); };
 		tree_iterator   &operator=(const tree_iterator &s) { _ptr = s._ptr;  return (*this);}
 /* 		template <class _C>
 		tree_iterator   &operator=(const tree_iterator<Pair, _C> &s) { _ptr = s._ptr;  return (*this);} */
+		template<class _P, class _C, class _A>
+		friend class tree_iterator;
 };
 
 

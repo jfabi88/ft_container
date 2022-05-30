@@ -294,7 +294,7 @@ namespace ft
 				return iterator(t);				
 			}
 
-			const_iterator find (const key_type& k) const
+			const_iterator find(const key_type& k) const
 			{
 				NodeType *last;
                 NodeType *t = this->_tree.Search(this->_tree.getRoot(), k, last);
@@ -303,25 +303,63 @@ namespace ft
 				return const_iterator(t);		
 			}
 
-			iterator upper_bound (const key_type& k)
+			iterator lower_bound(const key_type& k)
 			{
-				NodeType *last;
-                NodeType *node = this->_tree.Search(this->_tree.getRoot(), k, last);
-                if (!node->end){
-                    node = this->_tree.Next(node);
-                }
-                return iterator(node);
+				iterator it;
+				iterator _end = end();
+				for (it = begin(); it != _end; it++){
+					if (!_comp(it->first, k))
+						break;
+				}
+                return it;
 			}
 
-			const_iterator upper_bound (const key_type& k) const
+			const_iterator lower_bound(const key_type& k) const
+			{
+				const_iterator it;
+				const_iterator _end = end();
+				for (it = begin(); it != _end; it++){
+					if (!_comp(it->first, k))
+						break;
+				}
+                return it;
+			}
+
+			iterator upper_bound(const key_type& k)
+			{
+				iterator it;
+				iterator _end = end();
+				for (it = begin(); it != _end; it++){
+					if (_comp(k,it->first))
+						break;
+				}
+                return it;
+			}
+
+			const_iterator upper_bound(const key_type& k) const
             {
-				NodeType *last;
-                NodeType *node = this->_tree.Search(this->_tree.getRoot(), k, last);
-                if (!node->end){
-                    node = this->_tree.Next(node);
-                }
-                return const_iterator(node);
+				const_iterator it;
+				const_iterator _end = end();
+				for (it = begin(); it != _end; it++){
+					if (_comp(k,it->first))
+						break;
+				}
+                return it;
             }
+
+			pair<const_iterator,const_iterator> equal_range (const key_type& k) const
+			{
+				const_iterator lower = lower_bound(k);
+				const_iterator upper = upper_bound(k);
+				return ft::make_pair<const_iterator, const_iterator>(lower,upper);
+			}
+
+			pair<iterator,iterator>	equal_range (const key_type& k)
+			{
+				iterator lower = lower_bound(k);
+				iterator upper = upper_bound(k);
+				return ft::make_pair<iterator, iterator>(lower,upper);
+			}
 	};
 
 

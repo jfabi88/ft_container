@@ -97,13 +97,46 @@ int main(){
 	std::map<int, int > smp;
 	std::map<int, int, std::plus<int> > smp2;
 
-	mp.insert(ft::make_pair(1, 2));
-	mp2.insert(ft::make_pair(5, 5));
-	smp2.insert(std::make_pair(2, 2));
+	mp.insert(ft::make_pair(16, 3));
+
+    smp2.insert(std::make_pair(16, 3));
+    smp2.insert(std::make_pair(8, 3));
+    smp2.insert(std::make_pair(23, 3));
+    smp2.insert(std::make_pair(7, 3));
+    smp2.insert(std::make_pair(19, 3));
+    smp2.insert(std::make_pair(29, 3));
+    smp2.insert(std::make_pair(41, 3));
+    smp2.insert(std::make_pair(4, 3));
+    smp2.insert(std::make_pair(11, 3));
+
+    mp2.insert(ft::make_pair(16, 3));
+    mp2.insert(ft::make_pair(8, 3));
+    mp2.insert(ft::make_pair(23, 3));
+    mp2.insert(ft::make_pair(7, 3));
+    mp2.insert(ft::make_pair(19, 3));
+    mp2.insert(ft::make_pair(29, 3));
+    mp2.insert(ft::make_pair(41, 3));
+    mp2.insert(ft::make_pair(4, 3));
+    mp2.insert(ft::make_pair(11, 3));
 
 	std::map<int, int >::iterator smpi = smp2.begin();
 	//ft::map<int, int >::iterator mpix = mp.begin();
 	//ft::map<int, int, std::plus<int> >::iterator mpi = mp2.begin();
 	ft::map<int, int>::iterator mpi = mp2.begin();
 	std::cout << "hey = " << mpi->first << std::endl;
+
+	//map with plus commpare
+	std::cout << "STD MAP with plus commpare :" << std::endl;
+	for (smpi = smp2.begin(); smpi != smp2.end(); smpi++){
+		std::cout << smpi->first << "/" << (*smpi).second << std::endl;
+	}
+
+	prinTree(mp2._tree);
+	ft::debugxx();
+	//map with plus commpare
+	std::cout << "FT MAP with plus commpare :" << std::endl;
+	for (mpi = mp2.begin(); mpi != mp2.end(); mpi++){
+		std::cout << mpi->first << "/" << (*mpi).second << std::endl;
+		//exit(0);
+	}
 }
