@@ -38,7 +38,6 @@ struct Node
 		~Node(){};
 		Node(const Pair &pair) : _value(pair), parent(nullptr), left(nullptr), right(nullptr),  end(false), color(RED) {
 		};
-
 		Ktype getFirst() { return _value.getFirst(); };
 		Vtype getSecond() { return _value.getSecond(); };
 };
@@ -258,7 +257,15 @@ class Tree {
 			deleteNode(_end);
 		}
 
-		Tree   &operator=(const Tree &t) { _root = t._root;  return (*this);}
+		Tree   &operator=(const Tree &t) {
+			std::cout << "bella rega" << std::endl;
+			_size = t._size;
+			_begin = t._begin;
+			_end = t._end;
+			_allocator = t._allocator;
+			_root = t._root;
+			return (*this);
+		}
 
 		pointer getRoot() const { return (_root);}
 
@@ -576,8 +583,9 @@ class tree_iterator
 			_ptr = _u._ptr;
 		}
 
+		//tree_iterator &operator=(tree_iterator &it) {_ptr = it._ptr; return (*this);};
 		reference   operator*() const   { return _ptr->_value; }
-		pointer     operator->()        { return &_ptr->_value; }
+		pointer     operator->() const     { return &(_ptr->_value); }
 		
 		tree_iterator    operator+=(difference_type n)   { _ptr += n; return (*this); }
 		tree_iterator    operator-=(difference_type n)   { _ptr -= n; return (*this); }

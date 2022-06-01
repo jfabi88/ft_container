@@ -532,3 +532,12 @@ namespace ft
 			}
 	};
 }
+
+namespace std
+{
+	template< class T, class Alloc >
+	void swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs )
+	{
+		lhs.swap(rhs);
+	};
+}

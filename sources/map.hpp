@@ -57,7 +57,7 @@ namespace ft
 
 		private:
 			allocator_type  _allocator;
-			pointer     	_container;
+/* 			pointer     	_container; */
 			size_type       _size;
 			key_compare		_comp;
 			alloc_node		_alloc;
@@ -68,9 +68,9 @@ namespace ft
 				sstm << "map::at:  key not found: __k (which is " << k << ")" << std::endl;
 				return sstm.str();
 			}
+			TreeType	_tree;
 		public:
 			//ft::Tree<value_type, key_compare>	_tree;
-			TreeType	_tree;
 
 			//empty constructor
 			explicit map(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
@@ -360,6 +360,14 @@ namespace ft
 				iterator upper = upper_bound(k);
 				return ft::make_pair<iterator, iterator>(lower,upper);
 			}
+
+			void swap (map& x)
+			{
+				ft::swap(this->_allocator, x._allocator);
+				ft::swap(this->_size, x._size);
+				ft::swap(this->_tree, x._tree);
+				std::cout << " JAcopo merda" << std::endl;
+			}
 	};
 
 
@@ -404,6 +412,15 @@ namespace ft
 		int ciao;
 	}
 
+}
+
+namespace std
+{
+	template< class T, class Alloc >
+	void swap( ft::map<T,Alloc>& lhs, ft::map<T,Alloc>& rhs )
+	{
+		lhs.swap(rhs);
+	};
 }
 
 #endif

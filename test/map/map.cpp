@@ -131,7 +131,7 @@ int main(){
 		std::cout << smpi->first << "/" << (*smpi).second << std::endl;
 	}
 
-	prinTree(mp2._tree);
+	//prinTree(mp2._tree);
 	ft::debugxx();
 	//map with plus commpare
 	std::cout << "FT MAP with plus commpare :" << std::endl;
@@ -139,4 +139,10 @@ int main(){
 		std::cout << mpi->first << "/" << (*mpi).second << std::endl;
 		//exit(0);
 	}
+
+
+	ft::map<int, char>::iterator pippo;
+	ft::map<const int, char>::iterator pluto;
+
+	pippo = pluto;
 }
