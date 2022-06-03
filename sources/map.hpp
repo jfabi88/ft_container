@@ -17,28 +17,22 @@ namespace ft
 	class map
 	{
 		public:
-			typedef Key						key_type;
-			typedef T						mapped_type;
-			typedef pair<const Key, T>		value_type;
-			typedef Compare					key_compare;
-			typedef Node<value_type> 									map_node;
-			typedef Alloc												allocator_type;
-			typedef typename Alloc::template rebind<map_node>::other	alloc_node; 	/* https://stackoverflow.com/questions/14148756/what-does-template-rebind-do */			
-			typedef typename allocator_type::reference					reference;
-			typedef typename allocator_type::const_reference			const_reference;
-			typedef typename allocator_type::pointer					pointer;
-			typedef typename allocator_type::const_pointer				const_pointer;
-			typedef tree_iterator< pointer, key_compare, alloc_node>   				iterator;
-			typedef tree_iterator< const_pointer, key_compare, alloc_node>			const_iterator;
-			typedef b_reverse_iterator<iterator>             			reverse_iterator;
-            typedef b_reverse_iterator<const_iterator>          		const_reverse_iterator;
-			typedef std::ptrdiff_t										difference_type;
-			typedef size_t												size_type;
-
-		private:
-			typedef Tree<value_type, key_compare, alloc_node> TreeType;
-			typedef typename TreeType::NodeType NodeType;
-
+            typedef Key                                                 key_type;
+            typedef T                                                   mapped_type;
+            typedef typename Alloc::value_type                          value_type;
+            typedef Compare                                             key_compare;
+            typedef Node<value_type>                                    map_node;
+            typedef Alloc                                               allocator_type;
+            typedef typename Alloc::template rebind<map_node>::other    alloc_node;     /* https://stackoverflow.com/questions/14148756/what-does-template-rebind-do */
+            typedef Tree<Alloc, key_compare>           					TreeType;
+            typedef typename TreeType::iterator                         iterator;
+            typedef typename TreeType::const_iterator                   const_iterator;
+            typedef b_reverse_iterator<iterator>                        reverse_iterator;
+            typedef b_reverse_iterator<const_iterator>                  const_reverse_iterator;
+            typedef std::ptrdiff_t                                      difference_type;
+            typedef size_t                                              size_type;
+        private:
+            typedef typename TreeType::NodeType NodeType;
 		public:
 			class value_compare : std::binary_function<value_type, value_type, bool> {
 				friend class map;
@@ -57,7 +51,6 @@ namespace ft
 
 		private:
 			allocator_type  _allocator;
-/* 			pointer     	_container; */
 			size_type       _size;
 			key_compare		_comp;
 			alloc_node		_alloc;
@@ -116,7 +109,6 @@ namespace ft
 				if (t->end)
 					throw std::out_of_range(myOutOfRange(k));
 				return iterator(t)->second;
-				//return (t->getSecond());
 			}
 
 			const mapped_type& at (const key_type& k) const
@@ -216,9 +208,7 @@ namespace ft
 				//se il nuovo elemento >= di quello in position
 				if (_comp(position._ptr->_value.first, val.first)){
 					NodeType *next = _tree.Next(position._ptr);
-					//NodeType *next = _tree._end;
 					//se il nuovo elemento è l'elemento successivo a quello in position
-					//if (next->end || _comp(val.first, next->getFirst())){
 					if (next->end || _comp(val.first, next->_value.first)){
 						//std::cout << "Eccomi!!!\n";
 						t = _tree.insert(position._ptr, val);
@@ -230,7 +220,6 @@ namespace ft
 				//se non esiste un elemento con la stessa chiave
 				if (t->end)
 					t = _tree.insert(last, val);
-					//t = _tree.insert(_tree.getRoot(), val);
 				
 				return iterator(t);				
 			}
@@ -366,7 +355,6 @@ namespace ft
 				ft::swap(this->_allocator, x._allocator);
 				ft::swap(this->_size, x._size);
 				ft::swap(this->_tree, x._tree);
-				std::cout << " JAcopo merda" << std::endl;
 			}
 	};
 
