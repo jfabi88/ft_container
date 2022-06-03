@@ -433,6 +433,113 @@ class Tree {
 				rotate_left(grandparent(n));
 			}
 		}
+
+		pointer sibling(pointer n) {
+			if (n == n->parent->left)
+				return n->parent->right;
+			else
+				return n->parent->left;
+		}
+
+		void delete_one_child(pointer n) {
+			/* Si assume che n ha al massimo un figlio non nullo */
+			pointer child = (n->right->end) ? n->left: n->right;
+			if (child->end){
+				replace(n, child);
+				if (n->color == BLACK) {
+					if (child->color == RED)
+						child->color = BLACK;
+					else
+						delete_case1(child);
+				}
+			}
+
+			_Remove(n, child);
+			//deleteNode(n);
+		}
+
+		void delete_case1(pointer n) {
+			if (n->parent->end)
+				return;
+			delete_case2(n);
+		}
+
+		void delete_case2(pointer n) {
+			if (sibling(n)->color == RED) {
+				n->parent->color = RED;
+				sibling(n)->color = BLACK;
+				if (n == n->parent->left)
+					rotate_left(n->parent);
+				else
+					rotate_right(n->parent);
+			}
+			delete_case3(n);
+		}
+
+		void delete_case3(pointer n) {
+			if (n->parent->color == BLACK &&
+				sibling(n)->color == BLACK &&
+				sibling(n)->left->color == BLACK &&
+				sibling(n)->right->color == BLACK)
+			{
+				sibling(n)->color = RED;
+				delete_case1(n->parent);
+			}
+			else
+				delete_case4(n);
+		}
+
+		void delete_case4(pointer n) {
+			if (n->parent->color == RED &&
+				sibling(n)->color == BLACK &&
+				sibling(n)->left->color == BLACK &&
+				sibling(n)->right->color == BLACK)
+			{
+				sibling(n)->color = RED;
+				n->parent->color = BLACK;
+			}
+			else
+				delete_case5(n);
+		}
+
+		void delete_case5(pointer n) {
+			if (n == n->parent->left &&
+				sibling(n)->color == BLACK &&
+				sibling(n)->left->color == RED &&
+				sibling(n)->right->color == BLACK)
+			{
+				sibling(n)->color = RED;
+				sibling(n)->left->color = BLACK;
+				rotate_right(sibling(n));
+			}
+			else if (n == n->parent->right &&
+					sibling(n)->color == BLACK &&
+					sibling(n)->right->color == RED &&
+					sibling(n)->left->color == BLACK)
+			{
+				sibling(n)->color = RED;
+				sibling(n)->right->color = BLACK;
+				rotate_left(sibling(n));
+			}
+			delete_case6(n);
+		}
+
+		void delete_case6(pointer n) {
+			sibling(n)->color = n->parent->color;
+			n->parent->color = BLACK;
+			if (n == n->parent->left) {
+				/* Here, sibling(n)->right->color == RED */
+				sibling(n)->right->color = BLACK;
+				rotate_left(n->parent);
+			}
+			else
+			{
+				/* Here, sibling(n)->left->color == RED */
+				sibling(n)->left->color = BLACK;
+				rotate_right(n->parent);
+			}
+		}
+
 	public:
 		Tree() : _size(0) {
 			this->_end = newNode(value_type(), true);
@@ -693,6 +800,7 @@ class Tree {
 			if (!t->end)
 			{
 				_Remove1(t);
+				//delete_one_child(t);
 				n = 1;
 			}
 
