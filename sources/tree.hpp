@@ -7,7 +7,6 @@
 #include "iterator.hpp"
 #include "utils.hpp"
 
-
 namespace ft {
 
 template < class Pair, class Compare >
@@ -722,7 +721,6 @@ class Tree {
 
 			return (comp(a, b));
 		}
-
 
 		void swap (Tree& x)
 		{
