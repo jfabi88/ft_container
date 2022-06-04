@@ -62,24 +62,21 @@ std::ostream& operator<<(std::ostream& os, const Node<Pair>& n)
 	return os;
 }
 
-template <class Pair, class Compare, class A >
+template <class Pair>
 class tree_iterator
 {
 	public:
 		typedef  			Pair											value_type;
-		//typedef 		typename Alloc::template rebind<NodeType>::other    A;
+		typedef 			Node<value_type>                                NodeType;
+		typedef				std::allocator<NodeType>						Alloc;
+		typedef typename 	Alloc::template rebind<NodeType>::other   		 A;
 		typedef typename 	A::pointer 										NodePointer;
 		typedef typename	A::difference_type								difference_type;   
 		typedef	std::bidirectional_iterator_tag								iterator_category;		
 		typedef typename 	std::allocator<Pair>::pointer					pointer;
 		typedef typename 	std::allocator<Pair>::reference					reference;	
 	private:
-		bool less(NodePointer &a, NodePointer &b) {
-			Compare comp;
 
-			return (comp(a->_value.first, b->_value.first));
-		}
-	
 		NodePointer _ptr;
 		NodePointer next_node(NodePointer x) {
 			if (x->end)
@@ -128,12 +125,7 @@ class tree_iterator
 		tree_iterator(NodePointer p) : _ptr(p){}
 
 		tree_iterator(const tree_iterator& __u) : _ptr(__u._ptr){}
-
-		template <class _C>
-		tree_iterator(const tree_iterator<Pair, _C, A>& _u)
-		{
-			_ptr = _u._ptr;
-		}
+		tree_iterator(tree_iterator<const Pair>& __u) : _ptr(__u._ptr){}
 
 		reference   operator*() const   { return _ptr->_value; }
 		pointer     operator->() const     { return &(_ptr->_value); }
@@ -151,30 +143,28 @@ class tree_iterator
 		bool operator==(const tree_iterator &tri) const { return (_ptr == tri._ptr); };
 		bool operator!=(const tree_iterator &tri) const { return (_ptr != tri._ptr); };
 		tree_iterator   &operator=(const tree_iterator &s) { _ptr = s._ptr;  return (*this);}
-		template<class _P, class _C, class _A>
-		friend class tree_iterator;
-		template<class _P, class _C, class _A>
+
+		template<class _P>
 		friend class const_tree_iterator;
 };
 
 
-template <class Pair, class Compare, class A >
+template <class Pair>
 class const_tree_iterator
 {
 	public:
 		typedef 			Pair											value_type;
-		typedef typename 	A::pointer 								NodePointer;
+
+		typedef 			Node<value_type>                                NodeType;
+		typedef				std::allocator<NodeType>						Alloc;
+		typedef typename 	Alloc::template rebind<NodeType>::other   		 A;
+
+		typedef typename 	A::pointer 										NodePointer;
 		typedef typename	A::difference_type								difference_type;   
 		typedef	std::bidirectional_iterator_tag								iterator_category;		
 		typedef typename 	std::allocator<Pair>::const_pointer				pointer;
 		typedef typename 	std::allocator<Pair>::reference					reference;	
 	private:
-		bool less(NodePointer &a, NodePointer &b) {
-			Compare comp;
-
-			return (comp(a->_value.first, b->_value.first));
-		}
-	
 		NodePointer _ptr;
 		NodePointer next_node(NodePointer x) {
 			if (x->end)
@@ -224,8 +214,12 @@ class const_tree_iterator
 
 		const_tree_iterator(const const_tree_iterator& __u) : _ptr(__u._ptr){}
 
-		template <class _C, class _A>
-		const_tree_iterator(tree_iterator<Pair, _C, _A> __u) : _ptr(__u._ptr){}
+/* 		template <class _C>
+		const_tree_iterator(tree_iterator<Pair, _C> __u) : _ptr(__u._ptr){} */
+		//template <class Pair>
+		const_tree_iterator(tree_iterator<Pair>& __u) : _ptr(__u._ptr){}
+		const_tree_iterator(const tree_iterator<Pair>& __u) : _ptr(__u._ptr){}
+		const_tree_iterator(tree_iterator<const Pair>& __u) : _ptr(__u._ptr){}
 
 		reference   operator*() const   { return _ptr->_value; }
 		pointer     operator->() const     { return &(_ptr->_value); }
@@ -242,8 +236,6 @@ class const_tree_iterator
 		bool operator==(const const_tree_iterator &tri) const { return (_ptr == tri._ptr); };
 		bool operator!=(const const_tree_iterator &tri) const { return (_ptr != tri._ptr); };
 		const_tree_iterator   &operator=(const const_tree_iterator &s) { _ptr = s._ptr;  return (*this);}
-		template<class _P, class _C, class _A>
-		friend class tree_iterator;
 };
 
 /*	PROPRIETà ALBERO ROSSO-NERO (il cui mantenimento garantisce il bilanciamento)
@@ -268,8 +260,8 @@ class Tree {
 		typedef typename allocator_type::const_pointer                  		const_pointer;
 		pointer                                                         		_begin;                     	//jfabi: da mettere privati e fare
 		pointer                                                         		_end;                           //getBeign e getEnd
-		typedef  tree_iterator< Pair , Compare, allocator_type>    		 		iterator;
-		typedef  const_tree_iterator< Pair , Compare, allocator_type>    		const_iterator;
+		typedef  tree_iterator< Pair>    		 		iterator;
+		typedef  const_tree_iterator< Pair>    		const_iterator;
 		//typedef  tree_iterator<  typename std::allocator< Pair >::const_pointer, Compare, allocator_type>    	const_iterator;
 	private:
 		pointer				_root;
