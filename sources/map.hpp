@@ -247,10 +247,6 @@ namespace ft
 
 			void erase(iterator first, iterator last)
 			{
-/* 				for (; first != last; first++) {
-					this->erase(first);
-				}	 */		
-
 				while (first != last){
 					key_type k = first->first;
 					first++;
@@ -294,46 +290,36 @@ namespace ft
 
 			iterator lower_bound(const key_type& k)
 			{
-				iterator it;
+/* 				iterator it;
 				iterator _end = end();
 				for (it = begin(); it != _end; it++){
 					if (!_comp(it->first, k))
 						break;
 				}
-                return it;
+                return it; */
+				return iterator(this->_tree.lower_bound(k));
 			}
 
 			const_iterator lower_bound(const key_type& k) const
 			{
-				const_iterator it;
+/* 				const_iterator it;
 				const_iterator _end = end();
 				for (it = begin(); it != _end; it++){
 					if (!_comp(it->first, k))
 						break;
 				}
-                return it;
+                return it; */
+				return const_iterator(this->_tree.lower_bound(k));
 			}
 
 			iterator upper_bound(const key_type& k)
 			{
-				iterator it;
-				iterator _end = end();
-				for (it = begin(); it != _end; it++){
-					if (_comp(k,it->first))
-						break;
-				}
-                return it;
+				return iterator(this->_tree.upper_bound(k));
 			}
 
 			const_iterator upper_bound(const key_type& k) const
             {
-				const_iterator it;
-				const_iterator _end = end();
-				for (it = begin(); it != _end; it++){
-					if (_comp(k,it->first))
-						break;
-				}
-                return it;
+				return const_iterator(this->_tree.upper_bound(k));
             }
 
 			pair<const_iterator,const_iterator> equal_range (const key_type& k) const

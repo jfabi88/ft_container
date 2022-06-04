@@ -69,7 +69,6 @@ class tree_iterator
 		typedef  			Pair											value_type;
 		typedef typename 	A::pointer 										NodePointer;
 		typedef typename	A::difference_type								difference_type;   
-		//typedef typename	iterator_traits<Pair>::iterator_category		iterator_category;
 		typedef	std::bidirectional_iterator_tag								iterator_category;		
 		typedef typename 	std::allocator<Pair>::pointer					pointer;
 		typedef typename 	std::allocator<Pair>::reference					reference;	
@@ -129,29 +128,15 @@ class tree_iterator
 
 		tree_iterator(const tree_iterator& __u) : _ptr(__u._ptr){}
 
-/* 		template <class _C>
-		tree_iterator(const tree_iterator<Pair, _C, A>& _u)
-		{
-			_ptr = _u._ptr;
-		} */
-
 		template <class _C>
 		tree_iterator(const tree_iterator<Pair, _C, A>& _u)
 		{
 			_ptr = _u._ptr;
 		}
 
-/* 		template <class _C>
-		tree_iterator(const tree_iterator<Pair, _C, A>& _u)
-		{
-			_ptr = _u._ptr;
-		} */
-
-		//tree_iterator &operator=(tree_iterator &it) {_ptr = it._ptr; return (*this);};
 		reference   operator*() const   { return _ptr->_value; }
 		pointer     operator->() const     { return &(_ptr->_value); }
 
-		//pointer operator->() const {return pointer_traits<pointer>::pointer_to(ptr->_value);}
 		
 		tree_iterator    operator+=(difference_type n)   { _ptr += n; return (*this); }
 		tree_iterator    operator-=(difference_type n)   { _ptr -= n; return (*this); }
@@ -165,8 +150,6 @@ class tree_iterator
 		bool operator==(const tree_iterator &tri) const { return (_ptr == tri._ptr); };
 		bool operator!=(const tree_iterator &tri) const { return (_ptr != tri._ptr); };
 		tree_iterator   &operator=(const tree_iterator &s) { _ptr = s._ptr;  return (*this);}
-/* 		template <class _C>
-		tree_iterator   &operator=(const tree_iterator<Pair, _C> &s) { _ptr = s._ptr;  return (*this);} */
 		template<class _P, class _C, class _A>
 		friend class tree_iterator;
 		template<class _P, class _C, class _A>
@@ -181,10 +164,6 @@ class const_tree_iterator
 		typedef 			Pair											value_type;
 		typedef typename 	A::pointer 										NodePointer;
 		typedef typename	A::difference_type								difference_type;   
-/* 		typedef typename	iterator_traits<Pair>::iterator_category		iterator_category;		
-		typedef typename 	iterator_traits<Pair>::const_pointer			pointer;
-		typedef typename 	iterator_traits<Pair>::reference				reference; */
-
 		typedef	std::bidirectional_iterator_tag								iterator_category;		
 		typedef typename 	std::allocator<Pair>::pointer					pointer;
 		typedef typename 	std::allocator<Pair>::reference					reference;	
@@ -250,8 +229,6 @@ class const_tree_iterator
 		reference   operator*() const   { return _ptr->_value; }
 		pointer     operator->() const     { return &(_ptr->_value); }
 
-		//pointer operator->() const {return pointer_traits<pointer>::pointer_to(ptr->_value);}
-		
 		const_tree_iterator    operator+=(difference_type n)   { _ptr += n; return (*this); }
 		const_tree_iterator    operator-=(difference_type n)   { _ptr -= n; return (*this); }
 		const_tree_iterator    operator+(difference_type n)    { const_tree_iterator _w(*this); _w += n; return _w;}
@@ -656,7 +633,6 @@ class Tree {
 			//salvo in last l'ultimo nodo confrontato (per ottimizzare insert)
 			if (!t->end) {
 				last = t;
-				//if (is_less< Pair, Compare>(target, t->_value.first) )
 				if (less(target, t->_value.first) )
 					return Search(t->left, target, last);
 				if (less(t->_value.first, target) )
@@ -664,6 +640,24 @@ class Tree {
 			}
 			
 			return t;
+		}
+
+		pointer lower_bound(const typename Pair::first_type &k){
+			pointer i;
+			Search(_root, k, i);
+			while(!i->end && less(i->_value.first, k) )
+				i = i->parent;
+
+			return i;
+		}
+
+		pointer upper_bound(const typename Pair::first_type &k){
+			pointer i;
+			Search(_root, k, i);
+			while(!i->end && !less(k, i->_value.first) )
+				i = i->parent;
+
+			return i;
 		}
 
 		//Il successore di un nodo X è il più piccolo nodo maggiore del sottalbero destro del nodo X
