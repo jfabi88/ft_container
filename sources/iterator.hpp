@@ -89,9 +89,8 @@ namespace ft
 
 		private:
 			pointer _ptr;
-			b_iterator(pointer p) : _ptr(p){}
 		public:
-			//pointer base() const	{return _ptr;}
+			b_iterator(pointer p) : _ptr(p){}
 			b_iterator() : _ptr(nullptr){};
 			~b_iterator(){};
 
@@ -131,8 +130,6 @@ namespace ft
 			value_type  operator[](difference_type n)  { return (_ptr + n); }
 
 			b_iterator   &operator=(const b_iterator &s) { _ptr = s._ptr;  return (*this);}
-
-			template <class T, class Alloc> friend class vector;
 	};
 
 	template <class Iter>
@@ -148,7 +145,6 @@ namespace ft
 		private:
 			iterator_type _ptr;
 		public:
-			//Iter base() const    {return _ptr;}
 			b_reverse_iterator() : _ptr(){};
 			explicit b_reverse_iterator( iterator_type x ) : _ptr(x) {};
 			~b_reverse_iterator(){};
@@ -170,15 +166,12 @@ namespace ft
 			bool    operator>=(const b_reverse_iterator &s)    { return (_ptr <= s._ptr); }
 			b_reverse_iterator    operator+(difference_type n)    { b_reverse_iterator _w(*this); _w += n; return _w;}
         	b_reverse_iterator    operator-(difference_type n)     {b_reverse_iterator _w(*this); _w -= n; return _w;} //{ return *this - n; }
-			/* b_reverse_iterator    operator+(difference_type n) const   { return b_reverse_iterator _w(*this); _w (_ptr - n);}
-			b_reverse_iterator    operator-(difference_type n)    const   { return *this + (-n);}  */
 			difference_type operator+(const b_reverse_iterator &s) const   { return (_ptr + s._ptr); }
 			difference_type operator-(const b_reverse_iterator &s) const  { return (_ptr - s._ptr); }
 			b_reverse_iterator&   operator+=(difference_type n)   { _ptr -= n; return (*this); }
 			b_reverse_iterator&    operator-=(difference_type n)  { _ptr += n; return (*this); }
 			value_type  operator[](difference_type n) const  { return *(*this + n); }
 			b_reverse_iterator   &operator=(const b_reverse_iterator &s) { _ptr = s._ptr;  return (*this);}
-			template <class T, class Alloc> friend class vector;
 	};
 
 }

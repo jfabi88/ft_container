@@ -67,6 +67,7 @@ class tree_iterator
 {
 	public:
 		typedef  			Pair											value_type;
+		//typedef 		typename Alloc::template rebind<NodeType>::other    A;
 		typedef typename 	A::pointer 										NodePointer;
 		typedef typename	A::difference_type								difference_type;   
 		typedef	std::bidirectional_iterator_tag								iterator_category;		
@@ -162,10 +163,10 @@ class const_tree_iterator
 {
 	public:
 		typedef 			Pair											value_type;
-		typedef typename 	A::pointer 										NodePointer;
+		typedef typename 	A::pointer 								NodePointer;
 		typedef typename	A::difference_type								difference_type;   
 		typedef	std::bidirectional_iterator_tag								iterator_category;		
-		typedef typename 	std::allocator<Pair>::pointer					pointer;
+		typedef typename 	std::allocator<Pair>::const_pointer				pointer;
 		typedef typename 	std::allocator<Pair>::reference					reference;	
 	private:
 		bool less(NodePointer &a, NodePointer &b) {
@@ -320,7 +321,6 @@ class Tree {
 
 
 		void rotate_left(pointer p){
-			//std::cout << "rotate_left of " << *p << " _root == p ?" << (_root == p) << "\n";
 			pointer rChild = p->right;
 			p->right = rChild->left;
 			if (!rChild->left->end)
@@ -339,7 +339,6 @@ class Tree {
 		}
 
 		void rotate_right(pointer p){
-			//std::cout << "rotate_right of " << *p << " _root == p ?" << (_root == p) << "\n";
 			pointer lChild = p->left;
 			p->left = lChild->right;
 			if (!lChild->right->end)

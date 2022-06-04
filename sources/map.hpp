@@ -290,25 +290,11 @@ namespace ft
 
 			iterator lower_bound(const key_type& k)
 			{
-/* 				iterator it;
-				iterator _end = end();
-				for (it = begin(); it != _end; it++){
-					if (!_comp(it->first, k))
-						break;
-				}
-                return it; */
 				return iterator(this->_tree.lower_bound(k));
 			}
 
 			const_iterator lower_bound(const key_type& k) const
 			{
-/* 				const_iterator it;
-				const_iterator _end = end();
-				for (it = begin(); it != _end; it++){
-					if (!_comp(it->first, k))
-						break;
-				}
-                return it; */
 				return const_iterator(this->_tree.lower_bound(k));
 			}
 
