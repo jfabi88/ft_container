@@ -66,15 +66,14 @@ template <class Pair>
 class tree_iterator
 {
 	public:
-		typedef  			Pair											value_type;
-		typedef 			Node<value_type>                                NodeType;
-		typedef				std::allocator<NodeType>						Alloc;
-		typedef typename 	Alloc::template rebind<NodeType>::other   		 A;
-		typedef typename 	A::pointer 										NodePointer;
-		typedef typename	A::difference_type								difference_type;   
-		typedef	std::bidirectional_iterator_tag								iterator_category;		
-		typedef typename 	std::allocator<Pair>::pointer					pointer;
-		typedef typename 	std::allocator<Pair>::reference					reference;	
+		typedef  			Pair														value_type;
+		typedef 			Node<value_type>                                			NodeType;
+		typedef	typename 	std::allocator<NodeType>::template rebind<NodeType>::other	Alloc;
+		typedef typename 	Alloc::pointer 												NodePointer;
+		typedef typename	Alloc::difference_type										difference_type;   
+		typedef	std::bidirectional_iterator_tag											iterator_category;		
+		typedef typename 	std::allocator<Pair>::pointer								pointer;
+		typedef typename 	std::allocator<Pair>::reference								reference;	
 	private:
 
 		NodePointer _ptr;
@@ -153,17 +152,14 @@ template <class Pair>
 class const_tree_iterator
 {
 	public:
-		typedef 			Pair											value_type;
-
-		typedef 			Node<value_type>                                NodeType;
-		typedef				std::allocator<NodeType>						Alloc;
-		typedef typename 	Alloc::template rebind<NodeType>::other   		 A;
-
-		typedef typename 	A::pointer 										NodePointer;
-		typedef typename	A::difference_type								difference_type;   
-		typedef	std::bidirectional_iterator_tag								iterator_category;		
-		typedef typename 	std::allocator<Pair>::const_pointer				pointer;
-		typedef typename 	std::allocator<Pair>::reference					reference;	
+		typedef 			Pair														value_type;
+		typedef 			Node<value_type>                                			NodeType;
+		typedef	typename 	std::allocator<NodeType>::template rebind<NodeType>::other	Alloc;
+		typedef typename 	Alloc::pointer 												NodePointer;
+		typedef typename	Alloc::difference_type										difference_type;   
+		typedef	std::bidirectional_iterator_tag											iterator_category;		
+		typedef typename 	std::allocator<Pair>::const_pointer							pointer;
+		typedef typename 	std::allocator<Pair>::reference								reference;	
 	private:
 		NodePointer _ptr;
 		NodePointer next_node(NodePointer x) {
@@ -213,10 +209,6 @@ class const_tree_iterator
 		const_tree_iterator(NodePointer p) : _ptr(p){}
 
 		const_tree_iterator(const const_tree_iterator& __u) : _ptr(__u._ptr){}
-
-/* 		template <class _C>
-		const_tree_iterator(tree_iterator<Pair, _C> __u) : _ptr(__u._ptr){} */
-		//template <class Pair>
 		const_tree_iterator(tree_iterator<Pair>& __u) : _ptr(__u._ptr){}
 		const_tree_iterator(const tree_iterator<Pair>& __u) : _ptr(__u._ptr){}
 		const_tree_iterator(tree_iterator<const Pair>& __u) : _ptr(__u._ptr){}
@@ -232,7 +224,6 @@ class const_tree_iterator
 		const_tree_iterator operator++(int) {const_tree_iterator tmp = *this; _ptr = next_node(_ptr); return tmp; };
 		const_tree_iterator& operator--() {_ptr = prev_node(_ptr); return *this; };								//Prefix increment operator
 		const_tree_iterator operator--(int) {const_tree_iterator tmp = *this; _ptr = prev_node(_ptr); return tmp; }; //Postfix increment operator
-		template <class Key, class T, class Comp, class Alloc> friend class map;
 		bool operator==(const const_tree_iterator &tri) const { return (_ptr == tri._ptr); };
 		bool operator!=(const const_tree_iterator &tri) const { return (_ptr != tri._ptr); };
 		const_tree_iterator   &operator=(const const_tree_iterator &s) { _ptr = s._ptr;  return (*this);}
@@ -245,7 +236,6 @@ class const_tree_iterator
 	4) Entrambi i figli di ciascun nodo rosso sono neri;
 	5) Ogni cammino da un nodo a una foglia nel suo sottoalbero contiene lo stesso numero di nodi neri.
 */
-//template <class Pair, class Compare = std::less< typename Pair::first_type > >
 template <class Alloc, class Compare>
 class Tree {
 	public:
@@ -262,7 +252,6 @@ class Tree {
 		pointer                                                         		_end;                           //getBeign e getEnd
 		typedef  tree_iterator< Pair>    		 		iterator;
 		typedef  const_tree_iterator< Pair>    		const_iterator;
-		//typedef  tree_iterator<  typename std::allocator< Pair >::const_pointer, Compare, allocator_type>    	const_iterator;
 	private:
 		pointer				_root;
 		
@@ -397,7 +386,7 @@ class Tree {
 			if (n == n->parent->left && n->parent == grandparent(n)->left) {
 				rotate_right(grandparent(n));
 			} else {
-				/* Here, n == n->parent->right && n->parent == grandparent(n)->right */
+				/* n == n->parent->right && n->parent == grandparent(n)->right */
 				rotate_left(grandparent(n));
 			}
 		}
@@ -496,13 +485,11 @@ class Tree {
 			sibling(n)->color = n->parent->color;
 			n->parent->color = BLACK;
 			if (n == n->parent->left) {
-				/* Here, sibling(n)->right->color == RED */
 				sibling(n)->right->color = BLACK;
 				rotate_left(n->parent);
 			}
 			else
 			{
-				/* Here, sibling(n)->left->color == RED */
 				sibling(n)->left->color = BLACK;
 				rotate_right(n->parent);
 			}
@@ -513,15 +500,12 @@ class Tree {
 			this->_end = newNode(value_type(), true);
 			this->_begin = _end;
 			this->_root = _begin;
-			//this->_root->parent = this->_end;
 		};
 
 		Tree(const Pair &p){
 			this->_end = newNode(value_type(), true);
-			//this->_end->end = true;
 			this->_begin = _end;
 			this->_root = _begin;
-			//this->_root->parent = this->_end;
 			insert(this->_root, p);
 		}
 
@@ -596,10 +580,7 @@ class Tree {
 				else{
 					parent->right = entry;
 					if(parent == this->_end->parent)
-					{
-						//std::cout << "end aggiornato: " << *parent << " entry: " << *entry << " parent end: " << *this->_end->parent<< std::endl;
 						this->_end->parent = entry;
-					}
 				}
 				entry->parent = parent;
 
@@ -614,7 +595,6 @@ class Tree {
 			entry->right = _end;
 			_size++;
 			insert_case1(entry);
-			//std::cout << "entry = " << *entry << "(" << *_root << "),  end_addr =  " << _end << " parent_end: " << *this->_end->parent << std::endl;
 			return entry;
 		}
 
