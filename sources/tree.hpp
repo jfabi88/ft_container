@@ -129,11 +129,6 @@ class tree_iterator
 		reference   operator*() const   { return _ptr->_value; }
 		pointer     operator->() const     { return &(_ptr->_value); }
 
-		
-		tree_iterator    operator+=(difference_type n)   { _ptr += n; return (*this); }
-		tree_iterator    operator-=(difference_type n)   { _ptr -= n; return (*this); }
-		tree_iterator    operator+(difference_type n)    { tree_iterator _w(*this); _w += n; return _w;}
-		tree_iterator    operator-(difference_type n)   { return *this + (-n); }; 
 		tree_iterator& operator++() {_ptr = next_node(_ptr); return *this; };
 		tree_iterator operator++(int) {tree_iterator tmp = *this; _ptr = next_node(_ptr); return tmp; };
 		tree_iterator& operator--() {_ptr = prev_node(_ptr); return *this; };								//Prefix increment operator
@@ -216,10 +211,6 @@ class const_tree_iterator
 		reference   operator*() const   { return _ptr->_value; }
 		pointer     operator->() const     { return &(_ptr->_value); }
 
-		const_tree_iterator    operator+=(difference_type n)   { _ptr += n; return (*this); }
-		const_tree_iterator    operator-=(difference_type n)   { _ptr -= n; return (*this); }
-		const_tree_iterator    operator+(difference_type n)    { const_tree_iterator _w(*this); _w += n; return _w;}
-		const_tree_iterator    operator-(difference_type n)   { return *this + (-n); }; 
 		const_tree_iterator& operator++() {_ptr = next_node(_ptr); return *this; };
 		const_tree_iterator operator++(int) {const_tree_iterator tmp = *this; _ptr = next_node(_ptr); return tmp; };
 		const_tree_iterator& operator--() {_ptr = prev_node(_ptr); return *this; };								//Prefix increment operator
