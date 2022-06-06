@@ -6,152 +6,115 @@
 
 int main(){
 
-	ft::Tree< ft::pair<std::string, int> > tree;
-/* 	ft::Node< ft::pair<std::string, int> > a("a", 11);
-	ft::Node< ft::pair<std::string, int> > b("b", 12);
-
-	//std::boolalpha;
-	std::cout << a << std::endl;
-	std::cout << b << std::endl;
-	std::cout << std::boolalpha << (a < b) << std::endl; */
-
-	//ft::Tree< ft::pair<std::string, int> > tree2(a);
-	ft::pair<std::string, int> p("ciao", 5);
-	std::pair<std::string, int> pstd("ciao", 5);
-	ft::Tree< ft::pair<std::string, int> > tree3(p);
- 
-/* 	ft::Node< ft::pair<std::string, int> > aCopy(a);
-	std::cout << "copy of a: "<< aCopy << std::endl; */
-	//std::cout << *tree3.getRoot() << std::endl;
-
 	typedef ft::pair<int , std::string> pair;
 	typedef ft::map<int, std::string> MapType;
-	typedef ft::Tree< MapType::value_type,  MapType::key_compare > TreeType;
-	//ft::map<int, std::string>:: ciliegio;
+	typedef  MapType::TreeType	TreeType;
+	typedef TreeType::pointer NodePointer;
 	TreeType ciliegio;
-	TreeType::pointer NodePointer;
-	typedef TreeType::NodeType NodeType;
+	ft::map<int, std::string, std::plus<int> >::TreeType pero;
+	std::map<int, std::string, std::plus<int> > melo;
+	ft::map<int, std::string, std::plus<int> >  cedro;
 
-	ft::Tree< pair > pero;
 	std::cout << "ciliegio(20):" << std::endl;
 	ciliegio.insert(ciliegio.getRoot(),pair(20, "20"));
-	prinTree(ciliegio);
+	pero.insert(pero.getRoot(),pair(20, "20"));
+	melo.insert(std::make_pair<int, std::string>(20, "20"));
+	cedro.insert(ft::make_pair<int, std::string>(20, "20"));
+	//prinTree(ciliegio);
 
 	std::cout << "ciliegio(50):" << std::endl;
 	ciliegio.insert(ciliegio.getRoot(),pair(50, "cinquanta"));
-	prinTree(ciliegio);
+	pero.insert(pero.getRoot(),pair(50, "cinquanta"));
+	melo.insert(std::make_pair<int, std::string>(50, "cinquanta"));
+	cedro.insert(ft::make_pair<int, std::string>(50, "cinquanta"));
+	//prinTree(ciliegio);
 
 	std::cout << "ciliegio(43):" << std::endl;
 	ciliegio.insert(ciliegio.getRoot(),pair(43, "43"));
-	prinTree(ciliegio);
+	pero.insert(pero.getRoot(),pair(43, "43"));
+	melo.insert(std::make_pair<int, std::string>(43, "43"));
+	cedro.insert(ft::make_pair<int, std::string>(43, "43"));
+	//prinTree(ciliegio);
 
 	std::cout << "ciliegio(39):" << std::endl;
 	ciliegio.insert(ciliegio.getRoot(),pair(39, "trenta9"));
-	prinTree(ciliegio);
+	pero.insert(pero.getRoot(),pair(39, "trenta9"));
+	melo.insert(std::make_pair<int, std::string>(39, "trenta9"));
+	cedro.insert(ft::make_pair<int, std::string>(39, "trenta9"));
+	//prinTree(ciliegio);
 
 	std::cout << "ciliegio(11):" << std::endl;
 	ciliegio.insert(ciliegio.getRoot(),pair(11, "11"));
-	prinTree(ciliegio);
+	pero.insert(pero.getRoot(),pair(11, "11"));
+	melo.insert(std::make_pair<int, std::string>(11, "11"));
+	cedro.insert(ft::make_pair<int, std::string>(11, "11"));
+	//prinTree(ciliegio);
 
 	std::cout << "ciliegio(7):" << std::endl;
 	ciliegio.insert(ciliegio.getRoot(),pair(7, "sette"));
-	prinTree(ciliegio);
+	pero.insert(pero.getRoot(),pair(7, "sette"));
+	melo.insert(std::make_pair<int, std::string>(7, "sette"));
+	cedro.insert(ft::make_pair<int, std::string>(7, "sette"));
+	//prinTree(ciliegio);
 
 	std::cout << "ciliegio(15):" << std::endl;
 	ciliegio.insert(ciliegio.getRoot(),pair(15, "15"));
-	prinTree(ciliegio);
+	pero.insert(pero.getRoot(),pair(15, "15"));
+	melo.insert(std::make_pair<int, std::string>(15, "15"));
+	cedro.insert(ft::make_pair<int, std::string>(15, "15"));
+	//prinTree(ciliegio);
 
 
 	std::cout << "ciliegio(23):" << std::endl;
 	ciliegio.insert(ciliegio.getRoot(),pair(23, "23"));
-	prinTree(ciliegio);
+	//prinTree(ciliegio);
 
 	std::cout << "ciliegio(40):" << std::endl;
 	ciliegio.insert(ciliegio.getRoot(),pair(40, "quaranta"));
-	prinTree(ciliegio);
+	//prinTree(ciliegio);
 
 	std::cout << "ciliegio(53):" << std::endl;
 	ciliegio.insert(ciliegio.getRoot(),pair(53, "53"));
-	prinTree(ciliegio);
+	//prinTree(ciliegio);
 
 	std::cout << "ciliegio(8):" << std::endl;
 	ciliegio.insert(ciliegio.getRoot(),pair(8, "otto"));
-	prinTree(ciliegio);
+	//prinTree(ciliegio);
 
 	std::cout << "ciliegio(10):" << std::endl;
 	ciliegio.insert(ciliegio.getRoot(),pair(10, "dieci"));
-	prinTree(ciliegio);
+	//prinTree(ciliegio);
 	
 	std::cout << "ciliegio:" << std::endl;
-	//ciliegio.PreOrder(ciliegio.getRoot());
 	prinTree(ciliegio);
-	NodeType *tmp = ciliegio.begin();
-	for (int i = 0; i < ciliegio.size() - 1; i++)
+
+
+	NodePointer pt = ciliegio.begin();
+	for (int i = 0; i < ciliegio.size(); i++)
 	{
-		std::cout << *tmp << std::endl;
-		tmp = ciliegio.Next(tmp);
+		std::cout << *pt << std::endl;
+		pt = ciliegio.Next(pt);
 	}
-	std::cout << *tmp << std::endl;
-/*
-	//NodeType *t = ciliegio.Search(ciliegio.getRoot(), 15);
-	ciliegio.Remove(15);
-	std::cout << std::endl << "remove 15:" << std::endl;
-	prinTree(ciliegio);
 
-	ciliegio.Remove(7);
-	std::cout << std::endl << "remove 7:" << std::endl;
-	prinTree(ciliegio);
+	std::cout << "pero:" << std::endl;
+	prinTree(pero);
 
-	ciliegio.Remove(9);
-	std::cout << std::endl << "remove 9:" << std::endl;
-	prinTree(ciliegio);
+	ft::map<int, std::string, std::plus<int> >::TreeType::pointer pp = pero.begin();
+	for (int i = 0; i < pero.size(); i++)
+	{
+		std::cout << *pp << std::endl;
+		pp = pero.Next(pp);
+	}
 
-	ciliegio.Remove(39);
-	std::cout << std::endl << "remove 39:" << std::endl;
-	prinTree(ciliegio);
+	std::cout << "\nmelo:" << std::endl;
+	for(std::map<int, std::string, std::plus<int> >::iterator sit = melo.begin(); sit != melo.end(); sit++){
+		std::cout << sit->first << std::endl;
+	}
 
-	ciliegio.Remove(20);
-	std::cout << std::endl << "remove 20 [Root]:" << std::endl;
-	prinTree(ciliegio);
+	std::cout << "\ncedro:" << std::endl;
+	for(ft::map<int, std::string, std::plus<int> >::iterator it = cedro.begin(); it != cedro.end(); it++){
+		std::cout << it->first << std::endl;
+	}
 
-	ciliegio.Remove(43);
-	std::cout << std::endl << "remove 43:" << std::endl;
-	prinTree(ciliegio);
-
-	ciliegio.Remove(11);
-	std::cout << std::endl << "remove 11:" << std::endl;
-	prinTree(ciliegio);
-
-	ciliegio.Remove(10);
-	std::cout << std::endl << "remove 10:" << std::endl;
-	prinTree(ciliegio);
-
-	ciliegio.Remove(50);
-	std::cout << std::endl << "remove 50:" << std::endl;
-	prinTree(ciliegio);
-
-	ciliegio.Remove(23);
-	std::cout << std::endl << "remove 23 [Root]:" << std::endl;
-	prinTree(ciliegio);
-
-	ciliegio.Remove(40);
-	std::cout << std::endl << "remove 40 [Root]:" << std::endl;
-	prinTree(ciliegio);
-
-	ciliegio.Remove(53);
-	std::cout << std::endl << "remove 53 [Root]:" << std::endl;
-	prinTree(ciliegio);
-
-	ciliegio.Remove(8);
-	std::cout << std::endl << "remove 8:" << std::endl;
-	prinTree(ciliegio);
-
-	ciliegio.Remove(8);
-	std::cout << std::endl << "remove 8:" << std::endl;
-	prinTree(ciliegio);
-
-
-	ciliegio.insert(pair(77, "77"));
-	std::cout << std::endl << "insert 77:" << std::endl;
-	prinTree(ciliegio);*/
+	std::map<int, std::string, std::plus<int> >::iterator ciao;
 }

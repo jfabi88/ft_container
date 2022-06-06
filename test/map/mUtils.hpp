@@ -44,22 +44,23 @@ void printSpace(size_t n, char c = ' ')
 }
 
 
-template <class P, class Compare, class A>
-void prinTree(ft::Tree<P, Compare, A> &tree)
+template <class Alloc, class Compare>
+void prinTree(ft::Tree<Alloc, Compare> &tree)
 {
-	typedef typename ft::Tree<P, Compare, A>::NodeType type;
+	//typedef typename ft::Tree<P, Compare, A>::NodeType type;
+	typedef typename ft::Tree<Alloc, Compare>::NodeType type;
 	size_t h = tree.PreOrder(tree.getRoot());
 	size_t max = nTreeH(h);
 	size_t lastN = pow(2, h);
 	size_t nSpace = 4;
 	size_t lenght = lastN * nSpace;
 
+	//_map(int lvlTree, pair<int indiceNodo, nodo>)
 	std::map<int, std::vector< std::pair<int, type> > > _map;
-	visitNode< type >(tree.getRoot(), _map);
-
-	std::vector<int> v;
 	typename std::map<int, std::vector< std::pair<int, type> > >::iterator itm;
-
+	visitNode< type >(tree.getRoot(), _map);
+	std::vector<int> v;
+	
 	int lVl = 0, last = 0, n = 0, color = 0, pcolor = 5;
 						// 	green,	blue,	magenta,	yellow,		_RED,	white	
 	const char* args[] = {"\033[32m", "\033[34m", "\033[35m", "\033[33m", "\033[31m", "\033[13m"};
@@ -71,6 +72,7 @@ void prinTree(ft::Tree<P, Compare, A> &tree)
 	bool root;
 	for(itm = _map.begin(); itm != _map.end(); itm++) 
 	{
+		//livello albero
 		lVl = itm->first;
 		std::vector< std::pair<int, type> > v = itm->second;
 		size_t nOnThisLevel = pow(2, lVl);
@@ -93,16 +95,15 @@ void prinTree(ft::Tree<P, Compare, A> &tree)
 				size_t l = s / 2;
 				color = n % colors.size();
 				pcolor = ((n-1) / 2)  % colors.size();
-				bool left = (it->second._value.first < it->second.parent->_value.first);
+				//bool left = (it->second._value.first < it->second.parent->_value.first);
+				bool left = (&it->second ==  it->second.parent->left);
 				std::cout << std::string(s-l,' ') << colors.at(pcolor) << (left || root? "[" : "") << RESET
 				<< colors.at(color) << value << RESET << (it->second.color? "r" : "b")
 				<< colors.at(pcolor) << (!left || root? "]" : "") << RESET << std::string(l,' ');
-				//color = (n + 1) % colors.size();
 				last = it->first;
 				it++;
 			}else{
 				printSpace(qnt);
-				//value = "[ ]";
 				value = "   ";
 				size_t s = nSpace - value.length();
 				size_t l = s / 2;

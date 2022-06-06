@@ -648,30 +648,29 @@ class Tree {
 			return t;
 		}
 
-		void	pNext(pointer &x) {
-			//std::cout << *x << "\n";
-			pointer next = 	Next(x);
-			if (!next->end)
-				pNext(next);
-		}
-
 		pointer	Next(pointer &x) const{
 			pointer	t;
 			if (!x->right->end)
 				return Successor(x);
+
 			t = x->parent;
-			while (!t->end && less(t, x))
-				t = t->parent;
+			while (!t->end && x == t->right){
+				x = t;
+				t = x->parent;
+			}
 			return t;
 		}
-	
+
 		pointer	Prev(pointer &x) {
 			pointer	t;
 			if (!x->left->end)
 				return Predecessor(x);
+
 			t = x->parent;
-			while (!t->end && less(x, t))
-				t = t->parent;
+			while (!t->end && x == t->left){
+				x = t;
+				t = x->parent;
+			}
 			return t;
 		}
 
