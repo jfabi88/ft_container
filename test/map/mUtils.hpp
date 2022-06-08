@@ -50,7 +50,7 @@ void prinTree(ft::Tree<Alloc, Compare> &tree)
 	//typedef typename ft::Tree<P, Compare, A>::NodeType type;
 	typedef typename ft::Tree<Alloc, Compare>::NodeType type;
 	size_t h = tree.PreOrder(tree.getRoot());
-	size_t max = nTreeH(h);
+	//size_t max = nTreeH(h);
 	size_t lastN = pow(2, h);
 	size_t nSpace = 4;
 	size_t lenght = lastN * nSpace;

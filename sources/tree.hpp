@@ -548,7 +548,7 @@ class Tree {
 
 		pointer insert(pointer node, const Pair &pair)
 		{
-			pointer parent, entry, tmp;
+			pointer parent, entry;
 
 			entry = newNode(pair);
 			parent = nullptr;
@@ -782,7 +782,6 @@ class Tree {
 			//std::cout << "remove" << std::endl;
 			pointer	last;
 			pointer	t = Search(_root, target, last);
-			pointer	s = _end;
 			size_t n = 0;
 			if (!t->end)
 			{
