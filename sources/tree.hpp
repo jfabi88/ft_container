@@ -392,7 +392,7 @@ class Tree {
 		void delete_one_child(pointer n) {
 			/* Si assume che n ha al massimo un figlio non nullo */
 			pointer child = (n->right->end) ? n->left: n->right;
-			if (child->end){
+			if (!child->end){
 				replace(n, child);
 				if (n->color == BLACK) {
 					if (child->color == RED)
@@ -400,6 +400,8 @@ class Tree {
 					else
 						delete_case1(child);
 				}
+			}else{
+				return _Remove1(n);
 			}
 
 			_Remove(n, child);
@@ -590,14 +592,14 @@ class Tree {
 		}
 
 
-		pointer	Search(pointer t, typename Pair::first_type &target, pointer &last) const
+		pointer	Search(pointer t, typename Pair::first_type &target, pointer &last, bool flag = false) const
 		{
 			//salvo in last l'ultimo nodo confrontato (per ottimizzare insert)
 			if (!t->end) {
 				last = t;
 				if (less(target, t->_value.first) )
 					return Search(t->left, target, last);
-				if (less(t->_value.first, target) )
+				if (less(t->_value.first, target) || flag)
 					return Search(t->right, target, last);
 			}
 			
@@ -615,7 +617,7 @@ class Tree {
 
 		pointer upper_bound(const typename Pair::first_type &k){
 			pointer i;
-			Search(_root, k, i);
+			Search(_root, k, i, true);
 			while(!i->end && !less(k, i->_value.first) )
 				i = i->parent;
 
@@ -665,14 +667,15 @@ class Tree {
 			return t;
 		}
 
-		void replace(pointer	original, pointer	replace)
+/* 		void replace(pointer	original, pointer	replace)
 		{
 			replace->left = original->left;
 			replace->right = original->right;
 			replace->parent = original->parent;
 			if (original->parent)
 			{
-				bool left = is_less<Pair,Compare>(original->_value.first, original->parent->_value.first);
+				//bool left = is_less<Pair,Compare>(original->_value.first, original->parent->_value.first);
+				bool left = original->parent->left == original;
 				if (left)
 					replace->parent->left = replace;
 				else
@@ -682,6 +685,35 @@ class Tree {
 				replace->left->parent = replace;
 			if (!replace->right->end  && replace->right != replace)
 				replace->right->parent = replace;
+		} */
+
+		void replace(pointer	original, pointer	replace)
+		{
+			if (original->parent != replace)
+			{
+				replace->parent = original->parent;
+				//bool left = is_less<Pair,Compare>(original->_value.first, original->parent->_value.first);
+				if (!original->parent->end){
+					if (original->parent->left == original)
+						replace->parent->left = replace;
+					else
+						replace->parent->right = replace;
+				}
+			}
+			if (original->left != replace)
+			{
+				if (!original->left->end){
+					replace->left = original->left;
+					replace->left->parent = replace;
+				}
+			}
+			if (original->right != replace)
+			{
+				if (!original->right->end){
+					replace->right = original->right;
+					replace->right->parent = replace;
+				}
+			}
 		}
 
 		void _Remove(pointer t, pointer s){

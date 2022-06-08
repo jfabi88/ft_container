@@ -95,8 +95,8 @@ void prinTree(ft::Tree<Alloc, Compare> &tree)
 				size_t l = s / 2;
 				color = n % colors.size();
 				pcolor = ((n-1) / 2)  % colors.size();
-				//bool left = (it->second._value.first < it->second.parent->_value.first);
-				bool left = (&it->second ==  it->second.parent->left);
+				bool left = (it->second._value.first < it->second.parent->_value.first);
+				//bool left = (&it->second ==  it->second.parent->left);
 				std::cout << std::string(s-l,' ') << colors.at(pcolor) << (left || root? "[" : "") << RESET
 				<< colors.at(color) << value << RESET << (it->second.color? "r" : "b")
 				<< colors.at(pcolor) << (!left || root? "]" : "") << RESET << std::string(l,' ');
