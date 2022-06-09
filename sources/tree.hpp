@@ -73,10 +73,10 @@ class tree_iterator
 		typedef typename	Alloc::difference_type										difference_type;   
 		typedef	std::bidirectional_iterator_tag											iterator_category;		
 		typedef typename 	std::allocator<Pair>::pointer								pointer;
-		typedef typename 	std::allocator<Pair>::reference								reference;	
-	private:
-
+		typedef typename 	std::allocator<Pair>::reference								reference;
 		NodePointer _ptr;
+	private:
+		
 		NodePointer next_node(NodePointer x) {
 			if (x->end)
 				return x;
@@ -123,9 +123,6 @@ class tree_iterator
 		tree_iterator() : _ptr(nullptr){}
 		tree_iterator(NodePointer p) : _ptr(p){}
 
-		tree_iterator(const tree_iterator& __u) : _ptr(__u._ptr){}
-		tree_iterator(tree_iterator<const Pair>& __u) : _ptr(__u._ptr){}
-
 		reference   operator*() const   { return _ptr->_value; }
 		pointer     operator->() const     { return &(_ptr->_value); }
 
@@ -133,13 +130,9 @@ class tree_iterator
 		tree_iterator operator++(int) {tree_iterator tmp = *this; _ptr = next_node(_ptr); return tmp; };
 		tree_iterator& operator--() {_ptr = prev_node(_ptr); return *this; };								//Prefix increment operator
 		tree_iterator operator--(int) {tree_iterator tmp = *this; _ptr = prev_node(_ptr); return tmp; }; //Postfix increment operator
-		template <class Key, class T, class Comp, class Alloc> friend class map;
 		bool operator==(const tree_iterator &tri) const { return (_ptr == tri._ptr); };
 		bool operator!=(const tree_iterator &tri) const { return (_ptr != tri._ptr); };
 		tree_iterator   &operator=(const tree_iterator &s) { _ptr = s._ptr;  return (*this);}
-
-		template<class _P>
-		friend class const_tree_iterator;
 };
 
 
@@ -203,10 +196,10 @@ class const_tree_iterator
 		const_tree_iterator() : _ptr(nullptr){}
 		const_tree_iterator(NodePointer p) : _ptr(p){}
 
-		const_tree_iterator(const const_tree_iterator& __u) : _ptr(__u._ptr){}
+ 		const_tree_iterator(const const_tree_iterator& __u) : _ptr(__u._ptr){}
+
 		const_tree_iterator(tree_iterator<Pair>& __u) : _ptr(__u._ptr){}
 		const_tree_iterator(const tree_iterator<Pair>& __u) : _ptr(__u._ptr){}
-		const_tree_iterator(tree_iterator<const Pair>& __u) : _ptr(__u._ptr){}
 
 		reference   operator*() const   { return _ptr->_value; }
 		pointer     operator->() const     { return &(_ptr->_value); }
