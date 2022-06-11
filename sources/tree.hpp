@@ -382,6 +382,63 @@ class Tree {
 				return n->parent->left;
 		}
 
+		void rbtree_node_delete(pointer n)
+		{
+			pointer child;
+			if (!n->left->end && !n->right->end) {
+				/* node has two children: swap position with predecessor */
+				pointer temp;
+				pointer pred = Predecessor(n);
+				n->left->parent = pred;
+				if (pred->left)
+					pred->left->parent = n;
+				n->right->parent = pred;
+				if (pred->right)
+					pred->right->parent = n;
+				temp = pred->left;
+				pred->left = n->left;
+				n->left = temp;
+				temp = pred->right;
+				pred->right = n->right;
+				n->right = temp;
+				temp = pred->parent;
+				pred->parent = n->parent;
+				n->parent = temp;
+				int color = pred->color;
+				pred->color = n->color;
+				n->color = color;
+				if (pred->parent->end)
+					_root = pred;
+				else {
+					if (pred->parent->left == n)
+						pred->parent->left = pred;
+					else
+						pred->parent->right = pred;
+				}
+				if (n->parent->left == pred)
+					n->parent->left = n;
+				else
+					n->parent->right = n;
+			}
+
+			assert(n->left->end || n->right->end);
+			child = n->right->end ? n->left  : n->right;
+			if (n->color == BLACK) {
+				n->color = child->color;
+				delete_case1(n);
+			}
+			//replace_node(t, n, child);
+			replace(n, child);
+
+			/* TODO check next two lines, should be removed? */
+			if (n->parent->end && !child->end) // root should be black
+				child->color = BLACK;
+			_Remove(n, child);
+			//verify_properties();
+		}
+
+
+
 		void delete_one_child(pointer n) {
 			/* Si assume che n ha al massimo un figlio non nullo */
 			pointer child = (n->right->end) ? n->left: n->right;
@@ -479,6 +536,58 @@ class Tree {
 				sibling(n)->left->color = BLACK;
 				rotate_right(n->parent);
 			}
+		}
+
+
+		void verify_properties() {
+			verify_property_1(_root);
+			verify_property_2(_root);
+			/* Property 3 is implicit */
+			verify_property_4(_root);
+			verify_property_5(_root);
+		}
+
+		void verify_property_1(pointer n) {
+			assert(n->color == RED || n->color == BLACK);
+			if (n->end) return;
+			verify_property_1(n->left);
+			verify_property_1(n->right);
+		}
+
+		void verify_property_2(pointer root) {
+			assert(_root->color == BLACK);
+		}
+
+		void verify_property_4(pointer n) {
+			if (n->color == RED) {
+				assert (n->left->color   == BLACK);
+				assert (n->right->color  == BLACK);
+				assert (n->parent->color == BLACK);
+			}
+			if (n->end) return;
+			verify_property_4(n->left);
+			verify_property_4(n->right);
+		}
+
+		void verify_property_5(pointer root) {
+			int black_count_path = -1;
+			verify_property_5_helper(root, 0, &black_count_path);
+		}
+
+		void verify_property_5_helper(pointer n, int black_count, int* path_black_count) {
+			if (n->color == BLACK) {
+				black_count++;
+			}
+			if (n->end) {
+				if (*path_black_count == -1) {
+					*path_black_count = black_count;
+				} else {
+					assert (black_count == *path_black_count);
+				}
+				return;
+			}
+			verify_property_5_helper(n->left,  black_count, path_black_count);
+			verify_property_5_helper(n->right, black_count, path_black_count);
 		}
 
 	public:
@@ -778,8 +887,9 @@ class Tree {
 			size_t n = 0;
 			if (!t->end)
 			{
-				_Remove1(t);
+				//_Remove1(t);
 				//delete_one_child(t);
+				rbtree_node_delete(t);
 				n = 1;
 			}
 
