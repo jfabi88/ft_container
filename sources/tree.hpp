@@ -36,8 +36,7 @@ struct Node
 		Node(const Ktype &k = Ktype(), const Vtype &v = Vtype() ) : _value(k, v), parent(nullptr), left(nullptr), right(nullptr), end(false), color(RED)
 		{};
 		~Node(){};
-		Node(const Pair &pair) : _value(pair), parent(nullptr), left(nullptr), right(nullptr),  end(false), color(RED) {
-		};
+		Node(const Pair &pair) : _value(pair), parent(nullptr), left(nullptr), right(nullptr),  end(false), color(RED) {};
 		Ktype getFirst() { return _value.getFirst(); };
 		Vtype getSecond() { return _value.getSecond(); };
 
@@ -49,7 +48,6 @@ struct Node
 			end = c.end;
 			color = c.color;
 			return (*this);
-
 		}
 };
 
@@ -382,52 +380,56 @@ class Tree {
 				return n->parent->left;
 		}
 
-		void rbtree_node_delete(pointer n)
+		void swapNode(pointer a, pointer b)
+		{
+			pointer temp;
+			a->left->parent = b;
+			if (!b->left->end)
+				b->left->parent = a;
+			a->right->parent = b;
+			if (!b->right->end)
+				b->right->parent = a;
+			temp = b->left;
+			b->left = a->left;
+			a->left = temp;
+			temp = b->right;
+			b->right = a->right;
+			a->right = temp;
+			temp = b->parent;
+			b->parent = a->parent;
+			a->parent = temp;
+			int color = b->color;
+			b->color = a->color;
+			a->color = color;
+			if (b->parent->end)
+				_root = b;
+			else {
+				if (b->parent->left == a)
+					b->parent->left = b;
+				else
+					b->parent->right = b;
+			}
+			if (a->parent->left == b)
+				a->parent->left = a;
+			else
+				a->parent->right = a;
+		}
+
+		void RbTreeDelete(pointer n)
 		{
 			pointer child;
+			//n ha due figli, lo scambio con il suo predecessore
 			if (!n->left->end && !n->right->end) {
-				/* node has two children: swap position with predecessor */
-				pointer temp;
-				pointer pred = Predecessor(n);
-				n->left->parent = pred;
-				if (pred->left)
-					pred->left->parent = n;
-				n->right->parent = pred;
-				if (pred->right)
-					pred->right->parent = n;
-				temp = pred->left;
-				pred->left = n->left;
-				n->left = temp;
-				temp = pred->right;
-				pred->right = n->right;
-				n->right = temp;
-				temp = pred->parent;
-				pred->parent = n->parent;
-				n->parent = temp;
-				int color = pred->color;
-				pred->color = n->color;
-				n->color = color;
-				if (pred->parent->end)
-					_root = pred;
-				else {
-					if (pred->parent->left == n)
-						pred->parent->left = pred;
-					else
-						pred->parent->right = pred;
-				}
-				if (n->parent->left == pred)
-					n->parent->left = n;
-				else
-					n->parent->right = n;
+				swapNode(n, Predecessor(n));
 			}
 
-			assert(n->left->end || n->right->end);
+			// n non ha figli o uno solo
+			//assert(n->left->end || n->right->end);
 			child = n->right->end ? n->left  : n->right;
 			if (n->color == BLACK) {
 				n->color = child->color;
 				delete_case1(n);
 			}
-			//replace_node(t, n, child);
 			replace(n, child);
 
 			/* TODO check next two lines, should be removed? */
@@ -538,15 +540,6 @@ class Tree {
 			}
 		}
 
-
-		void verify_properties() {
-			verify_property_1(_root);
-			verify_property_2(_root);
-			/* Property 3 is implicit */
-			verify_property_4(_root);
-			verify_property_5(_root);
-		}
-
 		void verify_property_1(pointer n) {
 			assert(n->color == RED || n->color == BLACK);
 			if (n->end) return;
@@ -633,6 +626,14 @@ class Tree {
 			deleteNode(_end);
 		}
 
+		void verify_properties() {
+			verify_property_1(_root);
+			verify_property_2(_root);
+			/* Property 3 is implicit */
+			verify_property_4(_root);
+			verify_property_5(_root);
+		}
+		
 		Tree   &operator=(const Tree &t) {
 			std::cout << "bella rega" << std::endl;
 			_size = t._size;
@@ -769,37 +770,17 @@ class Tree {
 			return t;
 		}
 
-/* 		void replace(pointer	original, pointer	replace)
-		{
-			replace->left = original->left;
-			replace->right = original->right;
-			replace->parent = original->parent;
-			if (original->parent)
-			{
-				//bool left = is_less<Pair,Compare>(original->_value.first, original->parent->_value.first);
-				bool left = original->parent->left == original;
-				if (left)
-					replace->parent->left = replace;
-				else
-					replace->parent->right = replace;
-			}
-			if (!replace->left->end && replace->left != replace)
-				replace->left->parent = replace;
-			if (!replace->right->end  && replace->right != replace)
-				replace->right->parent = replace;
-		} */
-
 		void replace(pointer	original, pointer	replace)
 		{
 			if (original->parent != replace)
 			{
-				replace->parent = original->parent;
-				//bool left = is_less<Pair,Compare>(original->_value.first, original->parent->_value.first);
+				if (!replace->end)
+					replace->parent = original->parent;
 				if (!original->parent->end){
 					if (original->parent->left == original)
-						replace->parent->left = replace;
+						original->parent->left = replace;
 					else
-						replace->parent->right = replace;
+						original->parent->right = replace;
 				}
 			}
 			if (original->left != replace)
@@ -887,9 +868,7 @@ class Tree {
 			size_t n = 0;
 			if (!t->end)
 			{
-				//_Remove1(t);
-				//delete_one_child(t);
-				rbtree_node_delete(t);
+				RbTreeDelete(t);
 				n = 1;
 			}
 

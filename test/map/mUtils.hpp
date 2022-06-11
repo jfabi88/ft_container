@@ -55,7 +55,6 @@ void prinTree(ft::Tree<Alloc, Compare> &tree)
 	size_t nSpace = 4;
 	size_t lenght = lastN * nSpace;
 
-	//_map(int lvlTree, pair<int indiceNodo, nodo>)
 	std::map<int, std::vector< std::pair<int, type> > > _map;
 	typename std::map<int, std::vector< std::pair<int, type> > >::iterator itm;
 	visitNode< type >(tree.getRoot(), _map);
@@ -65,10 +64,6 @@ void prinTree(ft::Tree<Alloc, Compare> &tree)
 						// 	green,	blue,	magenta,	yellow,		_RED,	white	
 	const char* args[] = {"\033[32m", "\033[34m", "\033[35m", "\033[33m", "\033[31m", "\033[13m"};
  	std::vector<std::string> colors(args, args + 6);
- 	//std::cout << "_map.size() = " << _map.size() << "\n";
-	/*std::cout << "max = " << max << "\n";
-	std::cout << "lastN = " << lastN << "\n";
-	std::cout << "lenght = " << lenght << "\n"; */
 	bool root;
 	for(itm = _map.begin(); itm != _map.end(); itm++) 
 	{
@@ -96,10 +91,11 @@ void prinTree(ft::Tree<Alloc, Compare> &tree)
 				color = n % colors.size();
 				pcolor = ((n-1) / 2)  % colors.size();
 				bool left = (it->second._value.first < it->second.parent->_value.first);
-				//bool left = (&it->second ==  it->second.parent->left);
-				std::cout << std::string(s-l,' ') << colors.at(pcolor) << (left || root? "[" : "") << RESET
+				//std::cout << std::string(s-l,' ') << colors.at(pcolor) << (left || root? "[" : "") << RESET
+				std::cout << std::string(s-l,' ') <<  (left || root? "[" : "")
 				<< colors.at(color) << value << RESET << (it->second.color? "r" : "b")
-				<< colors.at(pcolor) << (!left || root? "]" : "") << RESET << std::string(l,' ');
+				//<< colors.at(pcolor) << (!left || root? "]" : "") << RESET << std::string(l,' ');
+				<< (!left || root? "]" : "") << std::string(l,' ');
 				last = it->first;
 				it++;
 			}else{
@@ -114,5 +110,4 @@ void prinTree(ft::Tree<Alloc, Compare> &tree)
 		printSpace(qnt);
 		std::cout << "\n";
 	}
-	
 }
