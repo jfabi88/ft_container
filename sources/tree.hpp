@@ -439,27 +439,6 @@ class Tree {
 			//verify_properties();
 		}
 
-
-
-		void delete_one_child(pointer n) {
-			/* Si assume che n ha al massimo un figlio non nullo */
-			pointer child = (n->right->end) ? n->left: n->right;
-			if (!child->end){
-				replace(n, child);
-				if (n->color == BLACK) {
-					if (child->color == RED)
-						child->color = BLACK;
-					else
-						delete_case1(child);
-				}
-			}else{
-				return _Remove1(n);
-			}
-
-			_Remove(n, child);
-			//deleteNode(n);
-		}
-
 		void delete_case1(pointer n) {
 			if (n->parent->end)
 				return;
@@ -633,7 +612,7 @@ class Tree {
 			verify_property_4(_root);
 			verify_property_5(_root);
 		}
-		
+
 		Tree   &operator=(const Tree &t) {
 			std::cout << "bella rega" << std::endl;
 			_size = t._size;
@@ -815,51 +794,6 @@ class Tree {
 			deleteNode(t);
 		}
 
-		void _Remove1(pointer t){
-			//caso 1: t senza figli, caso 2: t con un solo figlio
-			if (end(t->left) || end(t->right))
-			{					
-				pointer	s = end(t->left) ? t->right : t->left;
-				if (t->parent)
-				{
-					// t è figlio sinistro
-					if (t == t->parent->left)
-						t->parent->left = s;
-					else // t è figlio destro
-						t->parent->right = s;
-				}
-				if (!end(s))
-					s->parent = t->parent;
-				return _Remove(t, s);
-			}
-			_Remove2(t);
-		}
-
-		void _Remove2(pointer t){
-			pointer	s;
-			//caso 3a: t ha 2 figli e il figlio destro è il suo successore
-			if( (s = Successor(t)) == t->right )
-			{
-				pointer	tmp = s->right;
-				replace(t, s);
-				s->right = tmp;
-				s->left->parent = s;
-				return _Remove(t, s);
-			}
-			_Remove3(t, s);
-		}
-
-		void _Remove3(pointer t, pointer s){
-			//caso 3b: t ha 2 figli e il suo successore si trova nell sottalbero(sinistro) del suo figlio destro
-			//sostituisco il successore con il suo figlio destro
-			s->parent->left = s->right;
-			if (s->right)
-				s->right->parent = s->parent;
-			//sostituisco t con il successore s
-			replace(t, s);
-			_Remove(t, s);
-		}
-
 		size_t	Remove(typename Pair::first_type target)
 		{
 			//std::cout << "remove" << std::endl;
@@ -880,8 +814,6 @@ class Tree {
 
 		size_t PreOrder(pointer	nodo) {
 			if (nodo != nullptr && !nodo->end) {
-				//visita(nodo);
-				//std::cout << *nodo << std::endl;
 				return  std::max(PreOrder(nodo->left), PreOrder(nodo->right)) + 1;
 			}
 			return 0;

@@ -61,10 +61,8 @@ namespace ft
 				sstm << "map::at:  key not found: __k (which is " << k << ")" << std::endl;
 				return sstm.str();
 			}
-			//TreeType	_tree;
-		public:
 			TreeType	_tree;
-
+		public:
 			//empty constructor
 			explicit map(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
 			{
