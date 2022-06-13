@@ -9,13 +9,13 @@
 
 namespace ft {
 
-template < class Pair, class Compare >
-bool is_less(typename Pair::first_type &a, typename Pair::first_type &b){
+template < class Pair, class Compare , class KeyType>
+bool is_less(KeyType &a, KeyType &b){
 	Compare u;
 	return u(a, b);
 }
 
-template < class Pair, class Compare >
+template < class Pair, class Compare , class KeyType>
 bool is_less(Pair &a, Pair &b){
 	return (is_less(a.first, b.first));
 }
@@ -24,8 +24,6 @@ template < class Pair>
 struct Node
 {
 	public:
-		typedef typename	Pair::first_type	Ktype;
-		typedef typename	Pair::second_type	Vtype;
 		Pair									_value;
 		Node									*parent;
 		Node									*left;
@@ -33,12 +31,9 @@ struct Node
 		bool 									end;
 		int										color;
 
-		Node(const Ktype &k = Ktype(), const Vtype &v = Vtype() ) : _value(k, v), parent(nullptr), left(nullptr), right(nullptr), end(false), color(RED)
-		{};
+		Node(): parent(nullptr), left(nullptr), right(nullptr),  end(false), color(RED) {};
 		~Node(){};
 		Node(const Pair &pair) : _value(pair), parent(nullptr), left(nullptr), right(nullptr),  end(false), color(RED) {};
-		Ktype getFirst() { return _value.getFirst(); };
-		Vtype getSecond() { return _value.getSecond(); };
 
 		Node &operator=(const Node& c) {
 			_value = c._value;
@@ -218,10 +213,10 @@ class const_tree_iterator
 	4) Entrambi i figli di ciascun nodo rosso sono neri;
 	5) Ogni cammino da un nodo a una foglia nel suo sottoalbero contiene lo stesso numero di nodi neri.
 */
-template <class Alloc, class Compare>
+template <class Alloc, class value_compare, class key_compare>
 class Tree {
 	public:
-		typedef typename Alloc::value_type										Pair;
+		typedef typename Alloc::value_type		   								Pair;
 		typedef Node<Pair>                                    					NodeType;
 		typedef typename Alloc::template rebind<NodeType>::other    			allocator_type;
 		typedef typename Alloc::template rebind< Node<const Pair> >::other    	const_allocator_type;
@@ -239,6 +234,7 @@ class Tree {
 		
 		allocator_type  	_allocator;
 		size_t				_size;
+		value_compare 		comp;
 
 		pointer	newNode(const value_type &e, bool end = false){
 			pointer	node = _allocator.allocate(1);
@@ -563,16 +559,19 @@ class Tree {
 		}
 
 	public:
-		Tree() : _size(0) {
+		Tree() : _size(0), comp(value_compare(key_compare())) {
 			this->_end = newNode(value_type(), true);
+			//this->_end = newNode(true);
 			this->_begin = _end;
 			this->_root = _begin;
 		};
 
 		Tree(const Pair &p){
 			this->_end = newNode(value_type(), true);
+			//this->_end = newNode( true);
 			this->_begin = _end;
 			this->_root = _begin;
+			this->comp = value_compare(key_compare());
 			insert(this->_root, p);
 		}
 
@@ -673,9 +672,26 @@ class Tree {
 			return entry;
 		}
 
-
-		pointer	Search(pointer t, typename Pair::first_type &target, pointer &last, bool flag = false) const
+		pointer	Search(pointer t, const Pair &target, pointer &last, bool flag = false) const
 		{
+			//salvo in last l'ultimo nodo confrontato (per ottimizzare insert)
+			if (!t->end) {
+				last = t;
+				if (less(target, t->_value) )
+					return Search(t->left, target, last);
+				if (less(t->_value, target) || flag)
+					return Search(t->right, target, last);
+			}
+			
+			return t;
+		} 
+
+/* 		pointer	Search(pointer t, key_type &target, pointer &last, bool flag = false) const
+		{
+			//typename Pair::second s;
+			Pair val  = value_type
+			
+			return this->Search(t, val, last, flag);
 			//salvo in last l'ultimo nodo confrontato (per ottimizzare insert)
 			if (!t->end) {
 				last = t;
@@ -686,21 +702,25 @@ class Tree {
 			}
 			
 			return t;
-		}
+		} */
 
-		pointer lower_bound(const typename Pair::first_type &k){
+		pointer lower_bound(const Pair &k){
 			pointer i;
 			Search(_root, k, i);
-			while(!i->end && less(i->_value.first, k) )
+			//Pair kval  = ft::make_pair(k, _end->_value.second);
+			//while(!i->end && less(i->_value.first, k) )
+			while(!i->end && less(i->_value, k) )
 				i = i->parent;
 
 			return i;
 		}
 
-		pointer upper_bound(const typename Pair::first_type &k){
+		pointer upper_bound(const Pair &k){
 			pointer i;
 			Search(_root, k, i, true);
-			while(!i->end && !less(k, i->_value.first) )
+			//Pair kval  = ft::make_pair(k, _end->_value.second);
+			//while(!i->end && !less(k, i->_value.first) )
+			while(!i->end && !less(k, i->_value) )
 				i = i->parent;
 
 			return i;
@@ -794,7 +814,7 @@ class Tree {
 			deleteNode(t);
 		}
 
-		size_t	Remove(typename Pair::first_type target)
+		size_t	Remove(Pair target)
 		{
 			//std::cout << "remove" << std::endl;
 			pointer	last;
@@ -820,15 +840,19 @@ class Tree {
 		}
 
 		bool less(pointer &a, pointer &b) const{
-			Compare comp;
-			return (comp(a->_value.first, b->_value.first));
+			return (this->comp(a->_value, b->_value));
 		}
 
-		bool less(typename Pair::first_type &a, typename Pair::first_type &b) const{
+		bool less(const typename value_compare::first_argument_type &a, const typename value_compare::first_argument_type &b) const{
+/* 			Compare comp;
+			return (comp(a, b)); */
+			return (this->comp(a, b));
+		}
+/* 		bool less(key_type &a, key_type &b) const{
 			Compare comp;
 
 			return (comp(a, b));
-		}
+		} */
 
 		void swap (Tree& x)
 		{
@@ -843,8 +867,8 @@ class Tree {
 
 namespace ft
 {
-	template <class Pair, class Compare>
-	void swap( ft::Tree<Pair, Compare>& lhs, ft::Tree<Pair, Compare>& rhs )
+	template <class Pair, class value_compare, class key_compare>
+	void swap( ft::Tree<Pair, value_compare, key_compare>& lhs, ft::Tree<Pair, value_compare, key_compare>& rhs )
 	{
 		lhs.swap(rhs);
 	};

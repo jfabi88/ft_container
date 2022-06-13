@@ -43,12 +43,11 @@ void printSpace(size_t n, char c = ' ')
 	std::cout << std::string(n, c);
 }
 
-
-template <class Alloc, class Compare>
-void prinTree(ft::Tree<Alloc, Compare> &tree)
+template <class Alloc, class value_compare, class key_compare>
+void prinTree(ft::Tree<Alloc, value_compare, key_compare> &tree)
 {
 	//typedef typename ft::Tree<P, Compare, A>::NodeType type;
-	typedef typename ft::Tree<Alloc, Compare>::NodeType type;
+	typedef typename ft::Tree<Alloc, value_compare, key_compare>::NodeType type;
 	size_t h = tree.PreOrder(tree.getRoot());
 	//size_t max = nTreeH(h);
 	size_t lastN = pow(2, h);
