@@ -522,7 +522,7 @@ class Tree {
 			verify_property_1(n->right);
 		}
 
-		void verify_property_2(pointer root) {
+		void verify_property_2() {
 			assert(_root->color == BLACK);
 		}
 
@@ -606,7 +606,7 @@ class Tree {
 
 		void verify_properties() {
 			verify_property_1(_root);
-			verify_property_2(_root);
+			verify_property_2();
 			/* Property 3 is implicit */
 			verify_property_4(_root);
 			verify_property_5(_root);
@@ -844,15 +844,8 @@ class Tree {
 		}
 
 		bool less(const typename value_compare::first_argument_type &a, const typename value_compare::first_argument_type &b) const{
-/* 			Compare comp;
-			return (comp(a, b)); */
 			return (this->comp(a, b));
 		}
-/* 		bool less(key_type &a, key_type &b) const{
-			Compare comp;
-
-			return (comp(a, b));
-		} */
 
 		void swap (Tree& x)
 		{
